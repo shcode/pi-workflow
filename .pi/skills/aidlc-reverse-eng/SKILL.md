@@ -287,12 +287,19 @@ Create `aidlc-docs/inception/reverse-engineering/reverse-engineering-timestamp.m
 
 ## Step 11: Update State Tracking
 
-Update `aidlc-docs/aidlc-state.md`:
-```markdown
-## Reverse Engineering Status
-- [x] Reverse Engineering - Completed on [timestamp]
-- **Artifacts Location**: aidlc-docs/inception/reverse-engineering/
-```
+Update `aidlc-docs/aidlc-state.md` (compact routing table — update existing row, never add new sections):
+
+1. In the `## Stages` table, set row 2 to `[x]`
+2. Update `## Project` block:
+   ```markdown
+   - **Stage**: INCEPTION - Reverse Engineering
+   ```
+3. Update `## Next`:
+   ```markdown
+   Requirements Analysis
+   ```
+
+All completion details, timestamps, artifact inventory, and findings go to `aidlc-progress.md` (unbounded), NOT `aidlc-state.md`.
 
 ## Step 12: Present Completion Message
 
@@ -316,3 +323,10 @@ Update `aidlc-docs/aidlc-state.md`:
 
 - **MANDATORY**: Do not proceed until user explicitly approves
 - **MANDATORY**: Log user's response in `audit.md` with complete raw input
+
+## Step 14: Transition to Next Stage
+
+After user approves:
+1. Load `/skill:aidlc-requirements`
+2. Pass context: brownfield flag, reverse engineering artifacts path, workspace findings
+3. Log transition in `audit.md`

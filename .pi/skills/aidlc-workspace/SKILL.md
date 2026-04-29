@@ -49,6 +49,9 @@ Check if `aidlc-docs/aidlc-state.md` exists:
 **IF workspace has existing code**:
 - Set flag: `brownfield = true`
 - Check for existing reverse engineering artifacts in `aidlc-docs/inception/reverse-engineering/`
+- Determine staleness (check `reverse-engineering-timestamp.md` if it exists):
+  - **Artifacts are current** if: `reverse-engineering-timestamp.md` exists AND is less than 30 days old AND all 7 artifact files are present
+  - **Artifacts are stale** if: timestamp missing, older than 30 days, or any artifact file missing
 - **IF artifacts exist and current**: Load them, skip to Requirements Analysis
 - **IF artifacts stale or missing**: Next phase is Reverse Engineering
 - **IF user explicitly requests rerun**: Next phase is Reverse Engineering regardless
