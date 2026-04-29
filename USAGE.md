@@ -1,20 +1,34 @@
 # AIDLC for Pi — Usage Guide
 
+## Prerequisites
+
+- [pi](https://github.com/mariozechner/pi) installed and available
+- Bash 4+ (for `install.sh`)
+- A target project directory (existing or empty)
+
 ## Installation
 
-Run the install script from this repo against your project directory:
+### Option A: Clone first, then install
 
 ```bash
-/path/to/aidlc-pi/install.sh /path/to/your-project
+git clone <repo-url> ~/aidlc-workflows
+~/aidlc-workflows/install.sh /path/to/your-project
+```
+
+### Option B: Install directly (if you already have the repo)
+
+```bash
+/path/to/aidlc-workflows/install.sh /path/to/your-project
 ```
 
 Or from inside your project:
 
 ```bash
-/path/to/aidlc-pi/install.sh .
+/path/to/aidlc-workflows/install.sh .
 ```
 
-What gets installed:
+### What gets installed
+
 ```
 your-project/
 ├── .pi/skills/              # 15 AIDLC skills
@@ -31,8 +45,48 @@ your-project/
 │   ├── aidlc-nfr/
 │   ├── aidlc-infra-design/
 │   ├── aidlc-code-gen/
-│   └── aidlc-build-test/
-└── AGENTS.md                # Steering doc (edit this)
+│   ├── aidlc-build-test/
+│   └── aidlc-reverse-eng/
+└── AGENTS.md                # Workflow rules (do not edit)
+```
+
+### ⚠️ Reinstall warning
+
+Re-running `install.sh` **overwrites** `.pi/skills/` and `AGENTS.md`. If you customize `AGENTS.md` with project context, you will lose it. Keep your project context in a separate file (see [Project context](#project-context) below).
+
+## Project context
+
+`AGENTS.md` is a system file copied from `core-workflow.md`. It contains workflow rules, not project information. **Do not edit it.**
+
+Instead, create a separate context file for your project details. Pi will read it alongside `AGENTS.md`.
+
+**Recommended**: Create `.pi/PROJECT.md` (or `PROJECT.md` in your project root):
+
+```markdown
+# Project context
+
+## Overview
+My SaaS app for invoice management.
+
+## Tech stack
+- **Language**: TypeScript
+- **Framework**: Next.js
+- **Database**: PostgreSQL
+- **Build tool**: pnpm
+- **Test framework**: Vitest
+
+## Setup commands
+```bash
+pnpm install
+pnpm test
+pnpm build
+pnpm lint
+```
+
+## Code style
+- Prettier for formatting
+- ESLint with strict TypeScript rules
+- Conventional commits
 ```
 
 ## Quick Start
@@ -81,8 +135,8 @@ Stages load on-demand. Only the orchestrator + common + current stage skill are 
 
 | Phase | Lines loaded | Before (no skills) |
 |-------|-------------|-------------------|
-| Inception | ~450-700 | ~1700 |
-| Construction (per-unit) | ~450-700 | ~1700 |
+| Inception | ~450–700 | ~1700 |
+| Construction (per-unit) | ~450–700 | ~1700 |
 | **Reduction** | **~60%** | — |
 
 ## State Files
@@ -95,36 +149,39 @@ Generated in `aidlc-docs/` during workflow:
 | `aidlc-progress.md` | Narrative progress tracker | Grows with project |
 | `audit.md` | Append-only audit trail | Archived daily |
 
-## Customizing AGENTS.md
-
-After installation, edit `AGENTS.md` in your project:
+### Sample `aidlc-state.md`
 
 ```markdown
-# AGENTS.md
+# AIDLC State
 
-## Project overview
-My SaaS app for invoice management.
+## Current Stage
+| Status | Stage | Skill |
+|--------|-------|-------|
+| [x] | Workspace Detection | aidlc-workspace |
+| [x] | Requirements Analysis | aidlc-requirements |
+| [ ] | User Stories | aidlc-stories |
+| [ ] | Workflow Planning | aidlc-workflow-plan |
 
-## Tech stack
-- **Language**: TypeScript
-- **Framework**: Next.js
-- **Database**: PostgreSQL
-- **Build tool**: pnpm
-- **Test framework**: Vitest
+## Extensions
+| Extension | Status |
+|-----------|--------|
+| Security Baseline | Disabled |
+| Property-Based Testing | Enabled |
 
-## Setup commands
+## Project
+- **Type**: Greenfield
+- **Current unit**: —
+```
+
+### Git setup
+
+`aidlc-docs/` contains generated artifacts. Add it to `.gitignore` if you don't want generated docs in version control:
+
 ```bash
-pnpm install
-pnpm test
-pnpm build
-pnpm lint
+echo "aidlc-docs/" >> .gitignore
 ```
 
-## Code style
-- Prettier for formatting
-- ESLint with strict TypeScript rules
-- Conventional commits
-```
+Or commit it if you want to track design decisions and audit history.
 
 ## Extensions
 
@@ -141,12 +198,27 @@ Enable during Requirements Analysis. The orchestrator asks via multiple-choice q
 
 **Greenfield** (new project):
 ```
-Workspace Detection → Requirements → Workflow Plan → Code Gen → Build & Test
+Workspace Detection
+  → Requirements
+  → [User Stories]        (conditional)
+  → Workflow Plan
+  → [Application Design]  (conditional)
+  → [Units]               (conditional)
+  → Code Generation
+  → Build & Test
 ```
 
 **Brownfield** (existing project):
 ```
-Workspace Detection → Reverse Engineering → Requirements → Workflow Plan → Per-Unit Loop → Build & Test
+Workspace Detection
+  → Reverse Engineering
+  → Requirements
+  → [User Stories]        (conditional)
+  → Workflow Plan
+  → [Application Design]  (conditional)
+  → [Units]               (conditional)
+  → Per-Unit Loop
+  → Build & Test
 ```
 
 Per-Unit Loop (for each unit):
@@ -161,8 +233,29 @@ Brownfield rule: **modify existing files in-place**. Never create duplicates lik
 If a stage fails or you want to restart:
 
 1. Check `aidlc-docs/aidlc-state.md` for current stage
-2. Load the relevant skill manually: `/skill:aidlc-code-gen`
+2. Load the orchestrator skill to resume routing: `/skill:aidlc-orchestrator`
 3. Or ask: "Continue from where we left off" — the orchestrator reads state and resumes
+
+## Uninstalling
+
+To remove AIDLC from a project:
+
+```bash
+rm -rf .pi/skills/ aidlc-docs/ AGENTS.md
+```
+
+This removes all skills, generated docs, and workflow rules. Your project code is untouched.
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `install.sh` says "`.pi/skills/` not found" | Run the script from the `aidlc-workflows` repo root, not from the target project |
+| Skill not found when loading | Verify `.pi/skills/<name>/SKILL.md` exists. Re-run `install.sh` if skills are missing |
+| Orchestrator does not auto-load | Try manual trigger: `/skill:aidlc-orchestrator` |
+| `AGENTS.md` overwritten after reinstall | Keep project context in `.pi/PROJECT.md`, not `AGENTS.md` |
+| State files grow too large | `audit.md` is archived daily automatically. `aidlc-progress.md` is unbounded by design. |
+| Brownfield: duplicate files created | Remind pi: "modify existing files in-place, do not create duplicates" |
 
 ## Tips
 
