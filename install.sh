@@ -116,7 +116,10 @@ case "$AGENT" in
         echo "  ✓ Created AGENTS.md (Kiro — steering)"
         ;;
     copilot)
-        mkdir -p "$TARGET_DIR/.github"
+        mkdir -p "$TARGET_DIR/.github/skills"
+        cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.github/skills/"
+        skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
+        echo "  ✓ Copied .github/skills/ ($skill_count skills)"
         if [[ ! -f "$TARGET_DIR/.github/copilot-instructions.md" ]]; then
             cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/.github/copilot-instructions.md"
             echo "  ✓ Created .github/copilot-instructions.md (GitHub Copilot)"
