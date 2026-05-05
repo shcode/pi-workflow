@@ -119,8 +119,8 @@ Then deletes `.parallel/{unit}/`.
 ## How to Route to Next Skill
 
 After completing any stage:
-1. Update `aidlc-state.md` (compact table: set row `[x]`, update Stage/Next)
-2. Update `aidlc-progress.md` (narrative status, per-unit detail)
+1. Update `aidlc-state.md` (compact table: set row `[x]`, update Stage/Next, update `## Current Work`)
+2. Append to `aidlc-progress.md` (narrative log, human-facing — do NOT read)
 3. Determine next stage from router above
 4. Load next skill via `/skill:<name>`
 5. Pass context (brownfield flag, requirements, etc.)
@@ -141,7 +141,7 @@ After completing any stage:
 - Log ALL inputs in `audit.md` with ISO 8601 timestamps — always append, never overwrite
 - Mark checkboxes `[x]` immediately in same interaction
 - `aidlc-state.md` = compact routing table (~30 lines, bounded). NEVER add rows.
-- `aidlc-progress.md` = unbounded narrative tracker. All per-unit/per-step detail goes here.
+- `aidlc-progress.md` = append-only narrative log for humans. Agents NEVER read it.
 - Construction phases: standardized 2-option completion messages
 - No emergent behavior
 - App code in workspace root ONLY; docs in `aidlc-docs/` ONLY
@@ -170,7 +170,8 @@ After completing any stage:
 │   │   │   └── code/               # Markdown summaries
 │   │   └── build-and-test/
 │   ├── operations/                 # 🟡 Placeholder
-│   ├── aidlc-state.md        # Compact routing table (~30 lines, bounded)
-│   ├── aidlc-progress.md     # Unbounded narrative tracker
+│   ├── aidlc-state.md        # Compact routing table + Current Work (~35 lines, bounded)
+│   ├── aidlc-progress.md     # Append-only narrative log (human-facing, agents never read)
+│   ├── backlog.md            # Features, tech debt, deferred decisions
 │   └── audit.md              # Append-only audit trail
 ```

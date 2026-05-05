@@ -299,7 +299,7 @@ Update `aidlc-docs/aidlc-state.md` (compact routing table — update existing ro
    Requirements Analysis
    ```
 
-All completion details, timestamps, artifact inventory, and findings go to `aidlc-progress.md` (unbounded), NOT `aidlc-state.md`.
+All completion details, timestamps, artifact inventory, and findings go to `aidlc-progress.md` (append-only, human-facing), NOT `aidlc-state.md`.
 
 ## Step 12: Present Completion Message
 

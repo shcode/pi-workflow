@@ -33,12 +33,11 @@ When returning to existing project (aidlc-state.md exists):
 ```markdown
 **Welcome back! I can see you have an existing AI-DLC project in progress.**
 
-Based on your `aidlc-state.md` (compact routing table) and `aidlc-progress.md` (progress tracker), here's your current status:
-- **Project**: [from aidlc-state.md Project.Type]
-- **Current Stage**: [from aidlc-state.md Project.Stage]
-- **Next Stage**: [from aidlc-state.md Next]
-- **Last Completed**: [last [x] row in aidlc-state.md Stages table]
-- **Progress Detail**: [from aidlc-progress.md Current Status]
+Based on `aidlc-state.md`:
+- **Project**: [Project.Type]
+- **Current Stage**: [Project.Stage]
+- **Current Work**: [Current Work.Stage / Unit / Step]
+- **Next**: [Next field]
 
 **What would you like to work on today?**
 - **Continue** — Pick up from [Next step description]
@@ -53,6 +52,7 @@ Before resuming ANY stage, automatically read all relevant artifacts from previo
 
 **NEVER read these files for context:**
 - `audit.md` — Append-only decision log. Write-only for the AI. For human reference only.
+- `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. For human reference only. Do NOT read.
 
 **Readable artifacts by stage:**
 - **Reverse Engineering**: architecture.md, code-structure.md, api-documentation.md
@@ -64,11 +64,12 @@ Before resuming ANY stage, automatically read all relevant artifacts from previo
 - **Code Stages**: All code files, plans, AND all previous readable artifacts
 
 ### Smart Context Loading by Stage
-- **Early Stages**: Load `aidlc-state.md` (compact, ~30 lines) + workspace analysis
+- **Early Stages**: Load `aidlc-state.md` (compact) + workspace analysis
 - **Requirements/Stories**: Load `aidlc-state.md` + reverse engineering + requirements artifacts
 - **Design Stages**: Load `aidlc-state.md` + requirements + stories + architecture + design artifacts
-- **Code Stages**: Load `aidlc-state.md` + ALL artifacts + `aidlc-progress.md` (if per-unit context needed)
-- **Code Stages**: Load ALL artifacts + existing code files
+- **Code Stages**: Load `aidlc-state.md` + ALL design artifacts + existing code files
+
+`aidlc-state.md` contains a `## Current Work` section (active stage, unit, step) sufficient for resume — never read `aidlc-progress.md` for context.
 
 ---
 
@@ -330,7 +331,8 @@ When a stage executes, ALL its defined artifacts are created. The "depth" refers
 
 When executing as a sub-agent in a parallel construction batch:
 
-- **Canonical state files are READ-ONLY**: `aidlc-state.md`, `aidlc-progress.md`, `audit.md`
+- **`aidlc-state.md` is READ-ONLY during stage execution** — only updated at stage transitions and checkpoints
+- **`aidlc-progress.md` and `audit.md` are WRITE-ONLY** — append only, never read by AI
 - **Write to temp workspace only**: `aidlc-docs/construction/.parallel/{unit-name}/`
 - **Mirror directory structure**: If canonical path is `construction/unit-a/functional-design/`, temp path is `construction/.parallel/unit-a/functional-design/`
 - **Signal completion**: Write empty file `.parallel/{unit-name}/.complete` when done
@@ -401,3 +403,46 @@ This rule applies to ALL file modifications during construction phases.
 - **Service**: Independently deployable component
 - **Module**: Logical grouping within a service/monolith
 - **Component**: Reusable building block (class, function, package)
+
+---
+
+## Backlog Management
+
+`aidlc-docs/backlog.md` — lightweight tracker for deferred features, tech debt, and open decisions.
+
+### When to Add
+
+Add items to backlog when:
+- Scope is explicitly deferred during requirements ("out of scope for now")
+- A new idea arises during construction that would change scope
+- Tech debt is identified during code gen or review
+- A decision is deferred (e.g., "choose caching strategy later")
+- User says "add X to backlog"
+
+### Format
+
+```markdown
+# Backlog
+
+## Features
+- [ ] Description — Added YYYY-MM-DD · Source: [requirements/stories/construction]
+
+## Technical Debt
+- [ ] Description — Added YYYY-MM-DD
+
+## Deferred Decisions
+- [ ] Description — Added YYYY-MM-DD · Context: brief reason
+```
+
+### When to Read
+
+Read `backlog.md` when:
+- Starting Requirements Analysis (ask "any backlog items to include in this session?")
+- Starting Workflow Planning (check if backlog items affect scope)
+- User says "show backlog" or "promote backlog item"
+
+**Do NOT** auto-promote backlog items. User must explicitly request inclusion.
+
+### Item Lifecycle
+
+`[ ]` open → `[>]` in progress (explicitly included in current workflow) → `[x]` done

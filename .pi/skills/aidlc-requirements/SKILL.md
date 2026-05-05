@@ -26,12 +26,17 @@ See `aidlc-common` skill for depth-levels reference.
 
 ## Execution Steps
 
-### Step 1: Load Reverse Engineering Context (if available)
+### Step 1: Load Context
 
 **IF brownfield project**:
 - Load `aidlc-docs/inception/reverse-engineering/architecture.md`
 - Load `aidlc-docs/inception/reverse-engineering/component-inventory.md`
 - Load `aidlc-docs/inception/reverse-engineering/technology-stack.md`
+
+**IF `aidlc-docs/backlog.md` exists and has open items**:
+- Read `backlog.md`
+- Ask: "There are open backlog items. Should any be included in this session?" (inline, one question)
+- If yes: include selected items as requirements candidates; mark as `[>]` in backlog.md
 
 ### Step 2: Analyze User Request (Intent Analysis)
 

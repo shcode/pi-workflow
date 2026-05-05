@@ -17,10 +17,10 @@ description: >
 ## Step 1: Check for Existing AI-DLC Project
 
 Check if `aidlc-docs/aidlc-state.md` exists:
-- **If exists**: Resume from last phase (load `aidlc-state.md` compact table + `aidlc-progress.md` for detail)
+- **If exists**: Resume from last phase (read `aidlc-state.md` only — compact table + `## Current Work` section covers all resume context)
 - **If not exists**: Continue with new project assessment
 
-**Note**: `aidlc-state.md` is a compact routing table (~30 lines, bounded). `aidlc-progress.md` is the unbounded narrative tracker.
+**Note**: `aidlc-state.md` is a compact routing table + Current Work section (~35 lines, bounded). `aidlc-progress.md` is an append-only narrative log for human reference — agents never read it.
 
 ## Step 2: Scan Workspace for Existing Code
 
@@ -89,11 +89,18 @@ Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for ro
 | Name | Enabled |
 |------|---------|
 
+## Current Work
+| Field | Value |
+|-------|-------|
+| Stage | Workspace Detection |
+| Unit | — |
+| Step | Starting |
+
 ## Next
 [Next stage name]
 ```
 
-Create `aidlc-docs/aidlc-progress.md` (unbounded — free-form progress tracking):
+Create `aidlc-docs/aidlc-progress.md` (append-only narrative log — human reference only, agents never read):
 
 ```markdown
 # AI-DLC Progress
@@ -121,7 +128,26 @@ Create `aidlc-docs/aidlc-progress.md` (unbounded — free-form progress tracking
 | 2024-01-15T11:45:00Z | Functional Design | auth-unit | In progress, domain model drafted |
 ```
 
-**Rule**: `aidlc-state.md` NEVER grows beyond the table format above. All narrative status, per-unit tracking, and iteration history go to `aidlc-progress.md`.
+**Rule**: `aidlc-state.md` NEVER grows beyond the table format above. All narrative status, per-unit tracking, and iteration history go to `aidlc-progress.md` (append-only, human-facing).
+
+**Rule**: Update `## Current Work` in `aidlc-state.md` at each meaningful checkpoint:
+- When entering a new stage (update Stage + Step)
+- When switching units (update Unit)
+- When crossing a major boundary (plan approved, code gen parts, etc.)
+
+Keep each value to one line. This section replaces reading `aidlc-progress.md` for resume context.
+
+Create `aidlc-docs/backlog.md` (empty at start, agent updates throughout):
+
+```markdown
+# Backlog
+
+## Features
+
+## Technical Debt
+
+## Deferred Decisions
+```
 
 ## Step 5: Present Completion Message
 
