@@ -14,6 +14,18 @@ Load this skill at the start of every AIDLC workflow session.
 
 ## Session Continuity
 
+### Audit Rotation (on resume)
+
+When resuming a project (`aidlc-state.md` exists), check `audit.md` for stale entries:
+1. Read first timestamp in `audit.md`
+2. If entries exist from a **previous calendar day** (not today):
+   - Create `aidlc-docs/audit/` directory if it doesn't exist
+   - Move all entries older than today to `aidlc-docs/audit/YYYY-MM-DD.md` (using the entry date)
+   - Leave only today's entries (or empty) in `audit.md`
+3. If all entries are from today: do nothing
+
+This keeps `audit.md` bounded per session while preserving history.
+
 ### Welcome Back Prompt
 
 When returning to existing project (aidlc-state.md exists):
@@ -134,9 +146,16 @@ Let's begin!
 
 ## Question Format Guide
 
-### Rule: Never Ask Questions in Chat
+### Rule: Never Ask Questions in Chat (with exception)
 
 **CRITICAL**: ALL questions must be placed in dedicated question files. NEVER ask questions directly in chat.
+
+**Exception — Inline Confirmations**: For ≤2 binary yes/no questions within a single stage (e.g., "Should I include X?", "Continue with approach Y?"), the agent MAY ask inline in chat without creating a file. These must be:
+- Binary (yes/no, approve/reject)
+- Non-architectural (don't change design direction)
+- Logged in `audit.md` with the answer
+
+All multi-option questions (≥3 choices) MUST still go to files.
 
 #### File Naming
 - Use descriptive names: `{phase-name}-questions.md`

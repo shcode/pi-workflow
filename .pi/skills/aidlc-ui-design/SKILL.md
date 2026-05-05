@@ -97,17 +97,15 @@ Wait for ALL [Answer]: tags. Add follow-up questions for any unclear responses. 
 ### Step 6: Create Storybook Stories
 
 **HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
-If the component file does not exist yet, create a stub (`export function ComponentName() { return null; }`) so the story can import it — the stub will be replaced during Code Generation.
+Create a stub (`export function ComponentName() { return null; }`) so the story can import it — replaced during Code Generation.
 
-**🟠 Brownfield**: Components already exist. Import the real implementation directly — no stubs. The story’s purpose is living documentation and visual regression baseline, not a spec for code-gen.
+**🟠 Brownfield**: Import the real implementation directly — no stubs. Purpose is living documentation + visual regression baseline.
 
-#### Story file path convention
+#### Story file convention
 
-```
-src/stories/{ComponentName}.stories.tsx   # adjust extension for stack
-```
+Path: `src/stories/{ComponentName}.stories.tsx` (adjust for stack)
 
-#### Greenfield — CSF3 story template
+#### CSF3 structure (both modes)
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
@@ -116,117 +114,40 @@ import { ComponentName } from '../components/ComponentName';
 const meta: Meta<typeof ComponentName> = {
   title: 'Design System/{Category}/{ComponentName}',
   component: ComponentName,
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component: 'One-line description of component purpose and when to use it.',
-      },
-    },
-  },
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'destructive'],
-      description: 'Visual style variant',
-    },
-    size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: 'Component size',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Disables all interactions',
-    },
-  },
+  parameters: { layout: 'centered', docs: { description: { component: '...' } } },
+  argTypes: { /* one entry per prop: control type + options + description w/ token ref */ },
   tags: ['autodocs'],
 };
-
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { /* minimal required props */ } };
-export const Primary: Story = { args: { variant: 'primary' } };
-export const Secondary: Story = { args: { variant: 'secondary' } };
-export const Disabled: Story = { args: { disabled: true } };
-export const Loading: Story = { args: { isLoading: true } };
-export const LongContent: Story = {
-  args: { children: 'This is a very long label that tests overflow behavior' },
-};
+// One export per variant/state (see Required Coverage below)
 ```
 
-#### 🟠 Brownfield — CSF3 story template
+#### Mode differences
 
-Read the existing component source file to discover:
-- All exported props and their TypeScript types
-- All existing variants, sizes, and states already implemented
-- Default prop values
-- Any existing usage examples in the codebase (search for `<ComponentName`)
-
-```tsx
-import type { Meta, StoryObj } from '@storybook/react';
-// Import the REAL component — no stubs
-import { ComponentName } from '../components/ComponentName';
-
-const meta: Meta<typeof ComponentName> = {
-  title: 'Design System/{Category}/{ComponentName}',
-  component: ComponentName,
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component:
-          'Existing component. Stories generated from current implementation. ' +
-          'Edit stories to reflect intended API and usage.',
-      },
-    },
-  },
-  // argTypes derived from actual prop types in the source file
-  argTypes: { /* reflect real props */ },
-  tags: ['autodocs'],
-};
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-// Kitchen-sink — shows all variants together for quick visual scan
-export const AllVariants: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-      {/* render one instance per variant */}
-    </div>
-  ),
-};
-
-// Individual stories per variant/state found in the implementation
-export const Default: Story = { args: { /* real default props */ } };
-// ... one export per discovered variant/state
-```
-
-**Brownfield story coverage rules:**
-- Derive `argTypes` from the component’s actual TypeScript props — do not invent props that don’t exist
-- Create one story per variant/state that already exists in the implementation
-- Add an `AllVariants` kitchen-sink story at the top
-- Do NOT add stories for variants that don’t exist yet — those belong in a future greenfield unit
+| | Greenfield | 🟠 Brownfield |
+|---|---|---|
+| Import | Stub component | Real implementation |
+| `argTypes` | Designed from scratch | Derived from actual TS props |
+| Extra story | — | `AllVariants` kitchen-sink (render all variants in a flex row) |
+| Variants | Design freely | Only document what exists — don’t invent |
+| Description | Spec for code-gen | “Existing component. Edit to reflect intended API.” |
 
 #### Required story coverage (both modes)
 
-Every component story MUST include:
 - `Default` — most common usage with realistic content
 - One story per visual `variant`
-- `Disabled` state (if component supports it)
-- `Loading` state (if component has async behavior)
-- `Error` state (if component shows validation errors)
-- `Empty` state (if component can be empty/no data)
-- `LongContent` or edge-case story where overflow/truncation may occur
-- **🟠 Brownfield only**: `AllVariants` kitchen-sink story
+- `Disabled`, `Loading`, `Error`, `Empty` (if component supports each)
+- `LongContent` or edge-case overflow story
+- **🟠 Brownfield only**: `AllVariants` kitchen-sink
 
 #### Design token compliance
 
-- Use design system token references only — no hardcoded hex colors, px values, or magic numbers
-- Every `argTypes` entry must reference the token name in its `description`
-- Flag any design gaps in the component inventory doc
+- Design system tokens only — no hardcoded hex/px/magic numbers
+- `argTypes` descriptions reference token names
+- Flag design gaps in component inventory
 
 ### Step 7: Create Component Inventory Document
 

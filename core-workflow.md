@@ -4,6 +4,14 @@
 
 Workflow adapts to the work. AI assesses stages needed based on: user intent, codebase state, complexity, risk.
 
+## Fast Path (Simple Changes)
+
+**Condition**: Brownfield + scope ≤ 3 files + single clear fix (bug, typo, config, small refactor) + no new components/services/business logic + no NFR/security impact.
+
+**Sequence**: Workspace Detection (auto) → Code Generation (minimal plan) → Build & Test. All other stages skipped.
+
+**Override**: User says “full workflow” → ignore fast path.
+
 ## Startup Sequence
 
 1. Load `aidlc-common` skill (shared rules: validation, audit, questions, depth levels, welcome message)
@@ -26,8 +34,8 @@ For each stage: load skill → execute → present completion → wait for expli
 | 🔵 INCEPTION | Units Generation | Multi-unit decomposition | `aidlc-units` |
 | 🟢 CONSTRUCTION | Functional Design | New business logic (per-unit) | `aidlc-functional-design` |
 | 🟢 CONSTRUCTION | NFR Requirements | Performance/security (per-unit) | `aidlc-nfr` |
-| 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
 | 🟢 CONSTRUCTION | UI Design | New UI components (per-unit) | `aidlc-ui-design` |
+| 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
 | 🟢 CONSTRUCTION | Code Generation | ALWAYS (per-unit) | `aidlc-code-gen` |
 | 🟢 CONSTRUCTION | Build and Test | ALWAYS (after all units) | `aidlc-build-test` |
 

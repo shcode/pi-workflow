@@ -79,8 +79,8 @@ Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for ro
 | 6 | INCEPTION | Application Design | [ ] |
 | 7 | INCEPTION | Units Generation | [ ] |
 | 8 | CONSTRUCTION | Functional Design | [ ] |
-| 9 | CONSTRUCTION | NFR Requirements | [ ] |
-| 10 | CONSTRUCTION | NFR Design | [ ] |
+| 9 | CONSTRUCTION | NFR Requirements & Design | [ ] |
+| 10 | CONSTRUCTION | UI Design | [ ] |
 | 11 | CONSTRUCTION | Infrastructure Design | [ ] |
 | 12 | CONSTRUCTION | Code Generation | [ ] |
 | 13 | CONSTRUCTION | Build and Test | [ ] |
@@ -101,6 +101,11 @@ Create `aidlc-docs/aidlc-progress.md` (unbounded — free-form progress tracking
 ## Current Status
 [Free-form status description]
 
+## Stage Log
+<!-- Each entry: ISO timestamp | Stage | Unit (if applicable) | One-line status -->
+| Timestamp | Stage | Unit | Status |
+|---|---|---|---|
+
 ## Units
 | Unit | Status | Stories | Notes |
 |------|--------|---------|-------|
@@ -108,6 +113,12 @@ Create `aidlc-docs/aidlc-progress.md` (unbounded — free-form progress tracking
 ## Iterations
 | Date | Stage | Action | Notes |
 |------|-------|--------|-------|
+```
+
+**Entry format for Stage Log** (append one row per stage transition):
+```
+| 2024-01-15T10:30:00Z | Requirements Analysis | — | Complete, 12 requirements documented |
+| 2024-01-15T11:45:00Z | Functional Design | auth-unit | In progress, domain model drafted |
 ```
 
 **Rule**: `aidlc-state.md` NEVER grows beyond the table format above. All narrative status, per-unit tracking, and iteration history go to `aidlc-progress.md`.

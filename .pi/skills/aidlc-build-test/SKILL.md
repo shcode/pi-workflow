@@ -37,40 +37,7 @@ Determine appropriate testing strategy:
 
 Create `aidlc-docs/construction/build-and-test/build-instructions.md`:
 
-```markdown
-# Build Instructions
-
-## Prerequisites
-- **Build Tool**: [Tool name and version]
-- **Dependencies**: [List required dependencies]
-- **Environment Variables**: [List required env vars]
-- **System Requirements**: [OS, memory, disk space]
-
-## Build Steps
-
-### 1. Install Dependencies
-\`\`\`bash
-[Command to install dependencies]
-\`\`\`
-
-### 2. Configure Environment
-\`\`\`bash
-[Commands to set up environment]
-\`\`\`
-
-### 3. Build All Units
-\`\`\`bash
-[Command to build all units]
-\`\`\`
-
-### 4. Verify Build Success
-- **Expected Output**: [Describe successful build output]
-- **Build Artifacts**: [List generated artifacts and locations]
-- **Common Warnings**: [Note acceptable warnings]
-
-## Troubleshooting
-[Common build failures and solutions]
-```
+Include sections: Prerequisites (tool, deps, env vars, system reqs), Build Steps (install deps, configure env, build all units, verify success), Troubleshooting.
 
 ---
 
@@ -78,24 +45,7 @@ Create `aidlc-docs/construction/build-and-test/build-instructions.md`:
 
 Create `aidlc-docs/construction/build-and-test/unit-test-instructions.md`:
 
-```markdown
-# Unit Test Execution
-
-## Run Unit Tests
-
-### 1. Execute All Unit Tests
-\`\`\`bash
-[Command to run all unit tests]
-\`\`\`
-
-### 2. Review Test Results
-- **Expected**: [X] tests pass, 0 failures
-- **Test Coverage**: [Expected coverage percentage]
-- **Test Report Location**: [Path to test reports]
-
-### 3. Fix Failing Tests
-[Steps if tests fail]
-```
+Include: run command, expected pass count, coverage target, report location, fix steps if failing.
 
 ---
 
@@ -103,50 +53,7 @@ Create `aidlc-docs/construction/build-and-test/unit-test-instructions.md`:
 
 Create `aidlc-docs/construction/build-and-test/integration-test-instructions.md`:
 
-```markdown
-# Integration Test Instructions
-
-## Purpose
-Test interactions between units/services.
-
-## Test Scenarios
-
-### Scenario 1: [Unit A] → [Unit B] Integration
-- **Description**: [What is being tested]
-- **Setup**: [Required test environment]
-- **Test Steps**: [Step-by-step execution]
-- **Expected Results**: [What should happen]
-- **Cleanup**: [How to clean up]
-
-## Setup Integration Test Environment
-
-### 1. Start Required Services
-\`\`\`bash
-[Commands to start services]
-\`\`\`
-
-### 2. Configure Service Endpoints
-\`\`\`bash
-[Commands to configure endpoints]
-\`\`\`
-
-## Run Integration Tests
-
-### 1. Execute Integration Test Suite
-\`\`\`bash
-[Command to run integration tests]
-\`\`\`
-
-### 2. Verify Service Interactions
-- **Test Scenarios**: [List key scenarios]
-- **Expected Results**: [Describe outcomes]
-- **Logs Location**: [Where to check logs]
-
-### 3. Cleanup
-\`\`\`bash
-[Commands to clean up]
-\`\`\`
-```
+Include: test scenarios (unit A → B interactions), environment setup, run command, expected results, cleanup.
 
 ---
 
@@ -154,75 +61,15 @@ Test interactions between units/services.
 
 Create `aidlc-docs/construction/build-and-test/performance-test-instructions.md`:
 
-```markdown
-# Performance Test Instructions
-
-## Purpose
-Validate system performance under load.
-
-## Performance Requirements
-- **Response Time**: < [X]ms for [Y]% of requests
-- **Throughput**: [X] requests/second
-- **Concurrent Users**: Support [X] concurrent users
-- **Error Rate**: < [X]%
-
-## Setup Performance Test Environment
-
-### 1. Prepare Test Environment
-\`\`\`bash
-[Commands to set up performance testing]
-\`\`\`
-
-### 2. Configure Test Parameters
-- **Test Duration**: [X] minutes
-- **Ramp-up Time**: [X] seconds
-- **Virtual Users**: [X] users
-
-## Run Performance Tests
-
-### 1. Execute Load Tests
-\`\`\`bash
-[Command to run load tests]
-\`\`\`
-
-### 2. Execute Stress Tests
-\`\`\`bash
-[Command to run stress tests]
-\`\`\`
-
-### 3. Analyze Performance Results
-- **Response Time**: [Actual vs Expected]
-- **Throughput**: [Actual vs Expected]
-- **Error Rate**: [Actual vs Expected]
-- **Bottlenecks**: [Identified bottlenecks]
-- **Results Location**: [Path to reports]
-
-## Performance Optimization
-[Steps if performance doesn't meet requirements]
-```
+Include: performance requirements (response time, throughput, concurrency, error rate), test parameters (duration, ramp-up, virtual users), run commands (load + stress), results analysis.
 
 ---
 
 ## Step 6: Generate Additional Test Instructions (As Needed)
 
-### Contract Tests (For Microservices)
-Create `contract-test-instructions.md`:
-- API contract validation between services
-- Consumer-driven contract testing
-- Schema validation
-
-### Security Tests
-Create `security-test-instructions.md`:
-- Vulnerability scanning
-- Dependency security checks
-- Authentication/authorization testing
-- Input validation testing
-
-### End-to-End Tests
-Create `e2e-test-instructions.md`:
-- Complete user workflow testing
-- Cross-service scenarios
-- UI testing (if applicable)
+- **Contract Tests** (`contract-test-instructions.md`): API contract validation, consumer-driven contracts, schema validation
+- **Security Tests** (`security-test-instructions.md`): Vulnerability scanning, dependency checks, auth testing
+- **End-to-End Tests** (`e2e-test-instructions.md`): Full user workflows, cross-service scenarios, UI testing
 
 ---
 
@@ -230,54 +77,83 @@ Create `e2e-test-instructions.md`:
 
 Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md`:
 
+| Section | Fields |
+|---|---|
+| Build Status | Tool, status, artifacts, time |
+| Unit Tests | Total, passed, failed, coverage%, status |
+| Integration Tests | Scenarios, passed, failed, status |
+| Performance Tests | Response time, throughput, error rate (actual vs target) |
+| Additional Tests | Contract/Security/E2E: Pass/Fail/N/A |
+| Overall | Build pass?, All tests pass?, Ready for operations? |
+
+---
+
+## Step 8: Execute Build and Tests
+
+**MANDATORY**: Actually run the build and test commands, don't just document them.
+
+### 8.1 Run Build
+
+Execute the build command from `build-instructions.md`. Capture stdout/stderr.
+
+- **If build succeeds**: proceed to 8.2
+- **If build fails**: log error, attempt fix (see Fix Loop below), re-run. Max 3 attempts.
+
+### 8.2 Run Unit Tests
+
+Execute unit test command. Capture output and coverage.
+
+### 8.3 Run Integration Tests (if applicable)
+
+Execute integration test command. Capture output.
+
+### 8.4 Record Results
+
+Update `build-and-test-summary.md` with actual results (not placeholders):
+- Real pass/fail counts from test output
+- Actual coverage percentage
+- Real build time
+- Actual error messages if any
+
+---
+
+## Step 8.5: Fix Loop (On Failure)
+
+**Trigger**: Any test failure or build error in Step 8.
+
+**Process** (max 3 iterations per failure):
+1. Parse the error output — identify failing test name + error message
+2. Read the failing test file and the source file it tests
+3. Read relevant design document for context
+4. Identify root cause (implementation bug vs test bug vs design mismatch)
+5. **If implementation bug**: fix the source file, re-run failing test
+6. **If test bug**: fix the test, re-run
+7. **If design mismatch**: trigger Mid-Construction Design Change (from `aidlc-common`)
+8. After fix, re-run the full test suite to check for regressions
+
+**Escalate to user if**:
+- 3 fix attempts exhausted without resolution
+- Fix requires architectural change
+- Multiple unrelated failures (>3 distinct errors)
+- Unclear whether source or test is wrong
+
+**On escalation**:
 ```markdown
-# Build and Test Summary
+⚠️ **Build/Test failures could not be auto-resolved:**
 
-## Build Status
-- **Build Tool**: [Tool name]
-- **Build Status**: [Success/Failed]
-- **Build Artifacts**: [List artifacts]
-- **Build Time**: [Duration]
+| # | Test/Error | Attempts | Last Error |
+|---|---|---|---|
+| 1 | `test_name` | 3 | `error message` |
 
-## Test Execution Summary
-
-### Unit Tests
-- **Total Tests**: [X]
-- **Passed**: [X]
-- **Failed**: [X]
-- **Coverage**: [X]%
-- **Status**: [Pass/Fail]
-
-### Integration Tests
-- **Test Scenarios**: [X]
-- **Passed**: [X]
-- **Failed**: [X]
-- **Status**: [Pass/Fail]
-
-### Performance Tests
-- **Response Time**: [Actual] (Target: [Expected])
-- **Throughput**: [Actual] (Target: [Expected])
-- **Error Rate**: [Actual] (Target: [Expected])
-- **Status**: [Pass/Fail]
-
-### Additional Tests
-- **Contract Tests**: [Pass/Fail/N/A]
-- **Security Tests**: [Pass/Fail/N/A]
-- **E2E Tests**: [Pass/Fail/N/A]
-
-## Overall Status
-- **Build**: [Success/Failed]
-- **All Tests**: [Pass/Fail]
-- **Ready for Operations**: [Yes/No]
-
-## Next Steps
-[If all pass]: Ready for Operations phase
-[If failures]: Address failing tests and rebuild
+**Options:**
+- 🔧 Fix manually and re-run
+- 🔄 Let me try a different approach
+- ⏭️ Skip this test and continue
 ```
 
 ---
 
-## Step 8: Update State Tracking
+## Step 9: Update State Tracking
 
 Update `aidlc-docs/aidlc-state.md`:
 - Mark Build and Test stage as complete

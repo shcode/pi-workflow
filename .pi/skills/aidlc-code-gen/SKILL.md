@@ -132,7 +132,21 @@ Mark Code Generation Part 1 complete in `aidlc-progress.md` (not state — state
 ### Step 13: Continue or Complete Generation
 
 - [ ] If more steps remain, return to Step 10
-- [ ] If all steps complete, proceed to present completion message
+- [ ] If all steps complete, proceed to self-review
+
+### Step 13.5: Self-Review (Post-Generation)
+
+Before presenting completion to user, verify generated code against design:
+
+- [ ] Re-read `functional-design/` — confirm all domain entities and business rules are implemented
+- [ ] Re-read `nfr-design/` (if exists) — confirm patterns applied (caching, retry, etc.)
+- [ ] Re-read `ui-design/component-inventory.md` (if exists) — confirm all components match stories
+- [ ] Cross-check unit stories: every acceptance criterion has corresponding code
+- [ ] Verify no TODO/FIXME left in generated code (unless explicitly planned)
+
+**If mismatches found**: fix them now (return to Step 11 for the specific file). Do not present completion with known gaps.
+
+**If all checks pass**: proceed to Step 14.
 
 ### Step 14: Present Completion Message
 

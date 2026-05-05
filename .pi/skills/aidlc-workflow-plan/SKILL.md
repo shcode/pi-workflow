@@ -106,6 +106,28 @@ Already executed OR skip if:
 - Existing NFR setup sufficient
 - Simple changes with no NFR impact
 
+### 3.5 UI Design
+**Execute IF**:
+- New UI components needed (not in existing Design System)
+- Frontend unit with user-facing interfaces
+- Design System needs new entries
+
+**Skip IF**:
+- No UI/frontend in this project
+- All components already exist in Design System or codebase
+- Backend-only units
+
+### 3.6 Infrastructure Design
+**Execute IF**:
+- New cloud resources or services needed
+- Deployment architecture changes
+- Networking, CDN, or storage changes
+
+**Skip IF**:
+- Infrastructure already defined and unchanged
+- Local-only or serverless-by-default projects
+- No deployment changes needed
+
 ## Step 4: Note Adaptive Detail
 
 For each stage that will execute: all defined artifacts created, detail level adapts to complexity.
@@ -174,8 +196,8 @@ Create `aidlc-docs/inception/plans/execution-plan.md`:
 
 ### 🟢 CONSTRUCTION PHASE
 - [ ] Functional Design - [EXECUTE/SKIP]
-- [ ] NFR Requirements - [EXECUTE/SKIP]
-- [ ] NFR Design - [EXECUTE/SKIP]
+- [ ] NFR Requirements & Design - [EXECUTE/SKIP]
+- [ ] UI Design - [EXECUTE/SKIP]
 - [ ] Infrastructure Design - [EXECUTE/SKIP]
 - [ ] Code Generation - EXECUTE (ALWAYS)
 - [ ] Build and Test - EXECUTE (ALWAYS)

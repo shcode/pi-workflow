@@ -29,6 +29,24 @@ This skill mirrors `core-workflow.md` in the repo root. If discrepancies exist, 
 3. **Display welcome message** once (embedded in `aidlc-common`)
 4. **Begin Workspace Detection** (`aidlc-workspace` skill)
 
+## Fast Path (Simple Changes)
+
+**Condition**: Brownfield project + user request matches ALL of:
+- Scope ≤ 3 files
+- Single clear fix (bug fix, typo, config change, small refactor)
+- No new components, services, or business logic
+- No NFR/security impact
+
+**Fast path sequence**:
+1. Workspace Detection (auto-proceed, no approval)
+2. Log intent in `audit.md`
+3. Skip directly to Code Generation (minimal plan: list files to change + rationale)
+4. Build and Test
+
+**Skip**: Requirements, Stories, Workflow Plan, App Design, Units, Functional Design, NFR, UI Design, Infra Design.
+
+**User override**: If user says "full workflow" or "run all stages", ignore fast path.
+
 ## Stage Router
 
 For each stage: load skill → execute → present completion → wait for explicit approval → log in `audit.md` → update `aidlc-state.md`. Complete each unit fully before next unit.
@@ -44,8 +62,8 @@ For each stage: load skill → execute → present completion → wait for expli
 | 🔵 INCEPTION | Units Generation | Multi-unit decomposition | `aidlc-units` |
 | 🟢 CONSTRUCTION | Functional Design | New business logic (per-unit) | `aidlc-functional-design` |
 | 🟢 CONSTRUCTION | NFR Requirements | Performance/security (per-unit) | `aidlc-nfr` |
-| 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
 | 🟢 CONSTRUCTION | UI Design | New UI components (per-unit) | `aidlc-ui-design` |
+| 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
 | 🟢 CONSTRUCTION | Code Generation | ALWAYS (per-unit) | `aidlc-code-gen` |
 | 🟢 CONSTRUCTION | Build and Test | ALWAYS (after all units) | `aidlc-build-test` |
 
@@ -88,6 +106,15 @@ Then deletes `.parallel/{unit}/`.
 ```
 
 **Post-batch**: Single approval prompt. If user requests changes, spawn targeted sub-agent for specific unit only.
+
+**Failure Handling**:
+- **Sub-agent fails**: Retry once with fresh context. If still failing, mark unit as `FAILED` in batch results.
+- **Partial completion**: Merge successful units immediately. Present failed units separately to user.
+- **Timeout** (no `.complete` file after reasonable time): Terminate sub-agent, mark unit `TIMEOUT`.
+- **Escalation**: If ≥2 units fail in a batch, pause and present all errors to user for decision:
+  - Fix individually (spawn targeted sub-agent per failed unit)
+  - Skip failed units and continue
+  - Abort batch and retry sequentially
 
 ## How to Route to Next Skill
 
