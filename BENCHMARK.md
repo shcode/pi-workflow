@@ -78,6 +78,83 @@ Comparison of `aidlc-workflows` (this repo) vs `aidlc-aws` (upstream reference i
 
 ---
 
+## Workflow Feature Comparison
+
+### Stage Coverage
+
+| Stage | Ours | aidlc-aws | Notes |
+|---|---|---|---|
+| Workspace Detection | ✅ ALWAYS | ✅ ALWAYS | Equivalent |
+| Reverse Engineering | ✅ Conditional | ✅ Conditional | Equivalent |
+| Requirements Analysis | ✅ ALWAYS (adaptive) | ✅ ALWAYS (adaptive) | Equivalent |
+| User Stories | ✅ Conditional | ✅ Conditional | Theirs has longer skip/execute criteria (50+ lines) |
+| Workflow Planning | ✅ ALWAYS | ✅ ALWAYS | Equivalent |
+| Application Design | ✅ Conditional | ✅ Conditional | Equivalent |
+| Units Generation | ✅ Conditional | ✅ Conditional | Equivalent |
+| Functional Design | ✅ Per-unit | ✅ Per-unit | Equivalent |
+| NFR Requirements | ✅ Combined (per-unit) | ✅ Separate file (per-unit) | We merge NFR Req + Design into one skill (157 vs 194 lines) |
+| NFR Design | ✅ Combined above | ✅ Separate file (per-unit) | — |
+| **UI Design** | ✅ Per-unit (Storybook-first) | ❌ Not present | **Ours only** |
+| Infrastructure Design | ✅ Per-unit | ✅ Per-unit | Equivalent |
+| Code Generation | ✅ ALWAYS (per-unit) | ✅ ALWAYS (per-unit) | Equivalent |
+| Build and Test | ✅ ALWAYS | ✅ ALWAYS | Ours executes commands + fix loop; theirs generates instructions only |
+| Operations | 🟡 Placeholder | 🟡 Placeholder | Both placeholder |
+
+### Unique to `aidlc-workflows` (ours)
+
+| Feature | Lines | Impact |
+|---|---|---|
+| **Fast Path** | ~20 | Simple brownfield fixes skip 9 stages (Workspace → Code Gen → Build) |
+| **UI Design (Storybook-first)** | 299 | Approval gate before code gen; stories = implementation spec |
+| **Parallel Construction** | ~50 | Independent units run concurrently via sub-agents |
+| **Audit→Progress line-range pointers** | ~25 | Targeted history lookup without reading full files |
+| **Backlog tracking** | ~30 | Deferred features/tech debt surfaced during planning |
+| **Design-first rule** | ~15 | Hard constraint: code must match design docs |
+| **Mid-construction design changes** | ~20 | Formal process for design edits during construction |
+| **Fix loop (Build & Test)** | ~40 | 3 auto-fix attempts before escalation |
+| **Self-review (Code Gen)** | ~10 | Agent verifies own output against design before presenting |
+| **Write-only logs with exceptions** | ~20 | audit.md + progress.md never read proactively; targeted reads only |
+
+### Unique to `aidlc-aws`
+
+| Feature | Lines | Impact |
+|---|---|---|
+| **Overconfidence Prevention** | 99 | Guardrails against hallucination/speculation |
+| **ASCII Diagram Standards** | 116 | Validation rules for text-based diagrams |
+| **Terminology Glossary** | 187 | Standardized vocabulary across stages |
+| **Content Validation** | 78 | Mermaid syntax + special char escaping rules |
+| **Error Handling & Recovery** | 373 | Severity levels, recovery procedures, escalation |
+| **Mid-Workflow Changes** | 285 | Adding/removing/reordering stages mid-execution |
+| **NFR split into 2 stages** | 194 | Separate Requirements vs Design files |
+
+### Architectural Differences
+
+| Aspect | Ours | aidlc-aws |
+|---|---|---|
+| **Loading model** | Progressive disclosure (pi skills) | File-read directives in core-workflow.md |
+| **Common rules** | Single `aidlc-common` skill, loaded once | 6 common files (1,133 lines), re-read per stage |
+| **State management** | Bounded state.md (~35 lines) + write-only logs | Similar state.md, no write-only enforcement |
+| **Question format** | Inline in response + pi-answer TUI / chat fallback | File-based `*-questions.md` with `[Answer]:` tags |
+| **Audit approach** | Append-only, never read (except rotation + explicit history) | Read-then-append (contradicts own rules) |
+| **Stage transitions** | Orchestrator skill routes; explicit `/skill:` loading | Core-workflow.md instructs "Load all steps from..." |
+| **Build & Test** | Executes commands, captures output, auto-fixes | Generates instruction documents only |
+| **Resume** | `## Current Work` in state.md (3 fields, ~5 lines) | Re-read state.md + potentially audit.md |
+| **Extensions** | Opt-in at requirements; enforced as hard constraints | Same mechanism |
+| **Multi-agent** | pi, Claude, Copilot, Kiro via `--agent` flag | Multiple IDE paths (Cursor, Cline, Claude, Q, Kiro) |
+
+### What We Deliberately Omit (and why)
+
+| aidlc-aws feature | Why omitted | Our alternative |
+|---|---|---|
+| Overconfidence Prevention (99 lines) | LLM-level concern, not workflow-level | Rely on agent's built-in guardrails |
+| ASCII Diagram Standards (116 lines) | Niche; Mermaid preferred | Use Mermaid for all diagrams |
+| Terminology Glossary (187 lines) | Loaded every stage = 2,244 wasted lines/workflow | Terms are self-evident in context |
+| Error Handling (373 lines) | Overly prescriptive for capable agents | Compact escalation rules in fix loop + common |
+| Mid-Workflow Changes (285 lines) | Verbose for what's a simple re-routing decision | Orchestrator handles naturally; user just asks |
+| Content Validation (78 lines) | Agent should validate by default | Implicit in code-gen self-review |
+
+---
+
 ## Key Architectural Differences
 
 ### Why ours is more efficient
