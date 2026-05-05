@@ -88,26 +88,18 @@ echo ""
 # --- Install skills to agent-native directory ---
 case "$AGENT" in
     pi)
-        mkdir -p "$TARGET_DIR/.pi"
-        for dir in "$SCRIPT_DIR/.pi/"*/; do
-            dir_name=$(basename "$dir")
-            if [[ -d "$dir" ]]; then
-                cp -r "$dir" "$TARGET_DIR/.pi/"
-                file_count=$(find "$dir" -type f | wc -l)
-                echo "  ✓ Copied .pi/$dir_name/ ($file_count files)"
-            fi
-        done
+        mkdir -p "$TARGET_DIR/.pi/skills"
+        cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.pi/skills/"
+        skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
+        echo "  ✓ Copied .pi/skills/ ($skill_count skills)"
         cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
         echo "  ✓ Created AGENTS.md (pi — progressive-disclosure skills + steering)"
         ;;
     claude)
-        mkdir -p "$TARGET_DIR/.claude"
-        cp -r "$SCRIPT_DIR/.pi/skills" "$TARGET_DIR/.claude/"
-        cp -r "$SCRIPT_DIR/.pi/extensions" "$TARGET_DIR/.claude/"
+        mkdir -p "$TARGET_DIR/.claude/skills"
+        cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.claude/skills/"
         skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
-        ext_count=$(find "$SCRIPT_DIR/.pi/extensions" -type f | wc -l)
         echo "  ✓ Copied .claude/skills/ ($skill_count skills)"
-        echo "  ✓ Copied .claude/extensions/ ($ext_count extensions)"
         if [[ ! -f "$TARGET_DIR/CLAUDE.md" ]]; then
             cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/CLAUDE.md"
             echo "  ✓ Created CLAUDE.md (Claude Code — steering)"
@@ -116,13 +108,10 @@ case "$AGENT" in
         fi
         ;;
     kiro)
-        mkdir -p "$TARGET_DIR/.kiro"
-        cp -r "$SCRIPT_DIR/.pi/skills" "$TARGET_DIR/.kiro/"
-        cp -r "$SCRIPT_DIR/.pi/extensions" "$TARGET_DIR/.kiro/"
+        mkdir -p "$TARGET_DIR/.kiro/skills"
+        cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.kiro/skills/"
         skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
-        ext_count=$(find "$SCRIPT_DIR/.pi/extensions" -type f | wc -l)
         echo "  ✓ Copied .kiro/skills/ ($skill_count skills)"
-        echo "  ✓ Copied .kiro/extensions/ ($ext_count extensions)"
         cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
         echo "  ✓ Created AGENTS.md (Kiro — steering)"
         ;;
