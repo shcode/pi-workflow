@@ -2,10 +2,77 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="${1:-$(pwd)}"
 
-if [[ ! -d "$SCRIPT_DIR/.pi/skills" ]]; then
-    echo "Error: .pi/skills/ not found. Run this script from the AIDLC repo root."
+# --- Argument parsing ---
+AGENT="pi"
+TARGET_DIR=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --agent)
+            if [[ -n "${2:-}" && ! "$2" =~ ^-- ]]; then
+                AGENT="$2"
+                shift 2
+            else
+                echo "Error: --agent requires a value (pi, claude, copilot, kiro)"
+                exit 1
+            fi
+            ;;
+        --agent=*)
+            AGENT="${1#*=}"
+            shift
+            ;;
+        --help)
+            echo "Usage: $0 [options] [TARGET_DIR]"
+            echo ""
+            echo "Install AIDLC workflow into a target project."
+            echo ""
+            echo "Options:"
+            echo "  --agent NAME    Target agent: pi, claude, copilot, kiro (default: pi)"
+            echo "  --help          Show this help"
+            echo ""
+            echo "Examples:"
+            echo "  $0 --agent claude /path/to/project"
+            echo "  $0 /path/to/project             # default: pi"
+            exit 0
+            ;;
+        --*)
+            echo "Error: Unknown option $1"
+            echo "Run '$0 --help' for usage."
+            exit 1
+            ;;
+        *)
+            if [[ -z "$TARGET_DIR" ]]; then
+                TARGET_DIR="$1"
+            else
+                echo "Error: Unexpected argument: $1"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Default target to cwd
+TARGET_DIR="${TARGET_DIR:-$(pwd)}"
+
+# Validate agent
+VALID_AGENTS=("pi" "claude" "copilot" "kiro")
+VALID=0
+for a in "${VALID_AGENTS[@]}"; do
+    if [[ "$AGENT" == "$a" ]]; then
+        VALID=1
+        break
+    fi
+done
+
+if [[ "$VALID" -ne 1 ]]; then
+    echo "Error: Unknown agent '$AGENT'. Valid: pi, claude, copilot, kiro"
+    exit 1
+fi
+
+if [[ ! -d "$SCRIPT_DIR/.pi" ]]; then
+    echo "Error: .pi/ not found. Run this script from the AIDLC repo root."
     exit 1
 fi
 
@@ -14,21 +81,90 @@ if [[ "$TARGET_DIR" == "$SCRIPT_DIR" ]]; then
     exit 1
 fi
 
-echo "Installing AIDLC skills to: $TARGET_DIR"
+echo "Installing AIDLC workflow to: $TARGET_DIR"
+echo "Target agent: $AGENT"
+echo ""
 
-# Create target .pi/skills directory
-mkdir -p "$TARGET_DIR/.pi/skills"
-
-# Copy all skills
-cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.pi/skills/"
-echo "  ✓ Copied .pi/skills/ ($(ls "$SCRIPT_DIR/.pi/skills" | wc -l) skills)"
-
-# Copy and rename core-workflow.md to AGENTS.md
-cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
-echo "  ✓ Copied core-workflow.md → AGENTS.md"
+# --- Install skills to agent-native directory ---
+case "$AGENT" in
+    pi)
+        mkdir -p "$TARGET_DIR/.pi"
+        for dir in "$SCRIPT_DIR/.pi/"*/; do
+            dir_name=$(basename "$dir")
+            if [[ -d "$dir" ]]; then
+                cp -r "$dir" "$TARGET_DIR/.pi/"
+                file_count=$(find "$dir" -type f | wc -l)
+                echo "  ✓ Copied .pi/$dir_name/ ($file_count files)"
+            fi
+        done
+        cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
+        echo "  ✓ Created AGENTS.md (pi — progressive-disclosure skills + steering)"
+        ;;
+    claude)
+        mkdir -p "$TARGET_DIR/.claude"
+        cp -r "$SCRIPT_DIR/.pi/skills" "$TARGET_DIR/.claude/"
+        cp -r "$SCRIPT_DIR/.pi/extensions" "$TARGET_DIR/.claude/"
+        skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
+        ext_count=$(find "$SCRIPT_DIR/.pi/extensions" -type f | wc -l)
+        echo "  ✓ Copied .claude/skills/ ($skill_count skills)"
+        echo "  ✓ Copied .claude/extensions/ ($ext_count extensions)"
+        if [[ ! -f "$TARGET_DIR/CLAUDE.md" ]]; then
+            cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/CLAUDE.md"
+            echo "  ✓ Created CLAUDE.md (Claude Code — steering)"
+        else
+            echo "  ⚠ CLAUDE.md already exists, skipping"
+        fi
+        ;;
+    kiro)
+        mkdir -p "$TARGET_DIR/.kiro"
+        cp -r "$SCRIPT_DIR/.pi/skills" "$TARGET_DIR/.kiro/"
+        cp -r "$SCRIPT_DIR/.pi/extensions" "$TARGET_DIR/.kiro/"
+        skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
+        ext_count=$(find "$SCRIPT_DIR/.pi/extensions" -type f | wc -l)
+        echo "  ✓ Copied .kiro/skills/ ($skill_count skills)"
+        echo "  ✓ Copied .kiro/extensions/ ($ext_count extensions)"
+        cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
+        echo "  ✓ Created AGENTS.md (Kiro — steering)"
+        ;;
+    copilot)
+        mkdir -p "$TARGET_DIR/.github"
+        if [[ ! -f "$TARGET_DIR/.github/copilot-instructions.md" ]]; then
+            cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/.github/copilot-instructions.md"
+            echo "  ✓ Created .github/copilot-instructions.md (GitHub Copilot)"
+        else
+            echo "  ⚠ .github/copilot-instructions.md already exists, skipping"
+        fi
+        ;;
+esac
 
 echo ""
-echo "Done. Next steps:"
-echo "  1. cd $TARGET_DIR"
-echo "  2. Edit AGENTS.md with your project-specific context"
-echo "  3. Start pi and say: 'build a feature' or load manually with /skill:aidlc-orchestrator"
+echo "Done. AIDLC workflow installed for $AGENT."
+echo ""
+
+# --- Next steps ---
+case "$AGENT" in
+    pi)
+        echo "Next steps:"
+        echo "  1. cd $TARGET_DIR"
+        echo "  2. Edit AGENTS.md with your project-specific context"
+        echo "  3. Start pi and say: 'build a feature' or 'AIDLC resume'"
+        ;;
+    kiro)
+        echo "Next steps:"
+        echo "  1. cd $TARGET_DIR"
+        echo "  2. Edit AGENTS.md with your project-specific context"
+        echo "  3. Start Kiro and begin development"
+        ;;
+    claude)
+        echo "Next steps:"
+        echo "  1. cd $TARGET_DIR"
+        echo "  2. Edit CLAUDE.md with your project-specific context"
+        echo "  3. Start Claude Code and begin development"
+        ;;
+    copilot)
+        echo "Next steps:"
+        echo "  1. cd $TARGET_DIR"
+        echo "  2. Edit .github/copilot-instructions.md with your project-specific context"
+        echo "  3. Open VS Code with Copilot and begin development"
+        ;;
+esac

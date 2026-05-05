@@ -52,6 +52,42 @@ For each stage: load skill → execute → present completion → wait for expli
 
 **Note**: `aidlc-nfr` skill covers both NFR Requirements and NFR Design stages (they always run together).
 
+## Parallel Construction Batch
+
+**Condition**: Multiple units in `unit-of-work-dependency.md` with no inter-dependencies (no edges between them in dependency matrix).
+
+**Pre-check**: Read `aidlc-docs/inception/application-design/unit-of-work-dependency.md`. If dependency matrix shows independent groups, parallel execution is eligible.
+
+**Execution**:
+
+```markdown
+### Parallel Batch: [Unit Group Names]
+
+**Units in this batch**: [A, B, C] (no inter-dependencies detected)
+
+**Parent agent responsibilities**:
+- Read dependency matrix, identify independent group
+- Launch parallel sub-agents (1 per unit)
+- Wait for ALL completions
+- Merge `.parallel/` temp outputs into canonical paths
+- Update `aidlc-state.md` once (batch completion)
+- Append `audit.md` once (batch entry)
+- Present unified summary for single user approval
+
+**Sub-agent scope**:
+- Loads: `/skill:aidlc-common` + per-unit stage skills
+- Reads: ALL inception artifacts + unit-specific prior stage outputs
+- Writes: `aidlc-docs/construction/.parallel/{unit-name}/` ONLY
+- NEVER writes to `aidlc-state.md`, `aidlc-progress.md`, or `audit.md`
+- Executes: Functional Design → NFR → Infra Design → Code Gen (per unit plan)
+
+**Merge rule**: After all sub-agents complete, parent moves:
+`aidlc-docs/construction/.parallel/{unit}/*` → `aidlc-docs/construction/{unit}/*`
+Then deletes `.parallel/{unit}/`.
+```
+
+**Post-batch**: Single approval prompt. If user requests changes, spawn targeted sub-agent for specific unit only.
+
 ## How to Route to Next Skill
 
 After completing any stage:

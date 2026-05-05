@@ -15,26 +15,44 @@ Personal AIDLC (AI-Driven Development Life Cycle) workflow optimized for pi codi
 
 ## Distribution model
 
-This repo is the **source of truth** for the AIDLC skill pack. It is not consumed directly — it is installed into target projects via `install.sh`.
+This repo is the **source of truth** for the AIDLC workflow. It is not consumed directly — it is installed into target projects via `install.sh`.
+
+### Multi-agent architecture
+
+`core-workflow.md` is the **universal steering document**. All AI agents read it, regardless of which agent you use:
+
+| Agent | Location | Loading mechanism |
+|---|---|---|
+| **pi** | `AGENTS.md` + `.pi/skills/*` | Progressive-disclosure skills (`/skill:`) |
+| **Claude Code** | `CLAUDE.md` | Full context load |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Full context load |
+| **Kiro** | `AGENTS.md` | Full context load |
+
+**Key rule**: `core-workflow.md` is the canonical source of workflow rules. The orchestrator skill mirrors it. Any change to workflow structure must be reflected in both.
+
+**Key rule**: `.pi/` is pi-specific progressive disclosure. Other agents get the full workflow in their steering file. Do NOT add agent-specific logic to `core-workflow.md` — keep it agent-agnostic.
 
 ```
 AIDLC repo (this project)
   │
-  ├── install.sh ───────────────┐
-  │   copies .pi/skills/*   │
-  │   copies core-workflow.md │
-  │                             ▼
-  │                     target project
-  │                       ├── .pi/skills/      # 15 skills
-  │                       └── AGENTS.md        # renamed from core-workflow.md
+  ├── install.sh ───────────────────┐
+  │   copies .pi/skills/*        │
+  │   copies .pi/extensions/*    │
+  │   copies core-workflow.md    │
+  │                                 ▼
+  │                         target project
+  │                           ├── .pi/skills/      # 15 skills (pi only)
+  │                           ├── .pi/extensions/  # task panel, etc. (pi only)
+  │                           ├── AGENTS.md        # all agents
+  │                           ├── CLAUDE.md        # Claude Code
+  │                           └── .github/
+  │                               └── copilot-instructions.md  # Copilot
   │
   ├── AGENTS.md (this file) ────► contributor/maintainer guide
   ├── core-workflow.md ─────────► canonical workflow rules (deliverable)
   ├── USAGE.md ─────────────────► end-user documentation
   └── README.md ────────────────► public project readme
 ```
-
-**Key rule**: `core-workflow.md` is the canonical source of workflow rules. The orchestrator skill mirrors it. Any change to workflow structure must be reflected in both.
 
 ## Repository structure
 
@@ -46,41 +64,44 @@ AIDLC repo (this project)
 ├── USAGE.md                   # End-user documentation
 ├── README.md                  # Public project readme
 ├── LICENSE
-└── .pi/skills/
-    ├── aidlc-orchestrator/
-    │   └── SKILL.md           # Stage router — entrypoint for all AIDLC tasks
-    ├── aidlc-common/
-    │   └── SKILL.md           # Shared rules, loaded after orchestrator
-    ├── aidlc-workspace/
-    │   └── SKILL.md           # Greenfield/brownfield detection
-    ├── aidlc-requirements/
-    │   └── SKILL.md           # Requirements analysis
-    ├── aidlc-stories/
-    │   └── SKILL.md           # User stories (conditional)
-    ├── aidlc-workflow-plan/
-    │   └── SKILL.md           # Execution plan + Mermaid viz
-    ├── aidlc-app-design/
-    │   └── SKILL.md           # Component/service design (conditional)
-    ├── aidlc-units/
-    │   └── SKILL.md           # Multi-unit decomposition (conditional)
-    ├── aidlc-functional-design/
-    │   └── SKILL.md           # Per-unit business logic design
-    ├── aidlc-nfr/
-    │   └── SKILL.md           # Per-unit NFR requirements + design
-    ├── aidlc-infra-design/
-    │   └── SKILL.md           # Per-unit infrastructure mapping
-    ├── aidlc-code-gen/
-    │   └── SKILL.md           # Per-unit code generation
-    ├── aidlc-build-test/
-    │   └── SKILL.md           # Build instructions, tests, integration
-    ├── aidlc-reverse-eng/
-    │   └── SKILL.md           # Brownfield codebase analysis
-    └── aidlc-extensions/
-        ├── SKILL.md           # Extension manager — scans and loads opt-ins
-        ├── security-baseline.md
-        ├── security-baseline.opt-in.md
-        ├── property-based-testing.md
-        └── property-based-testing.opt-in.md
+└── .pi/
+    ├── skills/
+    │   ├── aidlc-orchestrator/
+    │   │   └── SKILL.md           # Stage router — entrypoint for all AIDLC tasks
+    │   ├── aidlc-common/
+    │   │   └── SKILL.md           # Shared rules, loaded after orchestrator
+    │   ├── aidlc-workspace/
+    │   │   └── SKILL.md           # Greenfield/brownfield detection
+    │   ├── aidlc-requirements/
+    │   │   └── SKILL.md           # Requirements analysis
+    │   ├── aidlc-stories/
+    │   │   └── SKILL.md           # User stories (conditional)
+    │   ├── aidlc-workflow-plan/
+    │   │   └── SKILL.md           # Execution plan + Mermaid viz
+    │   ├── aidlc-app-design/
+    │   │   └── SKILL.md           # Component/service design (conditional)
+    │   ├── aidlc-units/
+    │   │   └── SKILL.md           # Multi-unit decomposition (conditional)
+    │   ├── aidlc-functional-design/
+    │   │   └── SKILL.md           # Per-unit business logic design
+    │   ├── aidlc-nfr/
+    │   │   └── SKILL.md           # Per-unit NFR requirements + design
+    │   ├── aidlc-infra-design/
+    │   │   └── SKILL.md           # Per-unit infrastructure mapping
+    │   ├── aidlc-code-gen/
+    │   │   └── SKILL.md           # Per-unit code generation
+    │   ├── aidlc-build-test/
+    │   │   └── SKILL.md           # Build instructions, tests, integration
+    │   ├── aidlc-reverse-eng/
+    │   │   └── SKILL.md           # Brownfield codebase analysis
+    │   └── aidlc-extensions/
+    │       ├── SKILL.md           # Extension manager — scans and loads opt-ins
+    │       ├── security-baseline.md
+    │       ├── security-baseline.opt-in.md
+    │       ├── property-based-testing.md
+    │       └── property-based-testing.opt-in.md
+    └── extensions/
+        └── aidlc-task-panel.ts    # Persistent task panel TUI extension
 ```
 
 ## Skill authoring
@@ -166,6 +187,7 @@ These files are generated in `aidlc-docs/` during workflow execution. Skill auth
 | Workflow principles/rules | `core-workflow.md` (source of truth), then verify orchestrator mirrors it |
 | Extension files | `aidlc-extensions/SKILL.md` discovery logic if the extension needs explicit prompt registration |
 | `install.sh` behavior | `USAGE.md` installation section |
+| Add new agent support | `install.sh` agent-specific copy block, `USAGE.md` agent table |
 
 ### Validation checklist
 
@@ -175,11 +197,14 @@ Before committing changes:
 # 1. Install to a temp project
 mkdir -p /tmp/test-aidlc && ./install.sh /tmp/test-aidlc
 
-# 2. Verify all skills copied
+# 2. Verify all pi resources copied
 ls /tmp/test-aidlc/.pi/skills/ | wc -l   # expect 15 skill dirs + 1 extension dir
+ls /tmp/test-aidlc/.pi/extensions/ | wc -l  # expect >=1 extension
 
-# 3. Verify AGENTS.md created from core-workflow.md
-test -f /tmp/test-aidlc/AGENTS.md && echo "OK"
+# 3. Verify steering files created for all agents
+test -f /tmp/test-aidlc/AGENTS.md && echo "AGENTS.md OK"
+test -f /tmp/test-aidlc/CLAUDE.md && echo "CLAUDE.md OK"
+test -f /tmp/test-aidlc/.github/copilot-instructions.md && echo "copilot-instructions.md OK"
 
 # 4. Verify every skill has SKILL.md
 find .pi/skills -mindepth 2 -maxdepth 2 -name "SKILL.md" | wc -l   # expect 15

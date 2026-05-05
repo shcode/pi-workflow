@@ -38,14 +38,20 @@ B) Review a previous stage ([Show available stages])
 
 ### Mandatory: Load Previous Stage Artifacts
 
-Before resuming ANY stage, automatically read all relevant artifacts from previous stages:
+Before resuming ANY stage, automatically read all relevant artifacts from previous stages.
+
+**NEVER read these files for context:**
+- `audit.md` — Append-only decision log. Write-only for the AI. For human reference only.
+- Full `*-questions.md` files — Read the compact `*-answers.md` summary instead.
+
+**Readable artifacts by stage:**
 - **Reverse Engineering**: architecture.md, code-structure.md, api-documentation.md
-- **Requirements Analysis**: requirements.md, requirement-verification-answers.md (compact summary — NOT the full questions file)
+- **Requirements Analysis**: requirements.md, requirement-verification-answers.md (compact summary only)
 - **User Stories**: stories.md, personas.md, story-generation-plan.md
 - **Application Design**: components.md, component-methods.md, services.md
 - **Units Generation**: unit-of-work.md, unit-of-work-dependency.md, unit-of-work-story-map.md
 - **Per-Unit Design**: functional-design.md, nfr-requirements.md, nfr-design.md, infrastructure-design.md
-- **Code Stages**: All code files, plans, AND all previous artifacts
+- **Code Stages**: All code files, plans, AND all previous readable artifacts
 
 ### Smart Context Loading by Stage
 - **Early Stages**: Load `aidlc-state.md` (compact, ~30 lines) + workspace analysis
@@ -282,6 +288,71 @@ When a stage executes, ALL its defined artifacts are created. The "depth" refers
 2. Document skip reason in `audit.md`
 3. Mark stage as "SKIPPED" in `aidlc-state.md`
 4. Proceed to next stage
+
+## Sub-Agent Temp-File Rule
+
+When executing as a sub-agent in a parallel construction batch:
+
+- **Canonical state files are READ-ONLY**: `aidlc-state.md`, `aidlc-progress.md`, `audit.md`
+- **Write to temp workspace only**: `aidlc-docs/construction/.parallel/{unit-name}/`
+- **Mirror directory structure**: If canonical path is `construction/unit-a/functional-design/`, temp path is `construction/.parallel/unit-a/functional-design/`
+- **Signal completion**: Write empty file `.parallel/{unit-name}/.complete` when done
+- **Parent merges**: Never self-promote temp files to canonical paths
+
+## Design-First Construction Rule
+
+**CRITICAL**: Before EVERY code change (write, edit, file creation) during construction, the agent MUST verify against the design document.
+
+**Mandatory pre-change check**:
+1. Read the relevant design artifact for the unit being worked on:
+   - `functional-design.md` — data models, schemas, business logic
+   - `nfr-design.md` — performance/security patterns
+   - `infrastructure-design.md` — service mappings, deployment
+   - `components.md` / `services.md` — component boundaries, interfaces
+2. Confirm the intended code change matches the design specification
+3. Only proceed if the design explicitly supports the change
+
+**If design is ambiguous or missing the detail**:
+- Do NOT guess or invent behavior
+- Trigger the **Mid-Construction Design Change** process below
+- Update the design document FIRST, then implement
+
+**If code change contradicts the design**:
+- STOP immediately
+- Do NOT proceed with the edit
+- Trigger design change process to resolve the mismatch
+- Log the discrepancy in `design-changes.md`
+
+This rule applies to ALL file modifications during construction phases.
+
+## Mid-Construction Design Changes
+
+**Rule**: Design documents are living artifacts. If a design-level issue is discovered during construction, update the design BEFORE continuing with code.
+
+**When to trigger**:
+- Requirement gap discovered while coding
+- Design inconsistency found during implementation
+- New constraint invalidates prior design decision
+- Scope change requested by user mid-construction
+- **Design-First check fails** — design doesn't support intended code change
+
+**Process**:
+1. **Pause** current coding work
+2. **Identify** which design document(s) are affected
+3. **Update** the relevant design doc in `aidlc-docs/inception/` with the change
+4. **Create** `aidlc-docs/construction/design-changes.md` if it doesn't exist, append the delta:
+   ```markdown
+   ## [ISO timestamp] — [Unit Name]
+   **Change**: [what changed]
+   **Reason**: [why it changed]
+   **Affected documents**: [list of updated design files]
+   **Impact on construction**: [which units/stages affected]
+   ```
+5. **Update** `aidlc-progress.md` with the design change note
+6. **Log** in `audit.md`
+7. **Continue** construction with updated design
+
+**Never** code around a design flaw without updating the design document. The design doc is the source of truth — if the code reveals a design error, fix the design first.
 
 ---
 
