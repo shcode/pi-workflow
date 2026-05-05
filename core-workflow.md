@@ -27,6 +27,7 @@ For each stage: load skill → execute → present completion → wait for expli
 | 🟢 CONSTRUCTION | Functional Design | New business logic (per-unit) | `aidlc-functional-design` |
 | 🟢 CONSTRUCTION | NFR Requirements | Performance/security (per-unit) | `aidlc-nfr` |
 | 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
+| 🟢 CONSTRUCTION | UI Design | New UI components (per-unit) | `aidlc-ui-design` |
 | 🟢 CONSTRUCTION | Code Generation | ALWAYS (per-unit) | `aidlc-code-gen` |
 | 🟢 CONSTRUCTION | Build and Test | ALWAYS (after all units) | `aidlc-build-test` |
 
@@ -84,6 +85,7 @@ After completing any stage:
 │   │   │   ├── nfr-requirements/
 │   │   │   ├── nfr-design/
 │   │   │   ├── infrastructure-design/
+│   │   │   ├── ui-design/              # Storybook component inventory
 │   │   │   └── code/               # Markdown summaries
 │   │   └── build-and-test/
 │   ├── operations/                 # 🟡 Placeholder

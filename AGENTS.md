@@ -88,6 +88,8 @@ AIDLC repo (this project)
     │   │   └── SKILL.md           # Per-unit NFR requirements + design
     │   ├── aidlc-infra-design/
     │   │   └── SKILL.md           # Per-unit infrastructure mapping
+    │   ├── aidlc-ui-design/
+    │   │   └── SKILL.md           # Per-unit UI components via Storybook
     │   ├── aidlc-code-gen/
     │   │   └── SKILL.md           # Per-unit code generation
     │   ├── aidlc-build-test/
