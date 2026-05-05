@@ -22,6 +22,19 @@ description: >
 
 ---
 
+## Brownfield vs Greenfield Mode
+
+Read `aidlc-docs/aidlc-state.md` before Step 1. Check the **Project** section for the brownfield flag.
+
+| Mode | Component source | Story purpose | Stub needed? |
+|---|---|---|---|
+| **Greenfield** | New components designed this stage | Spec for Code Generation | Yes — stub created first |
+| **Brownfield** | Existing components in codebase | Living documentation + visibility | No — import real implementation |
+
+Brownfield differences are marked **🟠 Brownfield** throughout the steps below.
+
+---
+
 ## Skip Conditions
 
 Skip this stage entirely if:
@@ -49,9 +62,11 @@ Read from:
 - `aidlc-docs/construction/{unit-name}/functional-design/frontend-components.md` (if exists)
 - `aidlc-docs/inception/application-design/` — component boundaries and responsibilities
 
+**🟠 Brownfield**: Also read `aidlc-docs/inception/reverse-engineering/component-inventory.md`. For each package listed, scan the actual source files to identify existing UI components (look for `.tsx`, `.jsx`, `.vue`, `.svelte` files that export components). These are the components that need stories created for them.
+
 Produce a list of:
-- **New components** — need stories (target of this stage)
-- **Reused components** — already exist, no stories needed, note the source
+- **New components** (Greenfield) / **Existing components without stories** (Brownfield) — target of this stage
+- **Reused components** — already have stories, no action needed, note the source
 
 ### Step 2: Create UI Design Plan
 
@@ -81,16 +96,18 @@ Wait for ALL [Answer]: tags. Add follow-up questions for any unclear responses. 
 
 ### Step 6: Create Storybook Stories
 
-**HARD RULE**: Stories are written BEFORE any component implementation code exists.
+**HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
 If the component file does not exist yet, create a stub (`export function ComponentName() { return null; }`) so the story can import it — the stub will be replaced during Code Generation.
+
+**🟠 Brownfield**: Components already exist. Import the real implementation directly — no stubs. The story’s purpose is living documentation and visual regression baseline, not a spec for code-gen.
 
 #### Story file path convention
 
 ```
-src/stories/{ComponentName}.stories.tsx   # React + TypeScript (adjust for stack)
+src/stories/{ComponentName}.stories.tsx   # adjust extension for stack
 ```
 
-#### CSF3 story template
+#### Greenfield — CSF3 story template
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
@@ -129,44 +146,87 @@ const meta: Meta<typeof ComponentName> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Default — most common real-world usage
-export const Default: Story = {
-  args: {
-    // minimal required props
-  },
-};
-
-// Visual variants
+export const Default: Story = { args: { /* minimal required props */ } };
 export const Primary: Story = { args: { variant: 'primary' } };
 export const Secondary: Story = { args: { variant: 'secondary' } };
-export const Destructive: Story = { args: { variant: 'destructive' } };
-
-// Interaction states
 export const Disabled: Story = { args: { disabled: true } };
 export const Loading: Story = { args: { isLoading: true } };
-
-// Edge cases
 export const LongContent: Story = {
   args: { children: 'This is a very long label that tests overflow behavior' },
 };
 ```
 
-#### Required story coverage
+#### 🟠 Brownfield — CSF3 story template
+
+Read the existing component source file to discover:
+- All exported props and their TypeScript types
+- All existing variants, sizes, and states already implemented
+- Default prop values
+- Any existing usage examples in the codebase (search for `<ComponentName`)
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+// Import the REAL component — no stubs
+import { ComponentName } from '../components/ComponentName';
+
+const meta: Meta<typeof ComponentName> = {
+  title: 'Design System/{Category}/{ComponentName}',
+  component: ComponentName,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Existing component. Stories generated from current implementation. ' +
+          'Edit stories to reflect intended API and usage.',
+      },
+    },
+  },
+  // argTypes derived from actual prop types in the source file
+  argTypes: { /* reflect real props */ },
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// Kitchen-sink — shows all variants together for quick visual scan
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      {/* render one instance per variant */}
+    </div>
+  ),
+};
+
+// Individual stories per variant/state found in the implementation
+export const Default: Story = { args: { /* real default props */ } };
+// ... one export per discovered variant/state
+```
+
+**Brownfield story coverage rules:**
+- Derive `argTypes` from the component’s actual TypeScript props — do not invent props that don’t exist
+- Create one story per variant/state that already exists in the implementation
+- Add an `AllVariants` kitchen-sink story at the top
+- Do NOT add stories for variants that don’t exist yet — those belong in a future greenfield unit
+
+#### Required story coverage (both modes)
 
 Every component story MUST include:
 - `Default` — most common usage with realistic content
 - One story per visual `variant`
-- `Disabled` state (if component can be disabled)
+- `Disabled` state (if component supports it)
 - `Loading` state (if component has async behavior)
 - `Error` state (if component shows validation errors)
 - `Empty` state (if component can be empty/no data)
 - `LongContent` or edge-case story where overflow/truncation may occur
+- **🟠 Brownfield only**: `AllVariants` kitchen-sink story
 
 #### Design token compliance
 
 - Use design system token references only — no hardcoded hex colors, px values, or magic numbers
 - Every `argTypes` entry must reference the token name in its `description`
-- Flag any design gaps (missing tokens, inconsistent spacing) in the component inventory doc
+- Flag any design gaps in the component inventory doc
 
 ### Step 7: Create Component Inventory Document
 
@@ -180,6 +240,8 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 | Component | Story File | Variants | Status |
 |---|---|---|---|
 | ComponentName | src/stories/ComponentName.stories.tsx | default, primary, disabled, loading | ⏳ Pending |
+
+> **🟠 Brownfield**: Source column shows the actual file path of the existing component.
 
 ## Reused Components (no stories needed)
 
@@ -297,6 +359,8 @@ Log approval in `audit.md`. Mark UI Design complete in `aidlc-state.md`.
 ---
 
 ## Design-First Enforcement During Code Generation
+
+**Greenfield only** — this section does not apply to brownfield (components already exist).
 
 Pass to `aidlc-code-gen`:
 - Component inventory: `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`
