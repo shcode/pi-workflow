@@ -16,15 +16,15 @@ Load this skill at the start of every AIDLC workflow session.
 
 ### Audit Rotation (on resume)
 
-When resuming a project (`aidlc-state.md` exists), check `audit.md` for stale entries:
-1. Read first timestamp in `audit.md`
+When resuming a project (`aidlc-state.md` exists), rotate stale entries out of `audit.md`:
+1. `head -n 5 aidlc-docs/audit.md` — check first timestamp only
 2. If entries exist from a **previous calendar day** (not today):
    - Create `aidlc-docs/audit/` directory if it doesn't exist
    - Move all entries older than today to `aidlc-docs/audit/YYYY-MM-DD.md` (using the entry date)
-   - Leave only today's entries (or empty) in `audit.md`
+   - Leave only today's entries (or header only) in `audit.md`
 3. If all entries are from today: do nothing
 
-This keeps `audit.md` bounded per session while preserving history.
+This is the ONLY time `audit.md` content is read — solely for date-checking during rotation.
 
 ### Welcome Back Prompt
 
