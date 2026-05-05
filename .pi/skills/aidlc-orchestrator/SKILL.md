@@ -140,7 +140,7 @@ After completing any stage:
 - User can include/exclude stages
 - Log ALL inputs in `audit.md` with ISO 8601 timestamps — always append, never overwrite
 - Mark checkboxes `[x]` immediately in same interaction
-- `aidlc-state.md` = compact routing table (~30 lines, bounded). NEVER add rows.
+- `aidlc-state.md` = compact routing table + Current Work (~35 lines, bounded). NEVER add rows.
 - `aidlc-progress.md` = append-only narrative log for humans. Agents NEVER read it.
 - Construction phases: standardized 2-option completion messages
 - No emergent behavior

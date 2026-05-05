@@ -125,7 +125,7 @@ After validation, create `aidlc-docs/inception/requirements/requirement-verifica
 - Answer = letter + option text
 - Notes = "Other" free-text, contradictions, clarifications
 
-**Future stages MUST read this summary, NOT the full question file.**
+**Future stages MUST read this summary for context.**
 
 ### Step 7: Generate Requirements Document
 

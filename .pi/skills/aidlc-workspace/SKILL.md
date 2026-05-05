@@ -149,6 +149,16 @@ Create `aidlc-docs/backlog.md` (empty at start, agent updates throughout):
 ## Deferred Decisions
 ```
 
+Create `aidlc-docs/audit.md` (append-only decision log — agents write here but NEVER read back):
+
+```markdown
+# AI-DLC Audit Log
+
+<!-- WRITE-ONLY: Agents append entries here but never read this file for context. -->
+<!-- For detailed narrative history, see: aidlc-docs/aidlc-progress.md -->
+<!-- Archived daily to: aidlc-docs/audit/YYYY-MM-DD.md -->
+```
+
 ## Step 5: Present Completion Message
 
 **For Brownfield Projects:**

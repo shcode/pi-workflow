@@ -51,7 +51,7 @@ Based on `aidlc-state.md`:
 Before resuming ANY stage, automatically read all relevant artifacts from previous stages.
 
 **NEVER read these files for context:**
-- `audit.md` — Append-only decision log. Write-only for the AI. For human reference only.
+- `audit.md` — Append-only decision log. Write-only for the AI. Contains a header pointing to `aidlc-progress.md` for detailed narrative history.
 - `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. For human reference only. Do NOT read.
 
 **Readable artifacts by stage:**
@@ -154,8 +154,8 @@ Let's begin!
 >
 > **Chat reply format** (if not using `/answer`):
 > ```
-> [Header]: your answer
-> [Header]: your answer
+> Header: your answer
+> Header: your answer
 > ```
 > Example: `Provider: Auth0` / `MFA: Yes, required`
 
@@ -170,7 +170,7 @@ Structure questions for clean pi-answer extraction:
 
 **With options** (when ≤5 concrete choices exist):
 ```
-**[Short Header]**: Question text?
+**Short Header**: Question text?
 - **OptionLabel** — One-sentence description of what this means
 - **OptionLabel** — One-sentence description
 - **Other** — Describe your own approach
@@ -178,7 +178,7 @@ Structure questions for clean pi-answer extraction:
 
 **Free-form** (no clear concrete choices):
 ```
-**[Short Header]**: Question text? (free text)
+**Short Header**: Question text? (free text)
 ```
 
 **Group related questions under a Markdown heading:**
@@ -387,7 +387,7 @@ This rule applies to ALL file modifications during construction phases.
    **Affected documents**: [list of updated design files]
    **Impact on construction**: [which units/stages affected]
    ```
-5. **Update** `aidlc-progress.md` with the design change note
+5. **Append to** `aidlc-progress.md` with the design change note
 6. **Log** in `audit.md`
 7. **Continue** construction with updated design
 
