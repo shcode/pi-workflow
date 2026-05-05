@@ -20,6 +20,7 @@ description: >
 ## Prerequisites
 - Unit Design Generation complete for the unit
 - NFR Implementation (if executed) complete for the unit
+- UI Design complete (if unit has UI components) — `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` must exist and be approved
 - All unit design artifacts available
 - Unit is ready for code generation
 
@@ -32,6 +33,7 @@ description: >
 - [ ] Read unit design artifacts from Unit Design Generation
 - [ ] Read unit story map to understand assigned stories
 - [ ] Identify unit dependencies and interfaces
+- [ ] **Check for UI Design artifacts**: if `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` exists, read it now — it is the authoritative list of approved components and their story files
 - [ ] Validate unit is ready for code generation
 
 ### Step 2: Create Detailed Unit Code Generation Plan
@@ -193,6 +195,32 @@ Log approval in `audit.md`. Mark Code Generation row to `[x]` in `aidlc-state.md
 - **UPDATE CHECKBOXES**: Mark [x] immediately after completing each step
 - **STORY TRACEABILITY**: Mark unit stories [x] when functionality implemented
 - **RESPECT DEPENDENCIES**: Only implement when dependencies satisfied
+
+### Storybook-First UI Rule
+
+Applies whenever `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` exists.
+
+**Before generating any UI component:**
+- Open the component inventory and locate the component in the **New Components** table
+- Confirm its `Status` column shows approval (not `⏳ Pending`)
+- Read the corresponding story file (path is in the `Story File` column) — the story's `argTypes`, exported stories, and variants are the implementation spec
+
+**During generation:**
+- Implement props, variants, and states to **exactly match** the approved story
+- Stub components (created during UI Design) must be replaced with real implementations — never alter the story file itself (`.stories.tsx` is a spec, not generated output)
+- Use only the Design System tokens listed in the inventory's **Design Tokens** table
+- Add `data-testid` attributes matching story export names (e.g., story `Disabled` → `data-testid="...-disabled"`)
+
+**If a new UI component is discovered mid-generation:**
+1. **STOP** current Code Generation step
+2. Notify user: _"New component [Name] required — must go through UI Design and Storybook approval first"
+3. Wait for user to run `aidlc-ui-design` for the new component
+4. Resume Code Generation only after story is approved and inventory is updated
+
+**Never:**
+- Create a UI component not listed in the approved component inventory
+- Implement variants or states not present in the story
+- Modify any `.stories.tsx` file during Code Generation
 
 ### Automation Friendly Code Rules
 When generating UI code, ensure elements are automation-friendly:
