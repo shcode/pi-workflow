@@ -199,7 +199,40 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 - [ ] List any tokens that don't exist yet and need to be added to the design system
 ```
 
-### Step 8: Present Completion Message
+### Step 8: Launch Storybook
+
+**Purpose**: Give the user a live view of all created stories before approval is requested.
+
+#### 8a. Detect package manager
+
+Check project root for lock files in this order:
+
+| Lock file | Run command |
+|---|---|
+| `pnpm-lock.yaml` | `pnpm storybook` |
+| `yarn.lock` | `yarn storybook` |
+| `package-lock.json` | `npm run storybook` |
+| none found | `npx storybook dev -p 6006` |
+
+#### 8b. Check if Storybook is configured
+
+Look for either:
+- `"storybook"` key in `package.json` → `scripts`
+- `.storybook/` directory in project root
+
+**If NOT configured** — initialise first:
+```bash
+npx storybook@latest init --yes
+```
+Wait for init to complete before proceeding.
+
+#### 8c. Start Storybook server
+
+Run the appropriate start command (from 8a). Storybook defaults to **http://localhost:6006**.
+
+> **Note**: First run may take 30–60 seconds to compile.
+
+### Step 9: Present Completion Message
 
 ```markdown
 # 🎨 UI Design Complete — [unit-name]
@@ -213,8 +246,9 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 **Component inventory:** `aidlc-docs/construction/[unit-name]/ui-design/component-inventory.md`
 
 > **📋 <u>**REVIEW REQUIRED:**</u>**
-> 1. Run Storybook: `npx storybook` (or `npm run storybook`)
-> 2. Review all component variants and states in the browser
+> Storybook is running at **http://localhost:6006**
+> 1. Open the URL in your browser
+> 2. Review all component variants and states
 > 3. Verify Design System token usage
 > 4. Check accessibility annotations
 
@@ -226,13 +260,13 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 > ✅ **Approve and Continue** — Proceed to Code Generation (stories become the implementation spec)
 ```
 
-### Step 9: Wait for Explicit Approval
+### Step 10: Wait for Explicit Approval
 
 **HARD RULE**: Do NOT write any component implementation code until user explicitly approves stories.
 
-Approval means the user has reviewed stories in Storybook and confirmed the component API, variants, and states are correct.
+Approval means the user has opened Storybook, reviewed all components in the browser, and confirmed the API, variants, and states are correct.
 
-### Step 10: Record Approval and Update Progress
+### Step 11: Record Approval and Update Progress
 
 Log approval in `audit.md`. Mark UI Design complete in `aidlc-state.md`.
 
