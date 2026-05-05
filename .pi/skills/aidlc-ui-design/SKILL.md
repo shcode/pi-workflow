@@ -199,74 +199,98 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 - [ ] List any tokens that don't exist yet and need to be added to the design system
 ```
 
-### Step 8: Launch Storybook
+### Step 8: Show Storybook Start Instructions
 
-**Purpose**: Give the user a live view of all created stories before approval is requested.
+Detect the package manager by checking project root for lock files in this order:
 
-#### 8a. Detect package manager
-
-Check project root for lock files in this order:
-
-| Lock file | Run command |
+| Lock file | Command to start Storybook |
 |---|---|
 | `pnpm-lock.yaml` | `pnpm storybook` |
 | `yarn.lock` | `yarn storybook` |
 | `package-lock.json` | `npm run storybook` |
 | none found | `npx storybook dev -p 6006` |
 
-#### 8b. Check if Storybook is configured
+Also check whether Storybook is configured (look for `"storybook"` in `package.json` scripts or a `.storybook/` directory). If NOT configured, show the init command first:
 
-Look for either:
-- `"storybook"` key in `package.json` → `scripts`
-- `.storybook/` directory in project root
-
-**If NOT configured** — initialise first:
 ```bash
-npx storybook@latest init --yes
+npx storybook@latest init
 ```
-Wait for init to complete before proceeding.
 
-#### 8c. Start Storybook server
+Present the appropriate command(s) to the user clearly so they can start Storybook themselves.
 
-Run the appropriate start command (from 8a). Storybook defaults to **http://localhost:6006**.
-
-> **Note**: First run may take 30–60 seconds to compile.
-
-### Step 9: Present Completion Message
+### Step 9: Present Review Message
 
 ```markdown
 # 🎨 UI Design Complete — [unit-name]
 
-**New component stories created:**
+**Stories created:**
 - `src/stories/ComponentA.stories.tsx` — N stories (default, primary, secondary, disabled, loading)
 - `src/stories/ComponentB.stories.tsx` — N stories
 
-**Reused without changes:** ComponentC (existing design system)
+**Reused without changes:** ComponentC
 
 **Component inventory:** `aidlc-docs/construction/[unit-name]/ui-design/component-inventory.md`
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Storybook is running at **http://localhost:6006**
-> 1. Open the URL in your browser
-> 2. Review all component variants and states
-> 3. Verify Design System token usage
-> 4. Check accessibility annotations
+> **💻 Start Storybook:**
+> ```bash
+> [detected-command]
+> ```
+> Then open **http://localhost:6006** in your browser.
 
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** — Modify component API, add/remove variants, adjust tokens
-> ✅ **Approve and Continue** — Proceed to Code Generation (stories become the implementation spec)
+> **🔍 Review checklist:**
+> - [ ] All component variants render correctly
+> - [ ] All interaction states (disabled, loading, error, empty) look right
+> - [ ] Design System tokens are applied consistently
+> - [ ] Accessibility annotations are present
+
+> ✏️ **You can edit the story files directly** while Storybook is running — it will hot-reload.
+> When you are done reviewing and editing, reply **"done"** and the agent will re-validate
+> the stories before proceeding.
 ```
 
-### Step 10: Wait for Explicit Approval
+### Step 10: Wait for User to Finish Reviewing
 
-**HARD RULE**: Do NOT write any component implementation code until user explicitly approves stories.
+Do NOT proceed until the user explicitly says they are done (e.g. "done", "looks good", "approved", "continue").
 
-Approval means the user has opened Storybook, reviewed all components in the browser, and confirmed the API, variants, and states are correct.
+The user may edit story files directly during this window. That is expected and encouraged.
 
-### Step 11: Record Approval and Update Progress
+### Step 11: Re-validate Stories
+
+After the user signals they are done, re-read all story files listed in the component inventory.
+
+For each component in the **New Components** table:
+- Re-read the story file at the path listed in `Story File` column
+- Confirm the file still exists
+- Confirm `Default` story export is present
+- Confirm all variants listed in the `Variants` column have a corresponding story export
+- Note any additions or removals the user made during editing
+- Update the `component-inventory.md` **Variants** and **Status** columns to reflect the final state
+
+Present a concise re-validation summary:
+
+```markdown
+## 🔄 Re-validation Summary
+
+| Component | Stories Found | Changes Detected | Status |
+|---|---|---|---|
+| ComponentA | Default, Primary, Disabled | + Error variant added | ✅ Ready |
+| ComponentB | Default, Secondary | No changes | ✅ Ready |
+```
+
+If any story file is missing or a listed variant has no export, flag it as **⚠ Needs Fix** and ask the user to resolve before continuing.
+
+### Step 12: Final Approval Gate
+
+```markdown
+> **🚀 <u>**READY TO PROCEED?**</u>**
+>
+> All stories validated. You may:
+>
+> 🔧 **Request More Changes** — continue editing stories, reply "done" again when ready
+> ✅ **Approve and Continue** — stories are locked as the implementation spec for Code Generation
+```
+
+### Step 13: Record Approval and Update Progress
 
 Log approval in `audit.md`. Mark UI Design complete in `aidlc-state.md`.
 
