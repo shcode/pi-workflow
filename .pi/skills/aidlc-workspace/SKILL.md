@@ -100,10 +100,12 @@ Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for ro
 [Next stage name]
 ```
 
-Create `aidlc-docs/aidlc-progress.md` (append-only narrative log — human reference only, agents never read):
+Create `aidlc-docs/aidlc-progress.md` (append-only narrative log — human reference only, agents use targeted offset reads via audit.md pointers):
 
 ```markdown
 # AI-DLC Progress
+
+<!-- APPEND-ONLY: Line numbers are stable (never shift). audit.md entries reference line ranges here. -->
 
 ## Current Status
 [Free-form status description]

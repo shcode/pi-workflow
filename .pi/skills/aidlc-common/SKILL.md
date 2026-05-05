@@ -51,8 +51,8 @@ Based on `aidlc-state.md`:
 Before resuming ANY stage, automatically read all relevant artifacts from previous stages.
 
 **NEVER read these files for context:**
-- `audit.md` — Append-only decision log. Write-only for the AI. Contains a header pointing to `aidlc-progress.md` for detailed narrative history.
-- `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. For human reference only. Do NOT read.
+- `audit.md` — Append-only decision log. Write-only for the AI. Exception: `tail -n 50` when user asks about history.
+- `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. Exception: targeted `read --offset --limit` using line range from audit.md `Detail` field when user explicitly asks about history.
 
 **Readable artifacts by stage:**
 - **Reverse Engineering**: architecture.md, code-structure.md, api-documentation.md
@@ -248,9 +248,31 @@ If contradictions or vagueness found:
 **User Input**: "[Complete raw user input - never summarized]"
 **AI Response**: "[AI's response or action taken]"
 **Context**: [Stage, action, or decision made]
+**Detail**: progress.md:[START]-[END]
 
 ---
 ```
+
+### Progress Line Reference (`Detail` field)
+
+Every audit entry that has a corresponding narrative in `aidlc-progress.md` MUST include the `Detail` field with line range.
+
+**How to record**:
+1. Before appending to `aidlc-progress.md`, get current line count: `wc -l < aidlc-docs/aidlc-progress.md`
+2. Append the narrative section to `aidlc-progress.md`
+3. Get new line count after append
+4. Record in audit entry: `**Detail**: progress.md:{start+1}-{end}`
+
+**Agent lookup flow** (when user asks about history):
+1. Read tail of `audit.md` — `tail -n 50 aidlc-docs/audit.md`
+2. Find the relevant entry's `Detail: progress.md:START-END`
+3. Read just that section: `read --offset=START --limit=(END-START+1)` on `aidlc-progress.md`
+
+**Exception to write-only rule**: Agent MAY read `aidlc-progress.md` with specific offset+limit when:
+- User explicitly asks about history, past decisions, or previous work
+- A `Detail` pointer from `audit.md` provides the exact line range
+
+Never read the entire file. Always use targeted offset+limit from the pointer.
 
 ### Correct Tool Usage for audit.md
 

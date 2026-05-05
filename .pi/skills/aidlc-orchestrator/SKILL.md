@@ -119,12 +119,14 @@ Then deletes `.parallel/{unit}/`.
 ## How to Route to Next Skill
 
 After completing any stage:
-1. Update `aidlc-state.md` (compact table: set row `[x]`, update Stage/Next, update `## Current Work`)
-2. Append to `aidlc-progress.md` (narrative log, human-facing — do NOT read)
-3. Determine next stage from router above
-4. Load next skill via `/skill:<name>`
-5. Pass context (brownfield flag, requirements, etc.)
-6. Log transition in `audit.md`
+1. Get current line count of `aidlc-progress.md` (`wc -l`)
+2. Append narrative to `aidlc-progress.md` (human-facing log)
+3. Get new line count → record as `START-END`
+4. Update `aidlc-state.md` (set row `[x]`, update Stage/Next, update `## Current Work`)
+5. Determine next stage from router above
+6. Load next skill via `/skill:<name>`
+7. Pass context (brownfield flag, requirements, etc.)
+8. Append to `audit.md` with `Detail: progress.md:START-END`
 
 ## Cross-Cutting Rules (from `aidlc-common`)
 
