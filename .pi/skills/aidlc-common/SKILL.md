@@ -276,8 +276,8 @@ Never read the entire file. Always use targeted offset+limit from the pointer.
 
 ### Correct Tool Usage for audit.md
 
-✅ CORRECT: Read file, then append/edit.
-❌ WRONG: Read file, then completely overwrite with old + new content.
+✅ CORRECT: Append new entry to end of file (no read needed).
+❌ WRONG: Read entire file, then overwrite with old + new content.
 
 ---
 
