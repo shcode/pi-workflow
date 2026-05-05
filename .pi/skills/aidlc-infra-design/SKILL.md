@@ -38,7 +38,7 @@ description: >
 
 **DIRECTIVE**: Analyze functional and NFR design to identify ALL areas where clarification improves infrastructure decisions.
 
-Use [Answer]: tag format. Evaluate ALL categories:
+Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
 - **Deployment Environment** - Cloud provider, environment setup, deployment targets
 - **Compute Infrastructure** - Compute service choices, sizing, scaling
 - **Storage Infrastructure** - Database selection, storage patterns, data lifecycle
@@ -53,7 +53,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-infrastructure-design-plan.md
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for ALL [Answer]: tags. Review for vagueness. Add follow-ups if needed.
+Append the `/answer` hint after questions. Wait for `/answer` submission. Review for vagueness. Present follow-ups if needed.
 
 ### Step 6: Generate Infrastructure Design Artifacts
 

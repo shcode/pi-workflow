@@ -20,7 +20,7 @@ description: >
 - architecture.md, component-inventory.md, technology-stack.md, dependencies.md
 
 ### 1.2 Load Requirements Analysis
-- requirements.md, requirement-verification-questions.md (with answers)
+- requirements.md, requirement-verification-answers.md (compact answers summary)
 
 ### 1.3 Load User Stories (if executed)
 - stories.md, personas.md

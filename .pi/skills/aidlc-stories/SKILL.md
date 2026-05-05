@@ -82,7 +82,7 @@ Create `aidlc-docs/inception/plans/user-stories-assessment.md`:
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists. Better to ask too many than create incomplete stories.
 
-Use [Answer]: tag format. Evaluate ALL categories:
+Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
 - **User Personas** - User types, roles, characteristics, motivations
 - **Story Granularity** - Detail level, story size, breakdown approach
 - **Story Format** - Format preferences, template usage, documentation standards
@@ -117,7 +117,7 @@ Save as `aidlc-docs/inception/plans/story-generation-plan.md`
 
 ### Steps 7-8: Collect Answers
 
-Wait for user to fill all [Answer]: tags. Do not proceed until ALL completed.
+Wait for `/answer` submission. Do not proceed until ALL submitted.
 
 ### Step 9: ANALYZE ANSWERS (MANDATORY)
 
@@ -185,7 +185,7 @@ Wait for explicit approval. Record response.
 
 ### Planning Phase
 - Generate ONLY context-relevant questions
-- Use [Answer]: tag format
+- Use pi-answer inline format (see `aidlc-common`)
 - Analyze ALL answers for ambiguities before proceeding
 - Resolve ALL ambiguities with follow-up questions
 - Get explicit user approval before generation

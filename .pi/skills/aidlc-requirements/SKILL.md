@@ -91,15 +91,16 @@ After receiving answers:
 
 ### Step 6: Generate Clarifying Questions
 
-- **ALWAYS** create `aidlc-docs/inception/requirements/requirement-verification-questions.md` unless requirements are exceptionally clear
+- **ALWAYS** present clarifying questions inline in your response unless requirements are exceptionally clear
 - Ask about ANY missing, unclear, or ambiguous areas
 - Focus on functional requirements, non-functional requirements, user scenarios, business context
-- Use [Answer]: tag format with A, B, C, D... + Other options
-- Wait for user answers
-- **MANDATORY**: Analyze ALL answers for ambiguities, create follow-up questions if needed
+- Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`)
+- After listing all questions, append the `/answer` hint
+- Wait for `/answer` submission
+- **MANDATORY**: Analyze ALL answers for ambiguities, present follow-up questions if needed
 - **MANDATORY**: Keep asking until ALL ambiguities resolved OR user explicitly asks to proceed
 
-### ⛔ GATE: Await User Answers
+### ⛔ GATE: Await `/answer` Submission
 
 DO NOT proceed to Step 7 until all questions are answered and validated.
 

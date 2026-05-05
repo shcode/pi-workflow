@@ -129,7 +129,7 @@ After completing any stage:
 ## Cross-Cutting Rules (from `aidlc-common`)
 
 - Content validation before file creation
-- Questions in dedicated `.md` files only (A-E + Other, `[Answer]:` tags)
+- Questions presented inline in response; user runs `/answer` to navigate (pi-answer TUI)
 - Extensions are hard constraints; check `Enabled` status in `aidlc-state.md` `## Extensions` table
 - Welcome message displayed once only
 

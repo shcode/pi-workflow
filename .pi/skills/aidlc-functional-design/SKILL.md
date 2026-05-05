@@ -47,7 +47,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists.
 
-Use [Answer]: tag format. Evaluate ALL categories:
+Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
 - **Business Logic Modeling** - Core entities, workflows, data transformations
 - **Domain Model** - Domain concepts, entity relationships, data structures
 - **Business Rules** - Decision rules, validation logic, constraints, policies
@@ -63,7 +63,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-functional-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for ALL [Answer]: tags. **MANDATORY**: Review ALL responses for vagueness. Add follow-up questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
+Append the `/answer` hint after questions. Wait for `/answer` submission. **MANDATORY**: Review ALL responses for vagueness. Present follow-up questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Generate Functional Design Artifacts
 

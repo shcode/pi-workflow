@@ -41,11 +41,10 @@ Based on your `aidlc-state.md` (compact routing table) and `aidlc-progress.md` (
 - **Progress Detail**: [from aidlc-progress.md Current Status]
 
 **What would you like to work on today?**
+- **Continue** — Pick up from [Next step description]
+- **Review** — Show and revisit a previous stage
 
-A) Continue where you left off ([Next step description])
-B) Review a previous stage ([Show available stages])
-
-[Answer]:
+> 💡 Type `/answer` to respond.
 ```
 
 ### Mandatory: Load Previous Stage Artifacts
@@ -54,7 +53,6 @@ Before resuming ANY stage, automatically read all relevant artifacts from previo
 
 **NEVER read these files for context:**
 - `audit.md` — Append-only decision log. Write-only for the AI. For human reference only.
-- Full `*-questions.md` files — Read the compact `*-answers.md` summary instead.
 
 **Readable artifacts by stage:**
 - **Reverse Engineering**: architecture.md, code-structure.md, api-documentation.md
@@ -146,68 +144,76 @@ Let's begin!
 
 ## Question Format Guide
 
-### Rule: Never Ask Questions in Chat (with exception)
+### Rule: Present All Questions Inline — Use `/answer` for Navigation
 
-**CRITICAL**: ALL questions must be placed in dedicated question files. NEVER ask questions directly in chat.
+**ALL questions must be presented inline in the assistant response.** `pi-answer` (installed via `npm:pi-answer`) extracts them and presents an interactive TUI with keyboard navigation.
 
-**Exception — Inline Confirmations**: For ≤2 binary yes/no questions within a single stage (e.g., "Should I include X?", "Continue with approach Y?"), the agent MAY ask inline in chat without creating a file. These must be:
-- Binary (yes/no, approve/reject)
-- Non-architectural (don't change design direction)
-- Logged in `audit.md` with the answer
+**After every set of questions, always append this hint:**
+> 💡 Type `/answer` to navigate these questions (↑↓ select option · **1–9** jump to option · **Tab/Shift+Tab** move between questions · **Enter** confirm).
 
-All multi-option questions (≥3 choices) MUST still go to files.
+### Question Format
 
-#### File Naming
-- Use descriptive names: `{phase-name}-questions.md`
+Structure questions for clean pi-answer extraction:
 
-#### Question Structure
-
-```markdown
-## Question [Number]
-[Clear, specific question text]
-
-A) [First meaningful option]
-B) [Second meaningful option]
-[...additional options as needed...]
-X) Other (please describe after [Answer]: tag below)
-
-[Answer]:
+**With options** (when ≤5 concrete choices exist):
+```
+**[Short Header]**: Question text?
+- **OptionLabel** — One-sentence description of what this means
+- **OptionLabel** — One-sentence description
+- **Other** — Describe your own approach
 ```
 
-**CRITICAL**:
-- "Other" is MANDATORY as the LAST option for every question
-- Minimum: 2 meaningful options + Other
-- Maximum: 5 meaningful options + Other
-- Do NOT make up options just to fill slots
+**Free-form** (no clear concrete choices):
+```
+**[Short Header]**: Question text? (free text)
+```
 
-### Compact Answers Summary (Context-Efficient)
+**Group related questions under a Markdown heading:**
+```markdown
+## Authentication
+**Provider**: Which auth provider should we use?
+- **Auth0** — Managed service, OAuth/OIDC, good for B2C
+- **Cognito** — AWS-native, ideal if already on AWS
+- **Custom JWT** — Full control, more implementation work
+- **Other** — Different provider or approach
 
-After answers are validated, create `{phase-name}-answers.md` — a compact one-line-per-answer table. Future stages read this summary, NOT the full question file.
+**MFA**: Should MFA be enforced?
+- **Yes, required** — All users must enroll
+- **Optional** — Available but not forced
+- **No** — Skip MFA entirely
+```
 
-**Format**:
+### Question Rules
+- Option labels must be self-contained (answer makes sense without the description)
+- Max 5 options per question + **Other** (always include Other as last option)
+- Do **NOT** create `*-questions.md` files — pi-answer handles collection
+- Do **NOT** use `[Answer]:` tags
+
+### Compact Answers Summary (after `/answer` response arrives)
+
+After the user submits via `/answer`, create `{phase-name}-answers.md`:
+
 ```markdown
 | # | Question | Answer | Notes |
 |---|----------|--------|-------|
-| 1 | Primary auth? | C — SSO | |
-| 2 | Platform? | B — Web+Mobile | |
+| 1 | Primary auth? | Auth0 | |
+| 2 | MFA required? | Yes, required | |
 ```
 
-- Question column: ≤10 words condensed
-- Answer column: letter + option text
-- Notes: "Other" free-text, contradictions, clarifications
+- Future stages read this summary for context — not the raw conversation
+- Question ≤10 words condensed; Answer = chosen label or free-text summary
 
 ### Contradiction and Ambiguity Detection
 
-**MANDATORY**: After reading user responses, check for contradictions and ambiguities.
+**MANDATORY**: After `/answer` submission arrives, check for contradictions and ambiguities.
 
 **Vague responses to flag**: "mix of", "somewhere between", "not sure", "depends", "maybe", "probably"
 
-If contradictions found:
-1. Create `{phase-name}-clarification-questions.md`
-2. Explain the issue
-3. Ask targeted multiple-choice questions to resolve
-4. Wait for answers before proceeding
-5. After resolution, update compact answers summary
+If contradictions or vagueness found:
+1. Present follow-up questions inline (same format above)
+2. Append the `/answer` hint
+3. Wait for second submission before proceeding
+4. After resolution, update compact answers summary
 
 ---
 
