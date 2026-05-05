@@ -63,7 +63,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-functional-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Append the `/answer` hint after questions. Wait for `/answer` submission. **MANDATORY**: Review ALL responses for vagueness. Present follow-up questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
+Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply. **MANDATORY**: Review ALL responses for vagueness. Present follow-up questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Generate Functional Design Artifacts
 

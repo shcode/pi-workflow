@@ -53,7 +53,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-infrastructure-design-plan.md
 
 ### Step 5: Collect and Analyze Answers
 
-Append the `/answer` hint after questions. Wait for `/answer` submission. Review for vagueness. Present follow-ups if needed.
+Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply. Review for vagueness. Present follow-ups if needed.
 
 ### Step 6: Generate Infrastructure Design Artifacts
 

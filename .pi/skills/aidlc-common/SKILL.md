@@ -44,7 +44,7 @@ Based on your `aidlc-state.md` (compact routing table) and `aidlc-progress.md` (
 - **Continue** — Pick up from [Next step description]
 - **Review** — Show and revisit a previous stage
 
-> 💡 Type `/answer` to respond.
+> 💡 Run `/answer` to respond — or reply in chat: `Continue` or `Review`.
 ```
 
 ### Mandatory: Load Previous Stage Artifacts
@@ -146,10 +146,22 @@ Let's begin!
 
 ### Rule: Present All Questions Inline — Use `/answer` for Navigation
 
-**ALL questions must be presented inline in the assistant response.** `pi-answer` (installed via `npm:pi-answer`) extracts them and presents an interactive TUI with keyboard navigation.
+**ALL questions must be presented inline in the assistant response.** Users can answer via the `pi-answer` TUI (if installed) or by replying directly in chat — both are fully supported.
 
 **After every set of questions, always append this hint:**
-> 💡 Type `/answer` to navigate these questions (↑↓ select option · **1–9** jump to option · **Tab/Shift+Tab** move between questions · **Enter** confirm).
+> 💡 **To answer:** Run `/answer` for interactive navigation (↑↓ select · **1–9** jump · **Tab** next · **Enter** confirm) — or simply reply in chat using the format below.
+>
+> **Chat reply format** (if not using `/answer`):
+> ```
+> [Header]: your answer
+> [Header]: your answer
+> ```
+> Example: `Provider: Auth0` / `MFA: Yes, required`
+
+**Installing pi-answer** (optional, recommended for best experience):
+```
+pi install npm:pi-answer
+```
 
 ### Question Format
 
@@ -189,9 +201,9 @@ Structure questions for clean pi-answer extraction:
 - Do **NOT** create `*-questions.md` files — pi-answer handles collection
 - Do **NOT** use `[Answer]:` tags
 
-### Compact Answers Summary (after `/answer` response arrives)
+### Compact Answers Summary (after answers arrive)
 
-After the user submits via `/answer`, create `{phase-name}-answers.md`:
+After the user submits answers — via `/answer` or chat reply — create `{phase-name}-answers.md`:
 
 ```markdown
 | # | Question | Answer | Notes |

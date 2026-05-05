@@ -92,7 +92,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Append the `/answer` hint after questions. Wait for `/answer` submission. Add follow-up questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
+Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply. Add follow-up questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Create Storybook Stories
 

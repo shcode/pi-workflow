@@ -69,7 +69,7 @@ After listing all questions, append the `/answer` hint. Tell user to run `/answe
 
 ### 7. Collect Answers
 
-Wait for `/answer` submission.
+Wait for answers — via `/answer` or chat reply.
 
 ### 8. ANALYZE ANSWERS (MANDATORY)
 

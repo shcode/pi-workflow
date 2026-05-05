@@ -64,7 +64,7 @@ Save as `aidlc-docs/inception/plans/unit-of-work-plan.md`
 
 ### Steps 5-6: Collect Answers
 
-Append the `/answer` hint after questions. Wait for `/answer` submission.
+Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply.
 
 ### Step 7: ANALYZE ANSWERS (MANDATORY)
 

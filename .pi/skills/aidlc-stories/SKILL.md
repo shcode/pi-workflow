@@ -117,7 +117,7 @@ Save as `aidlc-docs/inception/plans/story-generation-plan.md`
 
 ### Steps 7-8: Collect Answers
 
-Wait for `/answer` submission. Do not proceed until ALL submitted.
+Wait for answers — via `/answer` or chat reply. Do not proceed until ALL submitted.
 
 ### Step 9: ANALYZE ANSWERS (MANDATORY)
 
