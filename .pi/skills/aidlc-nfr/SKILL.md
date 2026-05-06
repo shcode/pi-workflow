@@ -34,7 +34,7 @@ Generate plan with checkboxes [] for NFR assessment. Focus on scalability, perfo
 
 **DIRECTIVE**: Analyze functional design to identify ALL areas where NFR clarification improves system quality.
 
-Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
+Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
 - **Scalability Requirements** - Expected load, growth patterns, scaling triggers
 - **Performance Requirements** - Response times, throughput, latency, benchmarks
 - **Availability Requirements** - Uptime, disaster recovery, failover
@@ -44,7 +44,7 @@ Use pi-answer inline format with headers, option labels, and descriptions (see `
 - **Maintainability Requirements** - Code quality, documentation, testing
 - **Usability Requirements** - User experience, accessibility, interfaces
 
-Append the `/answer` hint after questions.
+Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-nfr-requirements-questions.md`.
 
 ### Step 4: Store Plan
 
@@ -52,7 +52,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-nfr-requirements-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for answers — via `/answer` or chat reply. **MANDATORY**: Review ALL for vagueness. Present follow-up questions for ANY unclear responses.
+Wait for user to fill all `[Answer]:` tags. **MANDATORY**: Review ALL for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses.
 
 ### Step 6: Generate NFR Requirements Artifacts
 
@@ -107,14 +107,14 @@ Generate plan with checkboxes []. Focus on design patterns and logical component
 
 **DIRECTIVE**: Analyze NFR requirements to identify ALL areas where clarification improves NFR design quality.
 
-Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
+Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
 - **Resilience Patterns** - Fault tolerance, retry strategies, failure recovery
 - **Scalability Patterns** - Scaling mechanisms, load boundaries, growth projections
 - **Performance Patterns** - Optimization strategy, latency targets, throughput
 - **Security Patterns** - Security implementation, threat model, compliance
 - **Logical Components** - Infrastructure components (queues, caches, circuit breakers)
 
-Append the `/answer` hint after questions.
+Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-nfr-design-questions.md`.
 
 ### Step 4: Store Plan
 
@@ -122,7 +122,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-nfr-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for answers — via `/answer` or chat reply. Review for vagueness. Present follow-ups if needed.
+Wait for user to fill all `[Answer]:` tags. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
 
 ### Step 6: Generate NFR Design Artifacts
 

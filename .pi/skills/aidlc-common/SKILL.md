@@ -40,10 +40,10 @@ Based on `aidlc-state.md`:
 - **Next**: [Next field]
 
 **What would you like to work on today?**
-- **Continue** — Pick up from [Next step description]
-- **Review** — Show and revisit a previous stage
+- A) Continue — Pick up from [Next step description]
+- B) Review — Show and revisit a previous stage
 
-> 💡 Run `/answer` to respond — or reply in chat: `Continue` or `Review`.
+[Answer]: 
 ```
 
 ### Mandatory: Load Previous Stage Artifacts
@@ -145,100 +145,58 @@ Let's begin!
 
 ## Question Format Guide
 
-### Agent Detection
+### Rule: File-Based Questions with [Answer]: Tags
 
-**If pi agent** (pi-answer available): Use inline format below with `/answer` hint.
-**If other agent** (Claude Code, Copilot, Kiro): Use `[Answer]:` file-based format — create `{stage}-questions.md` with questions and `[Answer]:` tags for user to fill in.
-
----
-
-### Pi Format: Present All Questions Inline
-
-**ALL questions must be presented inline in the assistant response.** Users can answer via the `pi-answer` TUI (if installed) or by replying directly in chat — both are fully supported.
-
-**After every set of questions, always append this hint:**
-> 💡 **To answer:** Run `/answer` for interactive navigation (↑↓ select · **1–9** jump · **Tab** next · **Enter** confirm) — or simply reply in chat using the format below.
->
-> **Chat reply format** (if not using `/answer`):
-> ```
-> Header: your answer
-> Header: your answer
-> ```
-> Example: `Provider: Auth0` / `MFA: Yes, required`
-
-**Installing pi-answer** (optional, recommended for best experience):
-```
-pi install npm:pi-answer
-```
-
-### Non-Pi Format: File-Based [Answer]: Tags
-
-Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags:
-
-```markdown
-## Authentication
-**Provider**: Which auth provider should we use?
-- A) Auth0 — Managed service, OAuth/OIDC
-- B) Cognito — AWS-native
-- C) Custom JWT — Full control
-- D) Other
-
-[Answer]: 
-
-**MFA**: Should MFA be enforced?
-- A) Yes, required
-- B) Optional
-- C) No
-
-[Answer]: 
-```
-
-Ask user to fill `[Answer]:` tags directly in the file. Do not proceed until ALL tags are completed.
-
----
+Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags for user to fill in.
 
 ### Question Format
 
-Structure questions for clean pi-answer extraction:
-
 **With options** (when ≤5 concrete choices exist):
-```
+```markdown
 **Short Header**: Question text?
-- **OptionLabel** — One-sentence description of what this means
-- **OptionLabel** — One-sentence description
-- **Other** — Describe your own approach
+- A) OptionLabel — One-sentence description
+- B) OptionLabel — One-sentence description
+- C) Other — Describe your own approach
+
+[Answer]: 
 ```
 
 **Free-form** (no clear concrete choices):
-```
-**Short Header**: Question text? (free text)
+```markdown
+**Short Header**: Question text?
+
+[Answer]: 
 ```
 
 **Group related questions under a Markdown heading:**
 ```markdown
 ## Authentication
 **Provider**: Which auth provider should we use?
-- **Auth0** — Managed service, OAuth/OIDC, good for B2C
-- **Cognito** — AWS-native, ideal if already on AWS
-- **Custom JWT** — Full control, more implementation work
-- **Other** — Different provider or approach
+- A) Auth0 — Managed service, OAuth/OIDC, good for B2C
+- B) Cognito — AWS-native, ideal if already on AWS
+- C) Custom JWT — Full control, more implementation work
+- D) Other — Different provider or approach
+
+[Answer]: 
 
 **MFA**: Should MFA be enforced?
-- **Yes, required** — All users must enroll
-- **Optional** — Available but not forced
-- **No** — Skip MFA entirely
+- A) Yes, required — All users must enroll
+- B) Optional — Available but not forced
+- C) No — Skip MFA entirely
+
+[Answer]: 
 ```
 
 ### Question Rules
-- Option labels must be self-contained (answer makes sense without the description)
 - Max 5 options per question + **Other** (always include Other as last option)
-- **Pi only**: Do NOT create `*-questions.md` files — pi-answer handles collection
-- **Non-pi only**: DO create `{stage}-questions.md` with `[Answer]:` tags
+- Option labels must be self-contained (answer makes sense without the description)
+- Create `{stage}-questions.md` in `aidlc-docs/` — ask user to fill `[Answer]:` tags
+- Do not proceed until ALL `[Answer]:` tags are completed
 - **When in doubt, ask** — overconfidence leads to poor outcomes. Default to asking rather than assuming. Evaluate ALL relevant question categories; don't skip areas without justification.
 
 ### Compact Answers Summary (after answers arrive)
 
-After the user submits answers — via `/answer`, chat reply, or filled `[Answer]:` tags — create `{phase-name}-answers.md`:
+After the user fills all `[Answer]:` tags, create `{phase-name}-answers.md`:
 
 ```markdown
 | # | Question | Answer | Notes |
@@ -252,13 +210,13 @@ After the user submits answers — via `/answer`, chat reply, or filled `[Answer
 
 ### Contradiction and Ambiguity Detection
 
-**MANDATORY**: After `/answer` submission arrives, check for contradictions and ambiguities.
+**MANDATORY**: After user fills all `[Answer]:` tags, check for contradictions and ambiguities.
 
 **Vague responses to flag**: "mix of", "somewhere between", "not sure", "depends", "maybe", "probably"
 
 If contradictions or vagueness found:
-1. Present follow-up questions inline (same format above)
-2. Append the `/answer` hint
+1. Add follow-up questions with `[Answer]:` tags to the same questions file
+2. Ask user to fill the new tags before proceeding
 3. Wait for second submission before proceeding
 4. After resolution, update compact answers summary
 

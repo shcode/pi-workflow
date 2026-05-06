@@ -76,7 +76,7 @@ Generate plan with checkboxes [] listing each component to create a story for.
 
 **DIRECTIVE**: Clarify all ambiguities before creating any stories.
 
-Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
+Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
 - **Design System** — Which library? (MUI, Ant Design, Shadcn, Radix, Tailwind, custom)
 - **Component Scope** — Which components are truly new vs reuse/extend of existing?
 - **Visual Variants** — Sizes, colors, themes (e.g., primary/secondary/destructive)
@@ -92,7 +92,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply. Add follow-up questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
+Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-ui-design-questions.md`. Wait for user to fill all `[Answer]:` tags. Add follow-up `[Answer]:` questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Create Storybook Stories
 

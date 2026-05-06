@@ -50,7 +50,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists.
 
-Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
+Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
 - **Story Grouping** - Grouping strategy, story affinity, logical clustering
 - **Dependencies** - Integration approach, shared resources, inter-unit communication
 - **Team Alignment** - Team structure, ownership boundaries, collaboration
@@ -64,7 +64,7 @@ Save as `aidlc-docs/inception/plans/unit-of-work-plan.md`
 
 ### Steps 5-6: Collect Answers
 
-Append the `/answer` hint after questions. Wait for answers — via `/answer` or chat reply.
+Save questions with `[Answer]:` tags to `aidlc-docs/units-questions.md`. Wait for user to fill all `[Answer]:` tags.
 
 ### Step 7: ANALYZE ANSWERS (MANDATORY)
 
@@ -144,7 +144,7 @@ Mark Units Generation complete in `aidlc-state.md`.
 
 ### Planning Phase
 - Generate ONLY context-relevant questions
-- Use pi-answer inline format (see `aidlc-common`)
+- Use `[Answer]:` tag format (see `aidlc-common`)
 - Analyze ALL answers for ambiguities
 - Resolve ALL ambiguities with follow-ups
 - Get explicit approval before generation

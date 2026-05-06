@@ -53,7 +53,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists. Overconfidence leads to poor designs.
 
-Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`). Evaluate ALL categories:
+Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
 - **Component Identification** - Boundaries, organization, grouping
 - **Component Methods** - Method signatures, input/output, interface contracts
 - **Service Layer Design** - Orchestration, boundaries, coordination patterns
@@ -64,13 +64,13 @@ Use pi-answer inline format with headers, option labels, and descriptions (see `
 
 Save as `aidlc-docs/inception/plans/application-design-plan.md`
 
-### 6. Prompt for `/answer`
+### 6. Save Questions
 
-After listing all questions, append the `/answer` hint. Tell user to run `/answer` to navigate.
+Save questions with `[Answer]:` tags to `aidlc-docs/application-design-questions.md`.
 
 ### 7. Collect Answers
 
-Wait for answers — via `/answer` or chat reply.
+Wait for user to fill all `[Answer]:` tags.
 
 ### 8. ANALYZE ANSWERS (MANDATORY)
 

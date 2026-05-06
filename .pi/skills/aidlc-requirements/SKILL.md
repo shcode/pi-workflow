@@ -96,16 +96,16 @@ After receiving answers:
 
 ### Step 6: Generate Clarifying Questions
 
-- **ALWAYS** present clarifying questions inline in your response unless requirements are exceptionally clear
+- **ALWAYS** present clarifying questions unless requirements are exceptionally clear
 - Ask about ANY missing, unclear, or ambiguous areas
 - Focus on functional requirements, non-functional requirements, user scenarios, business context
-- Use pi-answer inline format with headers, option labels, and descriptions (see `aidlc-common`)
-- After listing all questions, append the `/answer` hint
-- Wait for `/answer` submission
+- Use `[Answer]:` file-based format (see `aidlc-common`)
+- Save questions to `aidlc-docs/requirements-questions.md`
+- Wait for user to fill all `[Answer]:` tags
 - **MANDATORY**: Analyze ALL answers for ambiguities, present follow-up questions if needed
 - **MANDATORY**: Keep asking until ALL ambiguities resolved OR user explicitly asks to proceed
 
-### ⛔ GATE: Await `/answer` Submission
+### ⛔ GATE: Await All [Answer]: Tags
 
 DO NOT proceed to Step 7 until all questions are answered and validated.
 
