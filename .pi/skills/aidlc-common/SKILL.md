@@ -145,7 +145,14 @@ Let's begin!
 
 ## Question Format Guide
 
-### Rule: Present All Questions Inline — Use `/answer` for Navigation
+### Agent Detection
+
+**If pi agent** (pi-answer available): Use inline format below with `/answer` hint.
+**If other agent** (Claude Code, Copilot, Kiro): Use `[Answer]:` file-based format — create `{stage}-questions.md` with questions and `[Answer]:` tags for user to fill in.
+
+---
+
+### Pi Format: Present All Questions Inline
 
 **ALL questions must be presented inline in the assistant response.** Users can answer via the `pi-answer` TUI (if installed) or by replying directly in chat — both are fully supported.
 
@@ -163,6 +170,32 @@ Let's begin!
 ```
 pi install npm:pi-answer
 ```
+
+### Non-Pi Format: File-Based [Answer]: Tags
+
+Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags:
+
+```markdown
+## Authentication
+**Provider**: Which auth provider should we use?
+- A) Auth0 — Managed service, OAuth/OIDC
+- B) Cognito — AWS-native
+- C) Custom JWT — Full control
+- D) Other
+
+[Answer]: 
+
+**MFA**: Should MFA be enforced?
+- A) Yes, required
+- B) Optional
+- C) No
+
+[Answer]: 
+```
+
+Ask user to fill `[Answer]:` tags directly in the file. Do not proceed until ALL tags are completed.
+
+---
 
 ### Question Format
 
@@ -199,13 +232,13 @@ Structure questions for clean pi-answer extraction:
 ### Question Rules
 - Option labels must be self-contained (answer makes sense without the description)
 - Max 5 options per question + **Other** (always include Other as last option)
-- Do **NOT** create `*-questions.md` files — pi-answer handles collection
-- Do **NOT** use `[Answer]:` tags
+- **Pi only**: Do NOT create `*-questions.md` files — pi-answer handles collection
+- **Non-pi only**: DO create `{stage}-questions.md` with `[Answer]:` tags
 - **When in doubt, ask** — overconfidence leads to poor outcomes. Default to asking rather than assuming. Evaluate ALL relevant question categories; don't skip areas without justification.
 
 ### Compact Answers Summary (after answers arrive)
 
-After the user submits answers — via `/answer` or chat reply — create `{phase-name}-answers.md`:
+After the user submits answers — via `/answer`, chat reply, or filled `[Answer]:` tags — create `{phase-name}-answers.md`:
 
 ```markdown
 | # | Question | Answer | Notes |
