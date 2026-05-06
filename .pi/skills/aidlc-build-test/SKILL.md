@@ -92,6 +92,20 @@ Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md`:
 
 **MANDATORY**: Actually run the build and test commands, don't just document them.
 
+### Destructive Command Guardrails
+
+**NEVER run without explicit user confirmation:**
+- Commands targeting production (`--env=prod`, `--stage=production`, production connection strings)
+- `docker-compose down -v` (destroys volumes/data)
+- `DROP DATABASE`, `DROP TABLE`, `DELETE FROM` without WHERE clause
+- `rm -rf` on data directories or volumes
+- Any command that destroys persistent state (databases, caches, message queues)
+
+**Before running destructive test infrastructure commands** (e.g., teardown scripts, volume cleanup):
+1. Confirm the target is a local/test environment
+2. Show the command and its effect to the user
+3. Wait for explicit approval
+
 ### 8.1 Run Build
 
 Execute the build command from `build-instructions.md`. Capture stdout/stderr.
