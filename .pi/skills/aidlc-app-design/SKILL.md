@@ -44,6 +44,7 @@ description: >
 - [ ] Generate `component-methods.md` with method signatures (business rules detailed later in Functional Design)
 - [ ] Generate `services.md` with service definitions and orchestration patterns
 - [ ] Generate `component-dependency.md` with dependency relationships and communication patterns
+- [ ] Generate `application-design.md` that consolidates all above into a single reference document
 - [ ] Validate design completeness and consistency
 
 ### 4. Generate Context-Appropriate Questions

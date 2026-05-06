@@ -201,6 +201,7 @@ Structure questions for clean pi-answer extraction:
 - Max 5 options per question + **Other** (always include Other as last option)
 - Do **NOT** create `*-questions.md` files — pi-answer handles collection
 - Do **NOT** use `[Answer]:` tags
+- **When in doubt, ask** — overconfidence leads to poor outcomes. Default to asking rather than assuming. Evaluate ALL relevant question categories; don't skip areas without justification.
 
 ### Compact Answers Summary (after answers arrive)
 

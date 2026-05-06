@@ -43,7 +43,7 @@ The corresponding rules file is in the same directory, derived by convention:
 
 ### During Requirements Analysis
 
-Opt-in prompts from loaded `*.opt-in.md` files are presented to user as part of clarifying questions.
+Opt-in prompts from loaded `*.opt-in.md` files are presented to user as part of clarifying questions. Present each opt-in question in the same language as the user's conversation.
 
 After receiving answers:
 1. Record each extension's enablement status in `aidlc-docs/aidlc-state.md` under `## Extensions` (compact table):
