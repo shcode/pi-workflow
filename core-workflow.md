@@ -10,18 +10,18 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 
 **Sequence**: Workspace Detection (auto) → Code Generation (minimal plan) → Build & Test. All other stages skipped.
 
-**Override**: User says “full workflow” → ignore fast path.
+**Override**: User says "full workflow" → ignore fast path.
 
 ## Startup Sequence
 
-1. Load `aidlc-common` skill (shared rules: validation, audit, questions, depth levels, welcome message)
-2. Load `aidlc-extensions` skill (discover opt-in extensions, deferred loading)
+1. Read `aidlc-common` skill (shared rules: validation, audit, questions, depth levels, welcome message)
+2. Read `aidlc-extensions` skill (discover opt-in extensions, deferred loading)
 3. Display welcome message once (embedded in `aidlc-common`)
 4. Begin Workspace Detection (`aidlc-workspace` skill)
 
 ## Stage Router
 
-For each stage: load skill → execute → present completion → wait for explicit approval → log in `audit.md` → update `aidlc-state.md` + `aidlc-progress.md`. Complete each unit fully before next unit.
+For each stage: read skill file → execute → present completion → wait for explicit approval → append to `audit.md` → update `aidlc-state.md` + append to `aidlc-progress.md`. Complete each unit fully before next unit.
 
 | Phase | Stage | Condition | Skill |
 |---|---|---|---|
@@ -46,29 +46,40 @@ For each stage: load skill → execute → present completion → wait for expli
 ## How to Route to Next Skill
 
 After completing any stage:
-1. Update `aidlc-state.md` (compact table: set row `[x]`, update Stage/Next)
-2. Update `aidlc-progress.md` (narrative status, per-unit detail)
-3. Determine next stage from router above
-4. Load next skill via `/skill:<name>`
-5. Pass context (brownfield flag, requirements, etc.)
-6. Log transition in `audit.md`
+1. Get current line count of `aidlc-progress.md` (`wc -l`)
+2. Append narrative to `aidlc-progress.md` (human-facing log)
+3. Get new line count → record as `START-END`
+4. Update `aidlc-state.md` (set row `[x]`, update Stage/Next, update `## Current Work`)
+5. Determine next stage from router above
+6. Read next skill file from the skills directory (e.g., `skills/aidlc-workspace/SKILL.md`)
+7. Pass context (brownfield flag, requirements, etc.)
+8. Append to `audit.md` with `Detail: progress.md:START-END`
+
+## State File Rules
+
+| File | Access | Purpose |
+|---|---|---|
+| `aidlc-state.md` | READ + UPDATE | Compact routing table + `## Current Work` (~35 lines, bounded). NEVER add rows. |
+| `aidlc-progress.md` | APPEND-ONLY | Narrative log. Never read except targeted offset+limit via audit.md pointers when user asks about history. |
+| `audit.md` | APPEND-ONLY | Decision log. Never read except: `head -n 5` for rotation, `tail -n 50` when user asks about history. |
+| `backlog.md` | READ + UPDATE | Features / Tech Debt / Deferred Decisions. Read at requirements + workflow planning. |
 
 ## Cross-Cutting Rules
 
 - Content validation before file creation
-- Questions in dedicated `.md` files only (A-E + Other, `[Answer]:` tags)
+- Questions in `{stage}-questions.md` files (A-E + Other, `[Answer]:` tags)
 - Extensions are hard constraints; check `Enabled` status in `aidlc-state.md` `## Extensions` table
 - Welcome message displayed once only
+- When in doubt, ask — overconfidence leads to poor outcomes
+- Design-first: code must match approved design documents
 
 ## Key Principles
 
 - Only execute stages that add value
 - Show plan before starting
 - User can include/exclude stages
-- Log ALL inputs in `audit.md` with ISO 8601 timestamps — always append, never overwrite
+- Append ALL inputs to `audit.md` with ISO 8601 timestamps — never overwrite
 - Mark checkboxes `[x]` immediately in same interaction
-- `aidlc-state.md` = compact routing table (~30 lines, bounded). NEVER add rows.
-- `aidlc-progress.md` = unbounded narrative tracker. All per-unit/per-step detail goes here.
 - Construction phases: standardized 2-option completion messages
 - No emergent behavior
 - App code in workspace root ONLY; docs in `aidlc-docs/` ONLY
@@ -93,11 +104,13 @@ After completing any stage:
 │   │   │   ├── nfr-requirements/
 │   │   │   ├── nfr-design/
 │   │   │   ├── infrastructure-design/
-│   │   │   ├── ui-design/              # Storybook component inventory
-│   │   │   └── code/               # Markdown summaries
+│   │   │   ├── ui-design/
+│   │   │   └── code/              # Markdown summaries
 │   │   └── build-and-test/
+│   ├── storybook/                  # 📖 Stories + wireframe stubs
 │   ├── operations/                 # 🟡 Placeholder
-│   ├── aidlc-state.md        # Compact routing table (~30 lines, bounded)
-│   ├── aidlc-progress.md     # Unbounded narrative tracker
-│   └── audit.md              # Append-only audit trail
+│   ├── aidlc-state.md              # Compact routing table + Current Work (~35 lines)
+│   ├── aidlc-progress.md           # Append-only narrative (write-only)
+│   ├── backlog.md                  # Features / Tech Debt / Deferred Decisions
+│   └── audit.md                    # Append-only decision log (write-only)
 ```
