@@ -118,6 +118,8 @@ Then deletes `.parallel/{unit}/`.
 
 ## How to Route to Next Skill
 
+**Skill caching**: Once loaded via `/skill:`, a skill stays in context. Do NOT re-load a skill already in your conversation.
+
 After completing any stage:
 1. Get current line count of `aidlc-progress.md` (`wc -l`)
 2. Append narrative to `aidlc-progress.md` (human-facing log)

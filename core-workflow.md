@@ -45,6 +45,8 @@ For each stage: read skill file → execute → present completion → wait for 
 
 ## How to Route to Next Skill
 
+**Skill caching**: Once a skill file is read in a session, it stays in context. Do NOT re-read a skill file already in your conversation. Only read a skill file once per session.
+
 After completing any stage:
 1. Get current line count of `aidlc-progress.md` (`wc -l`)
 2. Append narrative to `aidlc-progress.md` (human-facing log)
