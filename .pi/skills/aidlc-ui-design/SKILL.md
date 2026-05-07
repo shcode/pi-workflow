@@ -116,13 +116,13 @@ This renders a labeled wireframe box showing the component name and current prop
 
 #### Story file convention
 
-Path: `src/stories/{ComponentName}.stories.tsx` (adjust for stack)
+Path: `aidlc-docs/storybook/{ComponentName}.stories.tsx` (adjust for stack)
 
 #### CSF3 structure (both modes)
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { ComponentName } from '../components/ComponentName';
+import { ComponentName } from './stubs/ComponentName';
 
 const meta: Meta<typeof ComponentName> = {
   title: 'Design System/{Category}/{ComponentName}',
@@ -173,7 +173,7 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 
 | Component | Story File | Variants | Status |
 |---|---|---|---|
-| ComponentName | src/stories/ComponentName.stories.tsx | default, primary, disabled, loading | ⏳ Pending |
+| ComponentName | aidlc-docs/storybook/ComponentName.stories.tsx | default, primary, disabled, loading | ⏳ Pending |
 
 > **🟠 Brownfield**: Source column shows the actual file path of the existing component.
 
@@ -206,13 +206,11 @@ Detect the package manager by checking project root for lock files in this order
 | `package-lock.json` | `npm run storybook` |
 | none found | `npx storybook dev -p 6006` |
 
-Also check whether Storybook is configured (look for `"storybook"` in `package.json` scripts or a `.storybook/` directory). If NOT configured, show the init command first:
+Also check whether Storybook is configured (look for `"storybook"` in `package.json` scripts or a `.storybook/` directory). If NOT configured:
+1. Run `npx storybook@latest init` to install and configure Storybook
+2. Configure stories path to `aidlc-docs/storybook/` in `.storybook/main.ts`
 
-```bash
-npx storybook@latest init
-```
-
-Present the appropriate command(s) to the user clearly so they can start Storybook themselves.
+Present the start command to the user so they can launch Storybook.
 
 ### Step 9: Present Review Message
 
@@ -220,8 +218,8 @@ Present the appropriate command(s) to the user clearly so they can start Storybo
 # 🎨 UI Design Complete — [unit-name]
 
 **Stories created:**
-- `src/stories/ComponentA.stories.tsx` — N stories (default, primary, secondary, disabled, loading)
-- `src/stories/ComponentB.stories.tsx` — N stories
+- `aidlc-docs/storybook/ComponentA.stories.tsx` — N stories (default, primary, secondary, disabled, loading)
+- `aidlc-docs/storybook/ComponentB.stories.tsx` — N stories
 
 **Reused without changes:** ComponentC
 
@@ -298,7 +296,7 @@ Log approval in `audit.md`. Mark UI Design complete in `aidlc-state.md`.
 
 Pass to `aidlc-code-gen`:
 - Component inventory: `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`
-- Story files: `src/stories/*.stories.tsx`
+- Story files: `aidlc-docs/storybook/*.stories.tsx`
 
 `aidlc-code-gen` MUST:
 - Implement components to match approved story specs exactly (same props, variants, states)

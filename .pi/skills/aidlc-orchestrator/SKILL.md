@@ -168,9 +168,10 @@ After completing any stage:
 │   │   │   ├── nfr-requirements/
 │   │   │   ├── nfr-design/
 │   │   │   ├── infrastructure-design/
-│   │   │   ├── ui-design/              # Storybook component inventory
+│   │   │   ├── ui-design/              # Component inventory
 │   │   │   └── code/               # Markdown summaries
 │   │   └── build-and-test/
+│   ├── storybook/                  # 📖 Stories + wireframe stubs
 │   ├── operations/                 # 🟡 Placeholder
 │   ├── aidlc-state.md        # Compact routing table + Current Work (~35 lines, bounded)
 │   ├── aidlc-progress.md     # Append-only narrative log (human-facing, agents never read)
