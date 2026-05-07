@@ -97,7 +97,20 @@ Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-nam
 ### Step 6: Create Storybook Stories
 
 **HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
-Create a stub (`export function ComponentName() { return null; }`) so the story can import it — replaced during Code Generation.
+Create a wireframe stub so the story can import and preview it — replaced during Code Generation:
+
+```tsx
+export function ComponentName(props: Record<string, any>) {
+  return (
+    <div style={{ border: '2px dashed #888', borderRadius: 8, padding: 16, fontFamily: 'monospace', fontSize: 12 }}>
+      <strong>ComponentName</strong>
+      <pre>{JSON.stringify(props, null, 2)}</pre>
+    </div>
+  );
+}
+```
+
+This renders a labeled wireframe box showing the component name and current props — enough for Storybook review.
 
 **🟠 Brownfield**: Import the real implementation directly — no stubs. Purpose is living documentation + visual regression baseline.
 
@@ -129,7 +142,7 @@ export const Default: Story = { args: { /* minimal required props */ } };
 
 | | Greenfield | 🟠 Brownfield |
 |---|---|---|
-| Import | Stub component | Real implementation |
+| Import | Wireframe stub (dashed box + props) | Real implementation |
 | `argTypes` | Designed from scratch | Derived from actual TS props |
 | Extra story | — | `AllVariants` kitchen-sink (render all variants in a flex row) |
 | Variants | Design freely | Only document what exists — don’t invent |
