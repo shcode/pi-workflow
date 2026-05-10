@@ -208,6 +208,7 @@ After the user fills all `[Answer]:` tags, create `{phase-name}-answers.md`:
 
 - Future stages read this summary for context — not the raw conversation
 - Question ≤10 words condensed; Answer = chosen label or free-text summary
+- **After creating the answers summary, discard the questions file from context.** Do NOT re-read `{stage}-questions.md` — the answers summary is the only reference going forward.
 
 ### Contradiction and Ambiguity Detection
 
