@@ -136,14 +136,15 @@ Update `build-and-test-summary.md` with actual results (not placeholders):
 **Trigger**: Any test failure or build error in Step 8.
 
 **Process** (max 3 iterations per failure):
-1. Parse the error output — identify failing test name + error message
-2. Read the failing test file and the source file it tests
-3. Read relevant design document for context
+1. Parse the error output — identify failing test name + file:line + error message
+2. **Targeted read only**: read the failing section of the test file and source file (use `offset+limit` around the error line, not the entire file)
+3. Read relevant design document for context (if not already in context)
 4. Identify root cause (implementation bug vs test bug vs design mismatch)
 5. **If implementation bug**: fix the source file, re-run failing test
 6. **If test bug**: fix the test, re-run
 7. **If design mismatch**: trigger Mid-Construction Design Change (from `aidlc-common`)
-8. After fix, re-run the full test suite to check for regressions
+8. After fix confirmed, **discard raw code content from context** — only retain the fix summary
+9. Re-run the full test suite to check for regressions
 
 **Escalate to user if**:
 - 3 fix attempts exhausted without resolution

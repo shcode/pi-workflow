@@ -81,6 +81,13 @@ To save context tokens, discard input artifacts once the current stage produces 
 - `component-inventory.md` — code-gen needs it
 - `backlog.md` — compact, referenced at planning stages
 
+### Targeted Code Reads (troubleshooting)
+
+When reading source code for debugging or fixes:
+1. **Never read entire files** — use error output to identify file:line, then `read --offset --limit` around that area
+2. **Discard after fix** — once the fix is applied and confirmed, discard raw code from context; retain only a one-line fix summary
+3. **Search first** — use `grep` or semantic tools to locate the relevant function/section before reading
+
 ### Smart Context Loading by Stage
 - **Early Stages**: Load `aidlc-state.md` (compact) + workspace analysis
 - **Requirements/Stories**: Load `aidlc-state.md` + reverse engineering + requirements artifacts
