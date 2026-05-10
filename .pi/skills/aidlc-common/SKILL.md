@@ -63,6 +63,24 @@ Before resuming ANY stage, automatically read all relevant artifacts from previo
 - **Per-Unit Design**: functional-design.md, nfr-requirements.md, nfr-design.md, infrastructure-design.md
 - **Code Stages**: All code files, plans, AND all previous readable artifacts
 
+### Context Pipeline — Discard After Use
+
+To save context tokens, discard input artifacts once the current stage produces its own output that captures the same information:
+
+| After this stage completes | Discard from context |
+|---|---|
+| Requirements Analysis | Reverse-eng artifacts (architecture.md, component-inventory.md, technology-stack.md) — captured in requirements.md |
+| App Design | Full `requirements.md` and `stories.md` / `personas.md` — answers summaries + design docs sufficient |
+| Construction starts | `execution-plan.md` — `aidlc-state.md` tracks what to execute |
+| Questions answered | `{stage}-questions.md` — answers summary is the only reference |
+
+**NEVER discard** (keep throughout session):
+- `aidlc-state.md` — always needed for routing
+- `*-answers.md` — compact, needed across stages
+- Design docs during construction — code-gen needs them
+- `component-inventory.md` — code-gen needs it
+- `backlog.md` — compact, referenced at planning stages
+
 ### Smart Context Loading by Stage
 - **Early Stages**: Load `aidlc-state.md` (compact) + workspace analysis
 - **Requirements/Stories**: Load `aidlc-state.md` + reverse engineering + requirements artifacts
