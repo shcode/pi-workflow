@@ -51,8 +51,8 @@ Based on `aidlc-state.md`:
 Before resuming ANY stage, automatically read all relevant artifacts from previous stages.
 
 **NEVER read these files for context:**
-- `audit.md` — Append-only decision log. Write-only for the AI. Exception: `tail -n 50` when user asks about history.
-- `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. Exception: targeted `read --offset --limit` using line range from audit.md `Detail` field when user explicitly asks about history.
+- `audit.md` — Append-only decision log. Write-only for the AI. Exception: `tail -n 50` when user asks about history; `head -n 5` for rotation. **After any permitted read, extract the needed info (date or Detail pointer) and discard the raw content from context immediately.**
+- `aidlc-progress.md` — Append-only narrative log. Write-only for the AI. Exception: targeted `read --offset --limit` using line range from audit.md `Detail` field when user explicitly asks about history. **After reading the targeted section, extract the relevant facts and discard the raw content from context.**
 
 **Readable artifacts by stage:**
 - **Reverse Engineering**: architecture.md, code-structure.md, api-documentation.md
