@@ -199,45 +199,57 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 
 **MANDATORY**: Stories must be previewable before presenting to user.
 
-#### 8.1 Verify/Create Storybook Configuration
+**Storybook lives entirely in `aidlc-docs/storybook/`** — never in workspace root. Project code references storybook stories as specs, not the other way around.
 
-Check for `.storybook/` directory at workspace root. If NOT configured:
-1. Run `npx storybook@latest init --skip-install` (or framework-appropriate init)
-2. Install dependencies: `npm install -D @storybook/react @storybook/react-vite storybook`
+#### 8.1 Verify/Create Self-Contained Storybook
+
+Check for `aidlc-docs/storybook/package.json`. If NOT configured, create the full setup:
+
+```bash
+cd aidlc-docs/storybook
+npm init -y
+npm install -D @storybook/react @storybook/react-vite storybook react react-dom
+npx storybook@latest init --skip-install
+```
 
 #### 8.2 Configure Stories Path
 
-Ensure `.storybook/main.ts` (or `.js`) includes the storybook directory:
+Ensure `aidlc-docs/storybook/.storybook/main.ts` points to local stories:
 
 ```ts
 const config = {
-  stories: [
-    '../aidlc-docs/storybook/**/*.stories.@(ts|tsx)'
-  ],
-  // ... rest of config
+  stories: ['../**/*.stories.@(ts|tsx)'],
+  framework: '@storybook/react-vite',
 };
+export default config;
 ```
 
-#### 8.3 Verify Stubs Are Importable
+#### 8.3 Directory Structure
 
-Confirm all stub files exist at the paths imported by stories:
-- Stories import from `./stubs/ComponentName`
-- Stubs must exist at `aidlc-docs/storybook/stubs/ComponentName.tsx`
+```
+aidlc-docs/storybook/
+├── .storybook/
+│   └── main.ts
+├── stubs/
+│   └── {ComponentName}.tsx    # Wireframe stubs (greenfield)
+├── {ComponentName}.stories.tsx
+└── package.json
+```
 
-If any stub is missing, create it now.
+#### 8.4 Verify Stubs Are Importable
 
-#### 8.4 Detect Start Command
+Confirm all stub files exist at `aidlc-docs/storybook/stubs/{ComponentName}.tsx`.
+Stories import from `./stubs/ComponentName`. If any stub is missing, create it now.
 
-| Lock file | Command |
-|---|---|
-| `pnpm-lock.yaml` | `pnpm storybook` |
-| `yarn.lock` | `yarn storybook` |
-| `package-lock.json` | `npm run storybook` |
-| none | `npx storybook dev -p 6006` |
+#### 8.5 Detect Start Command
 
-#### 8.5 Smoke Test
+```bash
+cd aidlc-docs/storybook && npx storybook dev -p 6006
+```
 
-Run the start command briefly (or `npx storybook build --test`) to verify no import errors. If errors found, fix before presenting to user.
+#### 8.6 Smoke Test
+
+Run `cd aidlc-docs/storybook && npx storybook build --test` to verify no import errors. Fix before presenting to user.
 
 ### Step 9: Present Review Message
 
@@ -254,7 +266,7 @@ Run the start command briefly (or `npx storybook build --test`) to verify no imp
 
 > **💻 Start Storybook:**
 > ```bash
-> [detected-command]
+> cd aidlc-docs/storybook && npx storybook dev -p 6006
 > ```
 > Then open **http://localhost:6006** in your browser.
 
