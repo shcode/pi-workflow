@@ -199,61 +199,66 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 
 **MANDATORY**: Stories must be previewable before presenting to user.
 
-**Setup**: `.storybook/` config and deps live at **project root** (devDependency). Stories live in `aidlc-docs/storybook/` as design specs. No duplicate dependencies.
+**Setup**: `.storybook/` config lives in the **frontend package directory** (wherever `package.json` with React/framework deps is). Stories live in `aidlc-docs/storybook/` as design specs. Storybook is a devDependency of the frontend package.
 
-#### 8.1 Verify/Create Storybook Configuration
+#### 8.1 Locate Frontend Package
 
-Check for `.storybook/` at workspace root. If NOT configured:
+Identify the frontend package directory (has React/Vue/Svelte in dependencies):
+- Monorepo: e.g., `apps/web/`, `packages/frontend/`
+- Standalone: e.g., `frontend/`, `client/`
+- If unclear, ask user
+
+#### 8.2 Verify/Create Storybook Configuration
+
+Check for `.storybook/` in the frontend package dir. If NOT configured:
 ```bash
+cd <frontend-package-dir>
 npx storybook@latest init
 ```
 
-#### 8.2 Configure Stories Path
+#### 8.3 Configure Stories Path
 
-Ensure `.storybook/main.ts` includes the docs storybook directory:
+Ensure `<frontend-package-dir>/.storybook/main.ts` points to the docs storybook directory (relative path):
 
 ```ts
 const config = {
   stories: [
-    '../aidlc-docs/storybook/**/*.stories.@(ts|tsx)'
+    '<relative-path-to>/aidlc-docs/storybook/**/*.stories.@(ts|tsx)'
   ],
   framework: '@storybook/react-vite',
 };
 export default config;
 ```
 
-#### 8.3 Directory Structure
+#### 8.4 Directory Structure
 
 ```
 <WORKSPACE-ROOT>/
-├── .storybook/              # Config (at project root, uses project deps)
-│   └── main.ts
-├── package.json             # storybook as devDependency
-└── aidlc-docs/storybook/    # Stories + stubs (design specs)
+├── <frontend-package>/        # e.g., apps/web/
+│   ├── .storybook/            # Config (uses this package's deps)
+│   │   └── main.ts
+│   ├── package.json           # storybook as devDependency
+│   └── src/
+└── aidlc-docs/storybook/      # Stories + stubs (design specs)
     ├── stubs/
     │   └── {ComponentName}.tsx
     └── {ComponentName}.stories.tsx
 ```
 
-#### 8.4 Verify Stubs Are Importable
+#### 8.5 Verify Stubs Are Importable
 
 Confirm all stub files exist at `aidlc-docs/storybook/stubs/{ComponentName}.tsx`.
 Stories import from `./stubs/ComponentName`. If any stub is missing, create it now.
 
-#### 8.5 Start Command
+#### 8.6 Start Command
 
-Detect package manager from lock file:
+```bash
+cd <frontend-package-dir> && npx storybook dev -p 6006
+```
 
-| Lock file | Command |
-|---|---|
-| `pnpm-lock.yaml` | `pnpm storybook` |
-| `yarn.lock` | `yarn storybook` |
-| `package-lock.json` | `npm run storybook` |
-| none | `npx storybook dev -p 6006` |
+#### 8.7 Smoke Test
 
-#### 8.6 Smoke Test
-
-Run `npx storybook build --test` to verify no import errors. Fix before presenting to user.
+Run `cd <frontend-package-dir> && npx storybook build --test` to verify no import errors. Fix before presenting to user.
 
 ### Step 9: Present Review Message
 
@@ -270,7 +275,7 @@ Run `npx storybook build --test` to verify no import errors. Fix before presenti
 
 > **💻 Start Storybook:**
 > ```bash
-> npx storybook dev -p 6006
+> cd <frontend-package-dir> && npx storybook dev -p 6006
 > ```
 > Then open **http://localhost:6006** in your browser.
 
