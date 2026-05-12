@@ -49,6 +49,10 @@ Based on `aidlc-state.md`:
 
 On resume, read `aidlc-state.md` `## Resume` section. Load ONLY the files listed there. Do NOT guess or load extra files.
 
+### Mandatory: Load RULES.md
+
+If `RULES.md` exists at workspace root, read it at session start. Its contents are **hard constraints** that override default workflow behavior. User-defined rules take precedence over skill defaults where they conflict.
+
 ### Context Pipeline — Discard After Use
 
 | After stage completes | Discard from context |
@@ -58,7 +62,7 @@ On resume, read `aidlc-state.md` `## Resume` section. Load ONLY the files listed
 | Construction starts | execution-plan.md (state tracks what to execute) |
 | Questions answered | {stage}-questions.md (answers summary is the reference) |
 
-**NEVER discard**: `aidlc-state.md`, `GOAL.md`, `*-answers.md`, design docs during construction, `backlog.md`
+**NEVER discard**: `aidlc-state.md`, `GOAL.md`, `RULES.md`, `*-answers.md`, design docs during construction, `backlog.md`
 
 ### Targeted Code Reads
 

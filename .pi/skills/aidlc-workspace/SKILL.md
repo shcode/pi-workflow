@@ -103,6 +103,7 @@ aidlc-orchestrator, aidlc-common
 | Purpose | Path |
 |---------|------|
 | Goal | GOAL.md |
+| Rules | RULES.md |
 
 ### Decisions
 <!-- Max 7 lines. Key choices that constrain future stages. -->
