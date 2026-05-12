@@ -160,7 +160,7 @@ A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. 
 - User approves at each gate
 - No emergent behavior — all transitions explicit and logged
 - App code in workspace root ONLY; docs in `aidlc-docs/` ONLY
-- `aidlc-state.md` is bounded (~45 lines) — never add rows
+- `aidlc-state.md` is bounded (~50 lines) — never add rows
 - `aidlc-progress.md` is append-only — agents never read it (except targeted offset via audit pointer)
 
 ---

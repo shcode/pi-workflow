@@ -92,7 +92,7 @@ When user requests work outside existing units:
 
 | File | Access | Purpose |
 |---|---|---|
-| `aidlc-state.md` | READ + UPDATE | Project-wide stages + Current Work + Resume (~45 lines, bounded). |
+| `aidlc-state.md` | READ + UPDATE | Project-wide stages + Current Work + Resume (~50 lines, bounded). |
 | `backlog/{unit}.md` | READ + UPDATE | Per-unit construction progress. Created at Units Generation. |
 | `backlog.md` | READ + UPDATE | Master tracker. Read at session start + planning. |
 | `aidlc-progress.md` | APPEND-ONLY | Narrative log. Never read except targeted offset+limit via audit.md pointers. |
@@ -165,7 +165,7 @@ A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. 
 │   ├── operations/                 # 🟡 Placeholder
 │   ├── backlog/                    # Per-unit construction tracking
 │   │   └── {unit-name}.md
-│   ├── aidlc-state.md              # Project-wide routing + Resume (~45 lines)
+│   ├── aidlc-state.md              # Project-wide routing + Resume (~50 lines)
 │   ├── aidlc-progress.md           # Append-only narrative (write-only)
 │   ├── backlog.md                  # Master work tracker
 │   └── audit.md                    # Append-only decision log (write-only)
