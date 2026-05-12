@@ -141,6 +141,7 @@ Before presenting completion to user, verify generated code against design:
 - [ ] Re-read `functional-design/` — confirm all domain entities and business rules are implemented
 - [ ] Re-read `nfr-design/` (if exists) — confirm patterns applied (caching, retry, etc.)
 - [ ] Re-read `ui-design/component-inventory.md` (if exists) — confirm all components match stories
+- [ ] **Update storybook stubs**: For each component in `aidlc-docs/storybook/stubs/`, replace stub content with a re-export of the real implementation (e.g., `export { Button } from '../../<frontend-package>/src/components/Button'`). Stories must render real components, not wireframe boxes.
 - [ ] Cross-check unit stories: every acceptance criterion has corresponding code
 - [ ] Verify no TODO/FIXME left in generated code (unless explicitly planned)
 
