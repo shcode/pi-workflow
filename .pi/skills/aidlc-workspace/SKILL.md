@@ -110,39 +110,26 @@ Create `aidlc-docs/aidlc-progress.md` (append-only narrative log — human refer
 ## Current Status
 [Free-form status description]
 
-## Stage Log
-<!-- Each entry: ISO timestamp | Stage | Unit (if applicable) | One-line status -->
-| Timestamp | Stage | Unit | Status |
-|---|---|---|---|
-
-## Units
-| Unit | Status | Stories | Notes |
-|------|--------|---------|-------|
-
-## Iterations
-| Date | Stage | Action | Notes |
-|------|-------|--------|-------|
 ```
 
-**Entry format for Stage Log** (append one row per stage transition):
-```
-| 2024-01-15T10:30:00Z | Requirements Analysis | — | Complete, 12 requirements documented |
-| 2024-01-15T11:45:00Z | Functional Design | auth-unit | In progress, domain model drafted |
-```
-
-**Rule**: `aidlc-state.md` NEVER grows beyond the table format above. All narrative status, per-unit tracking, and iteration history go to `aidlc-progress.md` (append-only, human-facing).
+**Rule**: `aidlc-state.md` is BOUNDED (~35 lines). It contains ONLY: Stages checklist, Extensions table, Current Work, and Next. No append-only tables.
 
 **Rule**: Update `## Current Work` in `aidlc-state.md` at each meaningful checkpoint:
 - When entering a new stage (update Stage + Step)
-- When switching units (update Unit)
+- When switching items (update Unit to new backlog item name)
 - When crossing a major boundary (plan approved, code gen parts, etc.)
 
 Keep each value to one line. This section replaces reading `aidlc-progress.md` for resume context.
 
-Create `aidlc-docs/backlog.md` (empty at start, agent updates throughout):
+Create `aidlc-docs/backlog.md` (master work tracker — all units, features, tech debt):
 
 ```markdown
 # Backlog
+
+<!-- Status: [todo] | [in progress] | [pending] | [done] -->
+<!-- Each item gets its own tracking file in backlog/{item-name}.md -->
+
+## Units of Work
 
 ## Features
 
@@ -150,6 +137,17 @@ Create `aidlc-docs/backlog.md` (empty at start, agent updates throughout):
 
 ## Deferred Decisions
 ```
+
+**Backlog item format** (one line per item):
+```
+- [todo] item-name — brief description
+- [in progress] item-name — brief description
+- [done] item-name — brief description
+```
+
+Create `aidlc-docs/backlog/` directory for per-item tracking files.
+
+Per-item tracking file template and rules are in `aidlc-common` (Backlog Management section).
 
 Create `aidlc-docs/audit.md` (append-only decision log — agents write here but NEVER read back):
 

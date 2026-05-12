@@ -138,6 +138,11 @@ Log in `audit.md`.
 
 Mark Units Generation complete in `aidlc-state.md`.
 
+**MANDATORY**: Add all generated units to `aidlc-docs/backlog.md` under `## Units of Work`:
+```markdown
+- [todo] unit-name — brief description (stories: US-1, US-3)
+```
+
 ---
 
 ## Critical Rules

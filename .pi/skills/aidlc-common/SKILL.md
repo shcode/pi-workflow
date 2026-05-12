@@ -449,41 +449,69 @@ This rule applies to ALL file modifications during construction phases.
 
 ## Backlog Management
 
-`aidlc-docs/backlog.md` — lightweight tracker for deferred features, tech debt, and open decisions.
+`aidlc-docs/backlog.md` — master work tracker for all items (units, features, tech debt, deferred decisions).
 
-### When to Add
-
-Add items to backlog when:
-- Scope is explicitly deferred during requirements ("out of scope for now")
-- A new idea arises during construction that would change scope
-- Tech debt is identified during code gen or review
-- A decision is deferred (e.g., "choose caching strategy later")
-- User says "add X to backlog"
-
-### Format
+### Structure
 
 ```markdown
 # Backlog
 
+## Units of Work
+- [todo] item-name — brief description
+
 ## Features
-- [ ] Description — Added YYYY-MM-DD · Source: [requirements/stories/construction]
 
 ## Technical Debt
-- [ ] Description — Added YYYY-MM-DD
 
 ## Deferred Decisions
-- [ ] Description — Added YYYY-MM-DD · Context: brief reason
 ```
+
+Sections are in priority order: Units of Work first, then Features, then the rest.
+
+### Item Format
+
+```markdown
+- [todo] item-name — brief description
+- [in progress] item-name — brief description
+- [pending] item-name — blocked/waiting
+- [done] item-name — brief description
+```
+
+### Per-Item Tracking
+
+Each item gets `aidlc-docs/backlog/{item-name}.md` when work starts — bounded (~20 lines), same shape as `aidlc-state.md`. Persists progress across sessions.
+
+### When to Add
+
+Add items to backlog when:
+- Units Generation produces units of work
+- Scope is deferred during requirements
+- New idea arises during construction
+- Tech debt identified during code gen
+- User says "add X to backlog"
 
 ### When to Read
 
-Read `backlog.md` when:
-- Starting Requirements Analysis (ask "any backlog items to include in this session?")
-- Starting Workflow Planning (check if backlog items affect scope)
-- User says "show backlog" or "promote backlog item"
+Read `backlog.md` on every fresh session:
+- Pick which item to work on (first `[in progress]`, or ask user to choose from `[todo]`)
+- Read `backlog/{item}.md` for the active item only
+- Update `aidlc-state.md` `## Current Work` Unit field = active item name
 
-**Do NOT** auto-promote backlog items. User must explicitly request inclusion.
+### Per-Item Tracking File (`backlog/{item-name}.md`)
+
+Same structure as `aidlc-state.md`. Created by copying `aidlc-state.md` when switching away from an item.
+
+### Switching Items
+
+1. Copy `aidlc-state.md` → `backlog/{current-item}.md` (persist current progress)
+2. Update `backlog.md` status (old item → `[pending]` or `[done]`, new item → `[in progress]`)
+3. Copy `backlog/{new-item}.md` → `aidlc-state.md` (restore new item's state)
+4. If new item has no tracking file yet: reset `aidlc-state.md` stages to `[ ]` and set Unit = new item name
+
+**Never manually write `backlog/{item}.md`** — always copy from `aidlc-state.md`.
 
 ### Item Lifecycle
 
-`[ ]` open → `[>]` in progress (explicitly included in current workflow) → `[x]` done
+`[todo]` → `[in progress]` (session starts working on it) → `[done]` (code gen complete)
+
+**Do NOT** auto-promote backlog items. User must explicitly choose which item to work on.
