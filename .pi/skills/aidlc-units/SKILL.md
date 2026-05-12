@@ -143,6 +143,30 @@ Mark Units Generation complete in `aidlc-state.md`.
 - [todo] unit-name — brief description (stories: US-1, US-3)
 ```
 
+**MANDATORY**: Create `aidlc-docs/backlog/{unit-name}.md` for each unit:
+```markdown
+# Unit: {unit-name}
+
+## Construction Stages
+| # | Stage | Status |
+|---|-------|--------|
+| 1 | Functional Design | [ ] |
+| 2 | NFR Requirements & Design | [ ] |
+| 3 | UI Design | [ ] |
+| 4 | Infrastructure Design | [ ] |
+| 5 | Code Generation | [ ] |
+
+## Current Step
+Not started
+
+## Resume
+### Load
+| Purpose | Path |
+|---------|------|
+| Unit def | inception/application-design/unit-of-work.md |
+| Story map | inception/application-design/unit-of-work-story-map.md |
+```
+
 ---
 
 ## Critical Rules

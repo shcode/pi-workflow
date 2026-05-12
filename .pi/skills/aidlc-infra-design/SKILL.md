@@ -86,4 +86,4 @@ Do not proceed until user explicitly approves.
 
 ### Step 9: Record Approval and Update Progress
 
-Log in `audit.md`. Mark Infrastructure Design complete in `aidlc-state.md`.
+Log in `audit.md`. Mark Infrastructure Design complete in `backlog/{unit-name}.md`.

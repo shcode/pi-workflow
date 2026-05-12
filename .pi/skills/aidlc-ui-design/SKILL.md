@@ -286,7 +286,7 @@ If any story file is missing or a listed variant has no export, flag it as **⚠
 
 ### Step 13: Record Approval and Update Progress
 
-Log approval in `audit.md`. Mark UI Design complete in `aidlc-state.md`.
+Log approval in `audit.md`. Mark UI Design complete in `backlog/{unit-name}.md`.
 
 ---
 

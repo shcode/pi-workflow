@@ -62,22 +62,17 @@ Record:
 - **Start**: [ISO timestamp]
 - **Workspace**: [Absolute path]
 
-## Stages
-| # | Phase | Stage | Status |
-|---|-------|-------|--------|
-| 1 | INCEPTION | Workspace Detection | [ ] |
-| 2 | INCEPTION | Reverse Engineering | [ ] |
-| 3 | INCEPTION | Requirements Analysis | [ ] |
-| 4 | INCEPTION | User Stories | [ ] |
-| 5 | INCEPTION | Workflow Planning | [ ] |
-| 6 | INCEPTION | Application Design | [ ] |
-| 7 | INCEPTION | Units Generation | [ ] |
-| 8 | CONSTRUCTION | Functional Design | [ ] |
-| 9 | CONSTRUCTION | NFR Requirements & Design | [ ] |
-| 10 | CONSTRUCTION | UI Design | [ ] |
-| 11 | CONSTRUCTION | Infrastructure Design | [ ] |
-| 12 | CONSTRUCTION | Code Generation | [ ] |
-| 13 | CONSTRUCTION | Build and Test | [ ] |
+## Stages (Project-wide)
+| # | Stage | Status |
+|---|-------|--------|
+| 1 | Workspace Detection | [ ] |
+| 2 | Reverse Engineering | [ ] |
+| 3 | Requirements Analysis | [ ] |
+| 4 | User Stories | [ ] |
+| 5 | Workflow Planning | [ ] |
+| 6 | Application Design | [ ] |
+| 7 | Units Generation | [ ] |
+| 8 | Build and Test | [ ] |
 
 ## Extensions
 | Name | Enabled |
@@ -86,6 +81,7 @@ Record:
 ## Current Work
 | Field | Value |
 |-------|-------|
+| Phase | INCEPTION |
 | Stage | Workspace Detection |
 | Unit | — |
 | Step | Starting |
@@ -107,10 +103,11 @@ Record:
 ```
 
 **Rules**:
-- `aidlc-state.md` is BOUNDED (~45 lines max). Contains: Stages, Extensions, Current Work, Next, Resume.
-- Update `## Resume` after every stage with the artifacts the NEXT stage needs.
-- `## Decisions` captures key choices (tech stack, architecture, auth approach, etc.) — max 7 lines, one per decision.
-- `## Current Work` updates at each meaningful checkpoint.
+- `aidlc-state.md` tracks project-wide stages: Inception (1-7) + Build and Test (8).
+- Per-unit construction stages are tracked in `backlog/{unit-name}.md`.
+- During CONSTRUCTION, `## Current Work` Unit = active backlog item name.
+- Update `## Resume` after every stage with artifacts the NEXT stage needs.
+- `## Decisions` captures key choices — max 7 lines, one per decision.
 
 ### `aidlc-docs/aidlc-progress.md`
 
@@ -126,6 +123,7 @@ Record:
 # Backlog
 
 <!-- Status: [todo] | [in progress] | [pending] | [done] -->
+<!-- Per-unit construction progress tracked in backlog/{unit-name}.md -->
 
 ## Units of Work
 

@@ -84,7 +84,7 @@ Do not proceed until user explicitly approves.
 
 ### Step 9: Record Approval and Update Progress
 
-Log in `audit.md`. Mark NFR Requirements complete in `aidlc-state.md`.
+Log in `audit.md`. Mark NFR Requirements complete in `backlog/{unit-name}.md`.
 
 ---
 
@@ -154,4 +154,4 @@ Do not proceed until user explicitly approves.
 
 ### Step 9: Record Approval and Update Progress
 
-Log in `audit.md`. Mark NFR Design complete in `aidlc-state.md`.
+Log in `audit.md`. Mark NFR Design complete in `backlog/{unit-name}.md`.

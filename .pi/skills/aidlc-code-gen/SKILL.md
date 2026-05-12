@@ -95,7 +95,7 @@ Log user's approval response with timestamp in `audit.md`.
 
 ### Step 9: Update Progress
 
-Mark Code Generation Part 1 complete: append entry to `aidlc-progress.md`, update `## Current Work` in `aidlc-state.md` (Step = "Part 1 complete, awaiting Part 2").
+Mark Code Generation Part 1 complete: append entry to `aidlc-progress.md`, update `## Current Step` in `backlog/{unit-name}.md` (Step = "Part 1 complete, awaiting Part 2").
 
 ---
 
@@ -174,7 +174,7 @@ Do not proceed until user explicitly approves generated code.
 
 ### Step 16: Record Approval and Update Progress
 
-Log approval in `audit.md`. Mark Code Generation row to `[x]` in `aidlc-state.md` (compact table, if final unit). Update `## Current Work` in `aidlc-state.md`. Append unit completion details to `aidlc-progress.md`.
+Log approval in `audit.md`. Mark Code Generation row `[x]` in `backlog/{unit-name}.md`. Update `## Current Step` in `backlog/{unit-name}.md`. Update `aidlc-state.md` `## Current Work` Step. Append unit completion details to `aidlc-progress.md`.
 
 ---
 

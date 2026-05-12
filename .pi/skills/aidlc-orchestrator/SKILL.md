@@ -53,21 +53,30 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 
 ## Stage Router
 
-| Phase | Stage | Condition | Skill |
+### Inception (project-wide, tracked in `aidlc-state.md`)
+| # | Stage | Condition | Skill |
 |---|---|---|---|
-| 🔵 INCEPTION | Workspace Detection | ALWAYS | `aidlc-workspace` |
-| 🔵 INCEPTION | Reverse Engineering | Brownfield, stale/no artifacts | `aidlc-reverse-eng` |
-| 🔵 INCEPTION | Requirements Analysis | ALWAYS (adaptive depth) | `aidlc-requirements` |
-| 🔵 INCEPTION | User Stories | User-facing features | `aidlc-stories` |
-| 🔵 INCEPTION | Workflow Planning | ALWAYS | `aidlc-workflow-plan` |
-| 🔵 INCEPTION | Application Design | New components/services | `aidlc-app-design` |
-| 🔵 INCEPTION | Units Generation | Multi-unit decomposition | `aidlc-units` |
-| 🟢 CONSTRUCTION | Functional Design | New business logic (per-unit) | `aidlc-functional-design` |
-| 🟢 CONSTRUCTION | NFR Requirements & Design | Performance/security (per-unit) | `aidlc-nfr` |
-| 🟢 CONSTRUCTION | UI Design | New UI components (per-unit) | `aidlc-ui-design` |
-| 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
-| 🟢 CONSTRUCTION | Code Generation | ALWAYS (per-unit) | `aidlc-code-gen` |
-| 🟢 CONSTRUCTION | Build and Test | ALWAYS (after all units) | `aidlc-build-test` |
+| 1 | Workspace Detection | ALWAYS | `aidlc-workspace` |
+| 2 | Reverse Engineering | Brownfield, stale/no artifacts | `aidlc-reverse-eng` |
+| 3 | Requirements Analysis | ALWAYS (adaptive depth) | `aidlc-requirements` |
+| 4 | User Stories | User-facing features | `aidlc-stories` |
+| 5 | Workflow Planning | ALWAYS | `aidlc-workflow-plan` |
+| 6 | Application Design | New components/services | `aidlc-app-design` |
+| 7 | Units Generation | Multi-unit decomposition | `aidlc-units` |
+
+### Construction (per-unit, tracked in `backlog/{unit-name}.md`)
+| # | Stage | Condition | Skill |
+|---|---|---|---|
+| 1 | Functional Design | New business logic | `aidlc-functional-design` |
+| 2 | NFR Requirements & Design | Performance/security | `aidlc-nfr` |
+| 3 | UI Design | New UI components | `aidlc-ui-design` |
+| 4 | Infrastructure Design | Infrastructure changes | `aidlc-infra-design` |
+| 5 | Code Generation | ALWAYS | `aidlc-code-gen` |
+
+### Final (project-wide, tracked in `aidlc-state.md` row 8)
+| Stage | Condition | Skill |
+|---|---|---|
+| Build and Test | After ALL units done | `aidlc-build-test` |
 
 🟡 **OPERATIONS**: Placeholder for future deployment/monitoring workflows.
 
@@ -83,10 +92,24 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 
 After completing any stage:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range) + decision entry to `audit.md`
-2. **Update state**: Mark row `[x]`, update `## Current Work`, update `## Resume` manifest (paths next stage needs + any new decisions), set `## Next`
+2. **Update state**:
+   - **Inception stages**: Mark row `[x]` in `aidlc-state.md`, update `## Current Work`, `## Resume`, `## Next`
+   - **Construction stages**: Mark row `[x]` in `backlog/{unit-name}.md`, update its Current Step + Resume. Update `aidlc-state.md` `## Current Work` Step only.
 3. **Load next skill**
 
 **Skill caching**: Once loaded, a skill stays in context. Do NOT re-load.
+
+---
+
+## Construction Flow
+
+1. Inception completes → all units added to `backlog.md` as `[todo]`
+2. Agent picks first `[todo]` unit (or asks user) → marks `[in progress]` → creates `backlog/{unit}.md`
+3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
+4. Load `aidlc-construction-rules` skill (once, cached)
+5. Execute construction stages per `backlog/{unit}.md` checklist
+6. Unit complete → mark `[done]` in `backlog.md` → pick next unit
+7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8)
 
 ---
 

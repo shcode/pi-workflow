@@ -103,4 +103,4 @@ Do not proceed until user explicitly approves.
 
 ### Step 9: Record Approval and Update Progress
 
-Log approval in `audit.md`. Mark Functional Design complete in `aidlc-state.md`.
+Log approval in `audit.md`. Mark Functional Design complete in `backlog/{unit-name}.md`.

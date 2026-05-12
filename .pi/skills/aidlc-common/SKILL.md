@@ -165,13 +165,43 @@ All defined artifacts are created; depth controls detail level within them.
 - [done] item-name — brief description
 ```
 
-### Per-Item Tracking
-Each active item gets `aidlc-docs/backlog/{item-name}.md` (copy of `aidlc-state.md` at switch time).
+### Per-Unit Construction Tracking
 
-### Switching Items
-1. Copy `aidlc-state.md` → `backlog/{current-item}.md`
-2. Update `backlog.md` statuses
-3. Copy `backlog/{new-item}.md` → `aidlc-state.md` (or reset if new)
+Each unit of work gets `aidlc-docs/backlog/{unit-name}.md` when construction begins:
+
+```markdown
+# Unit: {unit-name}
+
+## Construction Stages
+| # | Stage | Status |
+|---|-------|--------|
+| 1 | Functional Design | [ ] |
+| 2 | NFR Requirements & Design | [ ] |
+| 3 | UI Design | [ ] |
+| 4 | Infrastructure Design | [ ] |
+| 5 | Code Generation | [ ] |
+
+## Current Step
+[Current step within the active stage]
+
+## Resume
+### Load
+| Purpose | Path |
+|---------|------|
+```
+
+**Rules**:
+- Created when a unit transitions to `[in progress]`
+- Updated during construction (mark stages `[x]`, update Current Step + Resume)
+- `aidlc-state.md` `## Current Work` Unit field = active unit name
+- Agent reads `backlog/{unit}.md` for construction progress, NOT `aidlc-state.md`
+- Build and Test (project-wide) runs after ALL units reach `[done]` — tracked in `aidlc-state.md` row 8
+
+### Switching Units
+1. Update current unit’s `backlog/{unit}.md` (save current step)
+2. Update `backlog.md` statuses (old → `[pending]`, new → `[in progress]`)
+3. Update `aidlc-state.md` `## Current Work` Unit = new unit name
+4. Read `backlog/{new-unit}.md` for construction progress
 
 ### When to Read
 Read `backlog.md` on every fresh session. Pick first `[in progress]` or ask user to choose from `[todo]`.
