@@ -97,7 +97,7 @@ Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-nam
 ### Step 6: Create Storybook Stories
 
 **HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
-Create a wireframe stub so the story can import and preview it — replaced during Code Generation:
+Create a wireframe stub in `aidlc-docs/storybook/stubs/{ComponentName}.tsx` so the story can import and preview it:
 
 ```tsx
 export function ComponentName(props: Record<string, any>) {
@@ -195,22 +195,49 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 - [ ] List any tokens that don't exist yet and need to be added to the design system
 ```
 
-### Step 8: Show Storybook Start Instructions
+### Step 8: Ensure Storybook Can Preview
 
-Detect the package manager by checking project root for lock files in this order:
+**MANDATORY**: Stories must be previewable before presenting to user.
 
-| Lock file | Command to start Storybook |
+#### 8.1 Verify/Create Storybook Configuration
+
+Check for `.storybook/` directory at workspace root. If NOT configured:
+1. Run `npx storybook@latest init --skip-install` (or framework-appropriate init)
+2. Install dependencies: `npm install -D @storybook/react @storybook/react-vite storybook`
+
+#### 8.2 Configure Stories Path
+
+Ensure `.storybook/main.ts` (or `.js`) includes the storybook directory:
+
+```ts
+const config = {
+  stories: [
+    '../aidlc-docs/storybook/**/*.stories.@(ts|tsx)'
+  ],
+  // ... rest of config
+};
+```
+
+#### 8.3 Verify Stubs Are Importable
+
+Confirm all stub files exist at the paths imported by stories:
+- Stories import from `./stubs/ComponentName`
+- Stubs must exist at `aidlc-docs/storybook/stubs/ComponentName.tsx`
+
+If any stub is missing, create it now.
+
+#### 8.4 Detect Start Command
+
+| Lock file | Command |
 |---|---|
 | `pnpm-lock.yaml` | `pnpm storybook` |
 | `yarn.lock` | `yarn storybook` |
 | `package-lock.json` | `npm run storybook` |
-| none found | `npx storybook dev -p 6006` |
+| none | `npx storybook dev -p 6006` |
 
-Also check whether Storybook is configured (look for `"storybook"` in `package.json` scripts or a `.storybook/` directory). If NOT configured:
-1. Run `npx storybook@latest init` to install and configure Storybook
-2. Configure stories path to `aidlc-docs/storybook/` in `.storybook/main.ts`
+#### 8.5 Smoke Test
 
-Present the start command to the user so they can launch Storybook.
+Run the start command briefly (or `npx storybook build --test`) to verify no import errors. If errors found, fix before presenting to user.
 
 ### Step 9: Present Review Message
 
