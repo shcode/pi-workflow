@@ -92,7 +92,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-ui-design-questions.md`. Wait for user to fill all `[Answer]:` tags. Add follow-up `[Answer]:` questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
+Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-ui-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Add follow-up `[Answer]:` questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Create Storybook Stories
 

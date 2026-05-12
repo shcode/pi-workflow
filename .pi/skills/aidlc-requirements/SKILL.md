@@ -101,7 +101,7 @@ After receiving answers:
 - Focus on functional requirements, non-functional requirements, user scenarios, business context
 - Use `[Answer]:` file-based format (see `aidlc-common`)
 - Save questions to `aidlc-docs/requirements-questions.md`
-- Wait for user to fill all `[Answer]:` tags
+- STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
 - **MANDATORY**: Analyze ALL answers for ambiguities, present follow-up questions if needed
 - **MANDATORY**: Keep asking until ALL ambiguities resolved OR user explicitly asks to proceed
 

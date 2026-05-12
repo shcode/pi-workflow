@@ -117,7 +117,7 @@ Save as `aidlc-docs/inception/plans/story-generation-plan.md`
 
 ### Steps 7-8: Collect Answers
 
-Wait for user to fill all `[Answer]:` tags. Do not proceed until ALL submitted.
+STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Do not proceed until ALL submitted.
 
 ### Step 9: ANALYZE ANSWERS (MANDATORY)
 

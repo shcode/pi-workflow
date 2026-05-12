@@ -70,7 +70,7 @@ Save questions with `[Answer]:` tags to `aidlc-docs/application-design-questions
 
 ### 7. Collect Answers
 
-Wait for user to fill all `[Answer]:` tags.
+STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
 
 ### 8. ANALYZE ANSWERS (MANDATORY)
 

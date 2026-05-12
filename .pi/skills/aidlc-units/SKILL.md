@@ -64,7 +64,7 @@ Save as `aidlc-docs/inception/plans/unit-of-work-plan.md`
 
 ### Steps 5-6: Collect Answers
 
-Save questions with `[Answer]:` tags to `aidlc-docs/units-questions.md`. Wait for user to fill all `[Answer]:` tags.
+Save questions with `[Answer]:` tags to `aidlc-docs/units-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
 
 ### Step 7: ANALYZE ANSWERS (MANDATORY)
 

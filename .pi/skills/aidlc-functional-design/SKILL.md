@@ -63,7 +63,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-functional-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Save questions with `[Answer]:` tags to `aidlc-docs/functional-design-questions.md`. Wait for user to fill all `[Answer]:` tags. **MANDATORY**: Review ALL responses for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
+Save questions with `[Answer]:` tags to `aidlc-docs/functional-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. **MANDATORY**: Review ALL responses for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
 
 ### Step 6: Generate Functional Design Artifacts
 

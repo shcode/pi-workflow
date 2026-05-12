@@ -52,7 +52,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-nfr-requirements-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for user to fill all `[Answer]:` tags. **MANDATORY**: Review ALL for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses.
+STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. **MANDATORY**: Review ALL for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses.
 
 ### Step 6: Generate NFR Requirements Artifacts
 
@@ -122,7 +122,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-nfr-design-plan.md`
 
 ### Step 5: Collect and Analyze Answers
 
-Wait for user to fill all `[Answer]:` tags. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
+STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
 
 ### Step 6: Generate NFR Design Artifacts
 

@@ -53,7 +53,7 @@ Save as `aidlc-docs/construction/plans/{unit-name}-infrastructure-design-plan.md
 
 ### Step 5: Collect and Analyze Answers
 
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-infra-design-questions.md`. Wait for user to fill all `[Answer]:` tags. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
+Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-infra-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
 
 ### Step 6: Generate Infrastructure Design Artifacts
 
