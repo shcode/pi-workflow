@@ -107,9 +107,21 @@ After completing any stage:
 2. Agent picks first `[todo]` unit (or asks user) → marks `[in progress]` → creates `backlog/{unit}.md`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
-5. Execute construction stages per `backlog/{unit}.md` checklist
+5. Execute stages per `backlog/{unit}.md` checklist
 6. Unit complete → mark `[done]` in `backlog.md` → pick next unit
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8)
+
+### New Feature Mid-Project
+
+When user requests work outside existing units:
+1. Add to `backlog.md` under `## Features`
+2. Current unit → `[pending]` in `backlog.md`
+3. Create `backlog/{feature}.md` with appropriate stages (mini-inception + construction)
+4. `aidlc-state.md` `## Current Work` Unit = new feature name
+5. Execute stages per `backlog/{feature}.md`
+6. When done → `[done]`, switch back to previous `[pending]` unit
+
+`aidlc-state.md` is NEVER overwritten or reset. It’s the project shell.
 
 ---
 
