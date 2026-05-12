@@ -103,6 +103,19 @@ After completing any stage:
 
 ## Construction Flow
 
+### Single-Unit Shortcut
+
+**Condition**: Workflow Planning determines only 1 unit of work (no decomposition needed).
+
+**Skip**: Units Generation stage entirely. Instead:
+1. Create `backlog/main.md` directly with construction stages
+2. Add `- [todo] main — [project description]` to `backlog.md`
+3. Proceed to construction immediately
+
+This avoids the overhead of Units Generation for simple projects.
+
+### Multi-Unit Flow
+
 1. Inception completes → all units added to `backlog.md` as `[todo]`
 2. Agent picks first `[todo]` unit (or asks user) → marks `[in progress]` → creates `backlog/{unit}.md`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
@@ -131,25 +144,33 @@ The `## Resume` section in `aidlc-state.md` is the **single source of truth** fo
 
 - **Load table**: Exact file paths the next stage needs to read
 - **Decisions**: Key choices made so far (max 7 lines, one per decision)
+- **Skills**: Which skills the agent needs to load on resume
 
 A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. No guessing.
+
+Example during construction:
+```markdown
+## Resume
+### Skills
+aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
+
+### Load
+| Purpose | Path |
+|---------|------|
+| Goal | GOAL.md |
+| Unit | backlog/auth-service.md |
+| Design | construction/auth-service/functional-design/business-logic-model.md |
+
+### Decisions
+- Auth: Auth0 with MFA
+- Stack: Next.js + Prisma + PostgreSQL
+```
 
 ---
 
 ## Parallel Construction Batch
 
-**Condition**: Multiple units with no inter-dependencies (check `unit-of-work-dependency.md`).
-
-**Execution**:
-- Parent identifies independent group from dependency matrix
-- Launches sub-agents (1 per unit), each writes to `.parallel/{unit-name}/`
-- Sub-agents load: `aidlc-common` + `aidlc-construction-rules` + per-unit stage skills
-- Sub-agents read: ALL inception artifacts + unit-specific prior outputs
-- Sub-agents NEVER write to `aidlc-state.md`
-- Parent merges `.parallel/{unit}/` → `construction/{unit}/` after all complete
-- Single approval prompt for the batch
-
-**Failure**: Retry once → if still failing, mark FAILED → merge successful units → escalate failed to user.
+For multiple independent units, load `aidlc-parallel` skill. It handles sub-agent orchestration, merge, and failure recovery.
 
 ---
 

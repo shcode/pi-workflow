@@ -46,9 +46,12 @@ Record:
 **Has existing code** (brownfield):
 - `brownfield = true`
 - Check `aidlc-docs/inception/reverse-engineering/reverse-engineering-timestamp.md`:
-  - **Current** (exists + <30 days + all 7 artifacts present): Skip to Requirements Analysis
-  - **Stale or missing**: Next is Reverse Engineering
-  - **User requests rerun**: Reverse Engineering regardless
+  - **Current** (exists + all 7 artifacts present + no git commits since timestamp): Skip to Requirements Analysis
+  - **Stale** (git commits exist since last analysis): Ask user "Codebase has changed since last analysis. Re-run Reverse Engineering?" If yes → Reverse Engineering. If no → skip.
+  - **Missing** (no timestamp or artifacts): Next is Reverse Engineering
+  - **User explicitly requests rerun**: Reverse Engineering regardless
+
+**Staleness check**: `git log --since="[timestamp from file]" --oneline -- . ':!aidlc-docs' | wc -l` — if >0, codebase changed.
 
 ## Step 4: Create State Files
 
@@ -92,6 +95,9 @@ Record:
 ## Resume
 <!-- Updated after every stage. New sessions load ONLY these files for context. -->
 <!-- GOAL.md is always included once it exists. -->
+
+### Skills
+aidlc-orchestrator, aidlc-common
 
 ### Load
 | Purpose | Path |
