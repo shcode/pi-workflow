@@ -216,7 +216,9 @@ Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags for
 - Max 5 options per question + **Other** (always include Other as last option)
 - Option labels must be self-contained (answer makes sense without the description)
 - Create `{stage}-questions.md` in `aidlc-docs/` with `[Answer]:` tags
-- **HARD STOP**: After creating the questions file, STOP. Do NOT fill `[Answer]:` tags yourself. Do NOT proceed. Wait for the USER to edit the file and provide their answers. The agent NEVER writes answers — only the user does.
+- **HARD STOP**: After creating the questions file, STOP. Do NOT fill `[Answer]:` tags yourself. Do NOT proceed. Wait for the USER to provide answers — either by editing the file OR by replying in chat.
+- **If user answers in chat**: Do NOT write answers back into `-questions.md`. Go directly to creating `{phase-name}-answers.md` summary. The questions file stays untouched.
+- **If user edits the file**: Read the filled tags, then create `{phase-name}-answers.md` summary.
 - Do not proceed until ALL `[Answer]:` tags are filled by the user
 - **When in doubt, ask** — overconfidence leads to poor outcomes. Default to asking rather than assuming. Evaluate ALL relevant question categories; don't skip areas without justification.
 
