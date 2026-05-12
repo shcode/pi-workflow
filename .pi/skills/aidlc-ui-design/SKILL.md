@@ -76,7 +76,7 @@ Generate plan with checkboxes [] listing each component to create a story for.
 
 **DIRECTIVE**: Clarify all ambiguities before creating any stories.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Design System** — Which library? (MUI, Ant Design, Shadcn, Radix, Tailwind, custom)
 - **Component Scope** — Which components are truly new vs reuse/extend of existing?
 - **Visual Variants** — Sizes, colors, themes (e.g., primary/secondary/destructive)

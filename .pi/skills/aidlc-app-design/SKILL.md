@@ -53,7 +53,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists. Overconfidence leads to poor designs.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Component Identification** - Boundaries, organization, grouping
 - **Component Methods** - Method signatures, input/output, interface contracts
 - **Service Layer Design** - Orchestration, boundaries, coordination patterns

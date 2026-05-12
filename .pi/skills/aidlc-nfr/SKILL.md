@@ -34,7 +34,7 @@ Generate plan with checkboxes [] for NFR assessment. Focus on scalability, perfo
 
 **DIRECTIVE**: Analyze functional design to identify ALL areas where NFR clarification improves system quality.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Scalability Requirements** - Expected load, growth patterns, scaling triggers
 - **Performance Requirements** - Response times, throughput, latency, benchmarks
 - **Availability Requirements** - Uptime, disaster recovery, failover
@@ -107,7 +107,7 @@ Generate plan with checkboxes []. Focus on design patterns and logical component
 
 **DIRECTIVE**: Analyze NFR requirements to identify ALL areas where clarification improves NFR design quality.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Resilience Patterns** - Fault tolerance, retry strategies, failure recovery
 - **Scalability Patterns** - Scaling mechanisms, load boundaries, growth projections
 - **Performance Patterns** - Optimization strategy, latency targets, throughput

@@ -50,7 +50,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Story Grouping** - Grouping strategy, story affinity, logical clustering
 - **Dependencies** - Integration approach, shared resources, inter-unit communication
 - **Team Alignment** - Team structure, ownership boundaries, collaboration
@@ -149,7 +149,7 @@ Mark Units Generation complete in `aidlc-state.md`.
 
 ### Planning Phase
 - Generate ONLY context-relevant questions
-- Use `[Answer]:` tag format (see `aidlc-common`)
+- Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format
 - Analyze ALL answers for ambiguities
 - Resolve ALL ambiguities with follow-ups
 - Get explicit approval before generation

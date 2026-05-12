@@ -20,7 +20,7 @@ description: >
 - **Standard**: Normal complexity - gather functional and non-functional requirements
 - **Comprehensive**: Complex, high-risk - detailed requirements with traceability
 
-See `aidlc-common` skill for depth-levels reference.
+See `aidlc-common` skill for depth-levels reference. Load `aidlc-questions` skill for question format.
 
 ---
 
@@ -99,7 +99,7 @@ After receiving answers:
 - **ALWAYS** present clarifying questions unless requirements are exceptionally clear
 - Ask about ANY missing, unclear, or ambiguous areas
 - Focus on functional requirements, non-functional requirements, user scenarios, business context
-- Use `[Answer]:` file-based format (see `aidlc-common`)
+- Load `aidlc-questions` skill if not cached. Use `[Answer]:` file-based format
 - Save questions to `aidlc-docs/requirements-questions.md`
 - STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
 - **MANDATORY**: Analyze ALL answers for ambiguities, present follow-up questions if needed

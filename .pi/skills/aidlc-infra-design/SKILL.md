@@ -38,7 +38,7 @@ description: >
 
 **DIRECTIVE**: Analyze functional and NFR design to identify ALL areas where clarification improves infrastructure decisions.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Deployment Environment** - Cloud provider, environment setup, deployment targets
 - **Compute Infrastructure** - Compute service choices, sizing, scaling
 - **Storage Infrastructure** - Database selection, storage patterns, data lifecycle

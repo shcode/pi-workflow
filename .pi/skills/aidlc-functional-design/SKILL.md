@@ -47,7 +47,7 @@ description: >
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **Business Logic Modeling** - Core entities, workflows, data transformations
 - **Domain Model** - Domain concepts, entity relationships, data structures
 - **Business Rules** - Decision rules, validation logic, constraints, policies

@@ -82,7 +82,7 @@ Create `aidlc-docs/inception/plans/user-stories-assessment.md`:
 
 **CRITICAL**: Default to asking questions when ANY ambiguity exists. Better to ask too many than create incomplete stories.
 
-Use `[Answer]:` tag format (see `aidlc-common`). Evaluate ALL categories:
+Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
 - **User Personas** - User types, roles, characteristics, motivations
 - **Story Granularity** - Detail level, story size, breakdown approach
 - **Story Format** - Format preferences, template usage, documentation standards
@@ -185,7 +185,7 @@ Wait for explicit approval. Record response.
 
 ### Planning Phase
 - Generate ONLY context-relevant questions
-- Use `[Answer]:` tag format (see `aidlc-common`)
+- Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format
 - Analyze ALL answers for ambiguities before proceeding
 - Resolve ALL ambiguities with follow-up questions
 - Get explicit user approval before generation

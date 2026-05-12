@@ -142,7 +142,7 @@ Update `build-and-test-summary.md` with actual results (not placeholders):
 4. Identify root cause (implementation bug vs test bug vs design mismatch)
 5. **If implementation bug**: fix the source file, re-run failing test
 6. **If test bug**: fix the test, re-run
-7. **If design mismatch**: trigger Mid-Construction Design Change (from `aidlc-common`)
+7. **If design mismatch**: Load `aidlc-construction-rules` skill if not cached. Trigger Mid-Construction Design Change process
 8. After fix confirmed, **discard raw code content from context** — only retain the fix summary
 9. Re-run the full test suite to check for regressions
 

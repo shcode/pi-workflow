@@ -4,7 +4,6 @@ description: >
   Master router for AI-Driven Development Life Cycle (AIDLC) software development workflow.
   Load FIRST when user requests software development, coding, building apps, implementing features,
   or any task involving writing or modifying code. Orchestrates which AIDLC stage skills to load.
-  Mirrors `core-workflow.md` in the repo root — that file is the canonical source.
   Progressive disclosure: only loads stage skills when needed.
 ---
 
@@ -18,38 +17,41 @@ This workflow OVERRIDES all other built-in workflows for software development ta
 
 Workflow adapts to the work. AI assesses stages needed based on: user intent, codebase state, complexity, risk.
 
-## Canonical Source
-
-This skill mirrors `core-workflow.md` in the repo root. If discrepancies exist, core-workflow.md wins.
-
-## Startup Sequence
-
-1. **Load `aidlc-common`** skill (shared rules: validation, audit, questions, depth levels, welcome message)
-2. **Load `aidlc-extensions`** skill (discover opt-in extensions, deferred loading)
-3. **Display welcome message** once (embedded in `aidlc-common`)
-4. **Begin Workspace Detection** (`aidlc-workspace` skill)
+---
 
 ## Fast Path (Simple Changes)
 
-**Condition**: Brownfield project + user request matches ALL of:
+**Condition**: Brownfield + ALL of:
 - Scope ≤ 3 files
-- Single clear fix (bug fix, typo, config change, small refactor)
-- No new components, services, or business logic
+- Single clear fix (bug, typo, config, small refactor)
+- No new components/services/business logic
 - No NFR/security impact
 
-**Fast path sequence**:
-1. Workspace Detection (auto-proceed, no approval)
-2. Log intent in `audit.md`
-3. Skip directly to Code Generation (minimal plan: list files to change + rationale)
-4. Build and Test
+**Fast path sequence** (skip common/extensions/questions loading):
+1. Read `aidlc-state.md` (confirm brownfield, get workspace root)
+2. Log intent in `audit.md` (one-line entry)
+3. Make the code change
+4. Run build/tests
+5. One-line audit entry with result
 
-**Skip**: Requirements, Stories, Workflow Plan, App Design, Units, Functional Design, NFR, UI Design, Infra Design.
+**Skip ALL other stages.** No welcome message, no extensions scan, no question format.
 
-**User override**: If user says "full workflow" or "run all stages", ignore fast path.
+**Override**: User says "full workflow" → ignore fast path, run normal sequence.
+
+---
+
+## Normal Startup Sequence
+
+1. Load `aidlc-common` skill (session continuity, state rules, audit format)
+2. Load `aidlc-extensions` skill (discover opt-in extensions)
+3. Display welcome message once (from `aidlc-common`)
+4. Begin Workspace Detection (`aidlc-workspace` skill)
+
+**On resume** (aidlc-state.md exists): `aidlc-workspace` detects this and presents Welcome Back prompt instead of re-scanning.
+
+---
 
 ## Stage Router
-
-For each stage: load skill → execute → present completion → wait for explicit approval → log in `audit.md` → update `aidlc-state.md`. Complete each unit fully before next unit.
 
 | Phase | Stage | Condition | Skill |
 |---|---|---|---|
@@ -61,7 +63,7 @@ For each stage: load skill → execute → present completion → wait for expli
 | 🔵 INCEPTION | Application Design | New components/services | `aidlc-app-design` |
 | 🔵 INCEPTION | Units Generation | Multi-unit decomposition | `aidlc-units` |
 | 🟢 CONSTRUCTION | Functional Design | New business logic (per-unit) | `aidlc-functional-design` |
-| 🟢 CONSTRUCTION | NFR Requirements | Performance/security (per-unit) | `aidlc-nfr` |
+| 🟢 CONSTRUCTION | NFR Requirements & Design | Performance/security (per-unit) | `aidlc-nfr` |
 | 🟢 CONSTRUCTION | UI Design | New UI components (per-unit) | `aidlc-ui-design` |
 | 🟢 CONSTRUCTION | Infrastructure Design | Infrastructure changes (per-unit) | `aidlc-infra-design` |
 | 🟢 CONSTRUCTION | Code Generation | ALWAYS (per-unit) | `aidlc-code-gen` |
@@ -69,86 +71,64 @@ For each stage: load skill → execute → present completion → wait for expli
 
 🟡 **OPERATIONS**: Placeholder for future deployment/monitoring workflows.
 
-**Note**: `aidlc-nfr` skill covers both NFR Requirements and NFR Design stages (they always run together).
+### Additional skills loaded on demand:
+| Skill | When loaded |
+|---|---|
+| `aidlc-questions` | First stage that asks clarifying questions |
+| `aidlc-construction-rules` | First construction stage begins |
+
+---
+
+## Stage Transition (3 steps)
+
+After completing any stage:
+1. **Log**: Append narrative to `aidlc-progress.md` (record line range) + decision entry to `audit.md`
+2. **Update state**: Mark row `[x]`, update `## Current Work`, update `## Resume` manifest (paths next stage needs + any new decisions), set `## Next`
+3. **Load next skill**
+
+**Skill caching**: Once loaded, a skill stays in context. Do NOT re-load.
+
+---
+
+## Resume Manifest Contract
+
+The `## Resume` section in `aidlc-state.md` is the **single source of truth** for cold resume. After every stage transition, update it with:
+
+- **Load table**: Exact file paths the next stage needs to read
+- **Decisions**: Key choices made so far (max 7 lines, one per decision)
+
+A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. No guessing.
+
+---
 
 ## Parallel Construction Batch
 
-**Condition**: Multiple units in `unit-of-work-dependency.md` with no inter-dependencies (no edges between them in dependency matrix).
-
-**Pre-check**: Read `aidlc-docs/inception/application-design/unit-of-work-dependency.md`. If dependency matrix shows independent groups, parallel execution is eligible.
+**Condition**: Multiple units with no inter-dependencies (check `unit-of-work-dependency.md`).
 
 **Execution**:
+- Parent identifies independent group from dependency matrix
+- Launches sub-agents (1 per unit), each writes to `.parallel/{unit-name}/`
+- Sub-agents load: `aidlc-common` + `aidlc-construction-rules` + per-unit stage skills
+- Sub-agents read: ALL inception artifacts + unit-specific prior outputs
+- Sub-agents NEVER write to `aidlc-state.md`
+- Parent merges `.parallel/{unit}/` → `construction/{unit}/` after all complete
+- Single approval prompt for the batch
 
-```markdown
-### Parallel Batch: [Unit Group Names]
+**Failure**: Retry once → if still failing, mark FAILED → merge successful units → escalate failed to user.
 
-**Units in this batch**: [A, B, C] (no inter-dependencies detected)
-
-**Parent agent responsibilities**:
-- Read dependency matrix, identify independent group
-- Launch parallel sub-agents (1 per unit)
-- Wait for ALL completions
-- Merge `.parallel/` temp outputs into canonical paths
-- Update `aidlc-state.md` once (batch completion)
-- Append `audit.md` once (batch entry)
-- Present unified summary for single user approval
-
-**Sub-agent scope**:
-- Loads: `/skill:aidlc-common` + per-unit stage skills
-- Reads: ALL inception artifacts + unit-specific prior stage outputs
-- Writes: `aidlc-docs/construction/.parallel/{unit-name}/` ONLY
-- NEVER writes to `aidlc-state.md`, `aidlc-progress.md`, or `audit.md`
-- Executes: Functional Design → NFR → Infra Design → Code Gen (per unit plan)
-
-**Merge rule**: After all sub-agents complete, parent moves:
-`aidlc-docs/construction/.parallel/{unit}/*` → `aidlc-docs/construction/{unit}/*`
-Then deletes `.parallel/{unit}/`.
-```
-
-**Post-batch**: Single approval prompt. If user requests changes, spawn targeted sub-agent for specific unit only.
-
-**Failure Handling**:
-- **Sub-agent fails**: Retry once with fresh context. If still failing, mark unit as `FAILED` in batch results.
-- **Partial completion**: Merge successful units immediately. Present failed units separately to user.
-- **Timeout** (no `.complete` file after reasonable time): Terminate sub-agent, mark unit `TIMEOUT`.
-- **Escalation**: If ≥2 units fail in a batch, pause and present all errors to user for decision:
-  - Fix individually (spawn targeted sub-agent per failed unit)
-  - Skip failed units and continue
-  - Abort batch and retry sequentially
-
-## How to Route to Next Skill
-
-**Skill caching**: Once loaded via `/skill:`, a skill stays in context. Do NOT re-load a skill already in your conversation.
-
-After completing any stage:
-1. Get current line count of `aidlc-progress.md` (`wc -l`)
-2. Append narrative to `aidlc-progress.md` (human-facing log)
-3. Get new line count → record as `START-END`
-4. Update `aidlc-state.md` (set row `[x]`, update Stage/Next, update `## Current Work`)
-5. Determine next stage from router above
-6. Load next skill via `/skill:<name>`
-7. Pass context (brownfield flag, requirements, etc.)
-8. Append to `audit.md` with `Detail: progress.md:START-END`
-
-## Cross-Cutting Rules (from `aidlc-common`)
-
-- Content validation before file creation
-- Questions presented in `{stage}-questions.md` with `[Answer]:` tags; user fills tags before proceeding
-- Extensions are hard constraints; check `Enabled` status in `aidlc-state.md` `## Extensions` table
-- Welcome message displayed once only
+---
 
 ## Key Principles
 
 - Only execute stages that add value
-- Show plan before starting
-- User can include/exclude stages
-- Log ALL inputs in `audit.md` with ISO 8601 timestamps — always append, never overwrite
-- Mark checkboxes `[x]` immediately in same interaction
-- `aidlc-state.md` = compact routing table + Current Work (~35 lines, bounded). NEVER add rows.
-- `aidlc-progress.md` = append-only narrative log for humans. Agents NEVER read it.
-- Construction phases: standardized 2-option completion messages
-- No emergent behavior
+- Show plan before starting — user can include/exclude stages
+- User approves at each gate
+- No emergent behavior — all transitions explicit and logged
 - App code in workspace root ONLY; docs in `aidlc-docs/` ONLY
+- `aidlc-state.md` is bounded (~45 lines) — never add rows
+- `aidlc-progress.md` is append-only — agents never read it (except targeted offset via audit pointer)
+
+---
 
 ## Directory Structure
 
@@ -157,26 +137,26 @@ After completing any stage:
 ├── [project structure]
 │
 ├── aidlc-docs/                     # 📄 DOCUMENTATION ONLY
-│   ├── inception/                  # 🔵
+│   ├── inception/
 │   │   ├── plans/
-│   │   ├── reverse-engineering/    # Brownfield
+│   │   ├── reverse-engineering/
 │   │   ├── requirements/
 │   │   ├── user-stories/
 │   │   └── application-design/
-│   ├── construction/               # 🟢
+│   ├── construction/
 │   │   ├── plans/
 │   │   ├── {unit-name}/
 │   │   │   ├── functional-design/
 │   │   │   ├── nfr-requirements/
 │   │   │   ├── nfr-design/
 │   │   │   ├── infrastructure-design/
-│   │   │   ├── ui-design/              # Component inventory
-│   │   │   └── code/               # Markdown summaries
+│   │   │   ├── ui-design/
+│   │   │   └── code/
 │   │   └── build-and-test/
-│   ├── storybook/                  # 📖 Stories + wireframe stubs
+│   ├── storybook/
 │   ├── operations/                 # 🟡 Placeholder
-│   ├── aidlc-state.md        # Compact routing table + Current Work (~35 lines, bounded)
-│   ├── aidlc-progress.md     # Append-only narrative log (human-facing, agents never read)
-│   ├── backlog.md            # Features, tech debt, deferred decisions
-│   └── audit.md              # Append-only audit trail
+│   ├── aidlc-state.md
+│   ├── aidlc-progress.md
+│   ├── backlog.md
+│   └── audit.md
 ```

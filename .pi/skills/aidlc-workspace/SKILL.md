@@ -17,48 +17,42 @@ description: >
 ## Step 1: Check for Existing AI-DLC Project
 
 Check if `aidlc-docs/aidlc-state.md` exists:
-- **If exists**: Resume from last phase (read `aidlc-state.md` only — compact table + `## Current Work` section covers all resume context)
-- **If not exists**: Continue with new project assessment
-
-**Note**: `aidlc-state.md` is a compact routing table + Current Work section (~35 lines, bounded). `aidlc-progress.md` is an append-only narrative log for human reference — agents never read it.
+- **If exists**: This is a resume. Read `aidlc-state.md` → follow `## Resume` manifest → present Welcome Back prompt (from `aidlc-common`). Do NOT re-run workspace detection.
+- **If not exists**: Continue with new project assessment (Step 2+)
 
 ## Step 2: Scan Workspace for Existing Code
 
-**Determine if workspace has existing code:**
-- Scan workspace for source code files (.java, .py, .js, .ts, .jsx, .tsx, .kt, .kts, .scala, .groovy, .go, .rs, .rb, .php, .c, .h, .cpp, .hpp, .cc, .cs, .fs, etc.)
-- Check for build files (pom.xml, package.json, build.gradle, etc.)
-- Look for project structure indicators
-- Identify workspace root directory (NOT aidlc-docs/)
+Scan for:
+- Source code files (.java, .py, .js, .ts, .jsx, .tsx, .kt, .go, .rs, .rb, .php, .c, .cpp, .cs, etc.)
+- Build files (pom.xml, package.json, build.gradle, Cargo.toml, etc.)
+- Project structure indicators
 
-**Record findings:**
+Record:
 ```markdown
 ## Workspace State
 - **Existing Code**: [Yes/No]
-- **Programming Languages**: [List if found]
-- **Build System**: [Maven/Gradle/npm/etc. if found]
+- **Programming Languages**: [List]
+- **Build System**: [Maven/Gradle/npm/etc.]
 - **Project Structure**: [Monolith/Microservices/Library/Empty]
 - **Workspace Root**: [Absolute path]
 ```
 
 ## Step 3: Determine Next Phase
 
-**IF workspace is empty (no existing code)**:
-- Set flag: `brownfield = false`
-- Next phase: Requirements Analysis
+**Empty workspace** (greenfield):
+- `brownfield = false`
+- Next: Requirements Analysis
 
-**IF workspace has existing code**:
-- Set flag: `brownfield = true`
-- Check for existing reverse engineering artifacts in `aidlc-docs/inception/reverse-engineering/`
-- Determine staleness (check `reverse-engineering-timestamp.md` if it exists):
-  - **Artifacts are current** if: `reverse-engineering-timestamp.md` exists AND is less than 30 days old AND all 7 artifact files are present
-  - **Artifacts are stale** if: timestamp missing, older than 30 days, or any artifact file missing
-- **IF artifacts exist and current**: Load them, skip to Requirements Analysis
-- **IF artifacts stale or missing**: Next phase is Reverse Engineering
-- **IF user explicitly requests rerun**: Next phase is Reverse Engineering regardless
+**Has existing code** (brownfield):
+- `brownfield = true`
+- Check `aidlc-docs/inception/reverse-engineering/reverse-engineering-timestamp.md`:
+  - **Current** (exists + <30 days + all 7 artifacts present): Skip to Requirements Analysis
+  - **Stale or missing**: Next is Reverse Engineering
+  - **User requests rerun**: Reverse Engineering regardless
 
 ## Step 4: Create State Files
 
-Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for routing):
+### `aidlc-docs/aidlc-state.md`
 
 ```markdown
 # AI-DLC State
@@ -66,7 +60,7 @@ Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for ro
 ## Project
 - **Type**: [Greenfield/Brownfield]
 - **Start**: [ISO timestamp]
-- **Stage**: INCEPTION - Workspace Detection
+- **Workspace**: [Absolute path]
 
 ## Stages
 | # | Phase | Stage | Status |
@@ -98,36 +92,40 @@ Create `aidlc-docs/aidlc-state.md` (compact, bounded — agents read this for ro
 
 ## Next
 [Next stage name]
+
+## Resume
+<!-- Updated after every stage. New sessions load ONLY these files for context. -->
+<!-- GOAL.md is always included once it exists. -->
+
+### Load
+| Purpose | Path |
+|---------|------|
+| Goal | GOAL.md |
+
+### Decisions
+<!-- Max 7 lines. Key choices that constrain future stages. -->
 ```
 
-Create `aidlc-docs/aidlc-progress.md` (append-only narrative log — human reference only, agents use targeted offset reads via audit.md pointers):
+**Rules**:
+- `aidlc-state.md` is BOUNDED (~45 lines max). Contains: Stages, Extensions, Current Work, Next, Resume.
+- Update `## Resume` after every stage with the artifacts the NEXT stage needs.
+- `## Decisions` captures key choices (tech stack, architecture, auth approach, etc.) — max 7 lines, one per decision.
+- `## Current Work` updates at each meaningful checkpoint.
+
+### `aidlc-docs/aidlc-progress.md`
 
 ```markdown
 # AI-DLC Progress
 
-<!-- APPEND-ONLY: Line numbers are stable (never shift). audit.md entries reference line ranges here. -->
-
-## Current Status
-[Free-form status description]
-
+<!-- APPEND-ONLY: Line numbers are stable. audit.md references line ranges here. -->
 ```
 
-**Rule**: `aidlc-state.md` is BOUNDED (~35 lines). It contains ONLY: Stages checklist, Extensions table, Current Work, and Next. No append-only tables.
-
-**Rule**: Update `## Current Work` in `aidlc-state.md` at each meaningful checkpoint:
-- When entering a new stage (update Stage + Step)
-- When switching items (update Unit to new backlog item name)
-- When crossing a major boundary (plan approved, code gen parts, etc.)
-
-Keep each value to one line. This section replaces reading `aidlc-progress.md` for resume context.
-
-Create `aidlc-docs/backlog.md` (master work tracker — all units, features, tech debt):
+### `aidlc-docs/backlog.md`
 
 ```markdown
 # Backlog
 
 <!-- Status: [todo] | [in progress] | [pending] | [done] -->
-<!-- Each item gets its own tracking file in backlog/{item-name}.md -->
 
 ## Units of Work
 
@@ -138,56 +136,45 @@ Create `aidlc-docs/backlog.md` (master work tracker — all units, features, tec
 ## Deferred Decisions
 ```
 
-**Backlog item format** (one line per item):
-```
-- [todo] item-name — brief description
-- [in progress] item-name — brief description
-- [done] item-name — brief description
-```
-
-Create `aidlc-docs/backlog/` directory for per-item tracking files.
-
-Per-item tracking file template and rules are in `aidlc-common` (Backlog Management section).
-
-Create `aidlc-docs/audit.md` (append-only decision log — agents write here but NEVER read back):
+### `aidlc-docs/audit.md`
 
 ```markdown
 # AI-DLC Audit Log
 
-<!-- WRITE-ONLY: Agents append entries here but never read this file for context. -->
-<!-- For detailed narrative history, see: aidlc-docs/aidlc-progress.md -->
-<!-- Archived daily to: aidlc-docs/audit/YYYY-MM-DD.md -->
+<!-- WRITE-ONLY for agents. Archived daily to audit/YYYY-MM-DD.md -->
 ```
 
-## Step 5: Present Completion Message
+Create `aidlc-docs/backlog/` directory.
 
-**For Brownfield Projects:**
+## Step 5: Present Completion
+
+**Brownfield:**
 ```markdown
 # 🔍 Workspace Detection Complete
 
-Workspace analysis findings:
-• **Project Type**: Brownfield project
-• [AI-generated summary of workspace findings in bullet points]
-• **Next Step**: Proceeding to **Reverse Engineering** to analyze existing codebase...
+• **Project Type**: Brownfield
+• [Summary of findings]
+• **Next**: Proceeding to **Reverse Engineering**...
 ```
 
-**For Greenfield Projects:**
+**Greenfield:**
 ```markdown
 # 🔍 Workspace Detection Complete
 
-Workspace analysis findings:
-• **Project Type**: Greenfield project
-• **Next Step**: Proceeding to **Requirements Analysis**...
+• **Project Type**: Greenfield
+• **Next**: Proceeding to **Requirements Analysis**...
 ```
 
-## Step 6: Automatically Proceed
+## Step 6: Auto-Proceed
 
-- **No user approval required** - this is informational only
-- Automatically proceed to next phase:
-  - **Brownfield**: Reverse Engineering (if no artifacts) or Requirements Analysis
-  - **Greenfield**: Requirements Analysis
+No user approval required — automatically proceed to next phase.
 
-## Logging
+## Step 7: Update State
 
-**MANDATORY**: Log initial user request in `audit.md` with complete raw input.
-**MANDATORY**: Log workspace findings in `audit.md`.
+1. Mark row 1 `[x]` in Stages table
+2. Update `## Current Work` (Stage = next stage name)
+3. Update `## Next`
+4. Update `## Resume` → Load table with paths the next stage needs:
+   - Brownfield → reverse-eng artifacts (if they exist)
+   - Greenfield → empty (requirements stage needs no prior artifacts)
+5. Append to `aidlc-progress.md` + `audit.md`

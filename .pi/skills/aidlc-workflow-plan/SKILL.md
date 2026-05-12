@@ -273,9 +273,36 @@ I recommend skipping [Y] stages:
 
 ## Step 10: Handle User Response
 
-- **If approved**: Proceed to next stage in execution plan
+- **If approved**: Create GOAL.md (Step 10.1), then proceed to next stage
 - **If changes requested**: Update plan and re-confirm
 - **If user wants to force include/exclude stages**: Update plan accordingly
+
+## Step 10.1: Create GOAL.md
+
+After plan approval, create `GOAL.md` in **workspace root** (not aidlc-docs/):
+
+```markdown
+# Project Goal
+
+## Summary
+[1-3 sentence description of what we're building/changing and why]
+
+## Key Requirements
+- [All functional requirements, one line each, concise]
+
+## Constraints
+- [Tech stack, architecture, or business constraints]
+
+## Success Criteria
+- [How we know it's done]
+```
+
+**Rules**:
+- Concise reference, not a requirements doc — one line per item
+- Written ONCE after workflow planning approval
+- Updated ONLY if user explicitly changes project direction
+- Always included in `aidlc-state.md` `## Resume` Load table
+- Agents read this on every session resume for project context
 
 ## Step 11: Log Interaction
 
@@ -283,10 +310,7 @@ Log in `audit.md`:
 ```markdown
 ## Workflow Planning - Approval
 **Timestamp**: [ISO timestamp]
-**AI Prompt**: "Ready to proceed with this plan?"
-**User Response**: "[User's COMPLETE RAW response]"
-**Status**: [Approved/Changes Requested]
-**Context**: Workflow plan with [X] stages to execute
-
+**Decision**: Plan approved with [X] stages to execute
+**Detail**: progress.md:[START]-[END]
 ---
 ```
