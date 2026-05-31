@@ -42,19 +42,19 @@ description: >
 - [ ] Determine code location (see Critical Rules for structure patterns)
 - [ ] **Brownfield only**: Review reverse engineering code-structure.md for existing files to modify
 - [ ] Document exact paths (never aidlc-docs/)
-- [ ] Create explicit steps for unit generation:
+- [ ] Create explicit steps for unit generation following **TDD order** (test first, watch fail, then implement):
   - Project Structure Setup (greenfield only)
-  - Business Logic Generation
-  - Business Logic Unit Testing
+  - Business Logic: Write Tests (run → confirm failing)
+  - Business Logic: Implement (make tests pass)
   - Business Logic Summary
-  - API Layer Generation
-  - API Layer Unit Testing
+  - API Layer: Write Tests (run → confirm failing)
+  - API Layer: Implement (make tests pass)
   - API Layer Summary
-  - Repository Layer Generation
-  - Repository Layer Unit Testing
+  - Repository Layer: Write Tests (run → confirm failing)
+  - Repository Layer: Implement (make tests pass)
   - Repository Layer Summary
-  - Frontend Components Generation (if applicable)
-  - Frontend Components Unit Testing (if applicable)
+  - Frontend Components: Write Tests (run → confirm failing, if applicable)
+  - Frontend Components: Implement (make tests pass, if applicable)
   - Frontend Components Summary (if applicable)
   - Database Migration Scripts (if data models exist)
   - Documentation Generation (API docs, README updates)
@@ -144,6 +144,8 @@ Before presenting completion to user, verify generated code against design:
 - [ ] **Update storybook stubs**: For each component in `aidlc-docs/storybook/stubs/`, replace stub content with a re-export of the real implementation (e.g., `export { Button } from '../../<frontend-package>/src/components/Button'`). Stories must render real components, not wireframe boxes.
 - [ ] Cross-check unit stories: every acceptance criterion has corresponding code
 - [ ] Verify no TODO/FIXME left in generated code (unless explicitly planned)
+- [ ] **Run tests**: Execute test suite, show actual output. Do NOT present completion without fresh passing evidence.
+- [ ] **Dispatch review sub-agent**: Provide git diff of generated code + design docs. Sub-agent checks: design compliance, test coverage, edge cases, security, code quality. Fix any blocking issues before presenting to user.
 
 **If mismatches found**: fix them now (return to Step 11 for the specific file). Do not present completion with known gaps.
 
@@ -205,6 +207,8 @@ Log approval in `audit.md`. Mark Code Generation row `[x]` in `backlog/{unit-nam
 - Get explicit approval before generation
 
 ### Generation Phase Rules
+- **TDD ORDER**: For each layer — write tests FIRST, run them (confirm failing), THEN implement. Never write implementation before a failing test exists.
+- **VERIFICATION**: After each "Implement" step, run tests and show actual output. Never claim passing without fresh evidence.
 - **NO HARDCODED LOGIC**: Only execute what's written in unit plan
 - **FOLLOW PLAN EXACTLY**: Do not deviate from step sequence
 - **UPDATE CHECKBOXES**: Mark [x] immediately after completing each step

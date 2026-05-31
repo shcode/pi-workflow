@@ -135,30 +135,37 @@ Update `build-and-test-summary.md` with actual results (not placeholders):
 
 **Trigger**: Any test failure or build error in Step 8.
 
+**Iron Law**:
+```
+NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+```
+
 **Process** (max 3 iterations per failure):
 1. Parse the error output — identify failing test name + file:line + error message
-2. **Targeted read only**: read the failing section of the test file and source file (use `offset+limit` around the error line, not the entire file)
-3. Read relevant design document for context (if not already in context)
-4. Identify root cause (implementation bug vs test bug vs design mismatch)
-5. **If implementation bug**: fix the source file, re-run failing test
-6. **If test bug**: fix the test, re-run
-7. **If design mismatch**: Load `aidlc-construction-rules` skill if not cached. Trigger Mid-Construction Design Change process
-8. After fix confirmed, **discard raw code content from context** — only retain the fix summary
-9. Re-run the full test suite to check for regressions
+2. **Targeted read only**: read the failing section of the test file and source file (`offset+limit` around error line)
+3. Read relevant design document for context
+4. **State root cause explicitly** before touching any code: "Root cause: [explanation]"
+5. Only after root cause is stated:
+   - **Implementation bug**: fix source file, re-run failing test
+   - **Test bug**: fix test, re-run
+   - **Design mismatch**: Load `aidlc-construction-rules` skill if not cached. Trigger Mid-Construction Design Change
+6. After fix: **run full test suite** — show actual output before claiming fixed
+7. Discard raw code from context — retain one-line fix summary
 
 **Escalate to user if**:
 - 3 fix attempts exhausted without resolution
 - Fix requires architectural change
 - Multiple unrelated failures (>3 distinct errors)
-- Unclear whether source or test is wrong
+- Root cause cannot be determined
 
 **On escalation**:
 ```markdown
 ⚠️ **Build/Test failures could not be auto-resolved:**
 
-| # | Test/Error | Attempts | Last Error |
+| # | Test/Error | Root Cause | Attempts |
 |---|---|---|---|
-| 1 | `test_name` | 3 | `error message` |
+| 1 | `test_name` | [root cause] | 3 |
 
 **Options:**
 - 🔧 Fix manually and re-run
@@ -177,6 +184,8 @@ Update `aidlc-docs/aidlc-state.md`:
 ---
 
 ## Step 10: Present Results to User
+
+**Iron Law**: Before presenting, run the full test suite one final time and include actual output. Never claim passing without fresh evidence.
 
 ```markdown
 # 🔨 Build and Test Complete
