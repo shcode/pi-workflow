@@ -94,7 +94,30 @@ Save as `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`
 
 Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-ui-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Add follow-up `[Answer]:` questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
 
-### Step 6: Create Storybook Stories
+### Step 6: Establish Design Direction
+
+Before creating stories, commit to an aesthetic direction. Document in the UI design plan:
+
+```markdown
+## Design Direction
+- **Tone**: [e.g., brutally minimal, luxury/refined, playful, editorial, organic, industrial]
+- **Differentiation**: [What makes this UI memorable? One key visual idea.]
+- **Typography**: [Display font + body font pairing. NEVER use generic: Inter, Roboto, Arial, system fonts]
+- **Color**: [Dominant color + accent. Commit to a cohesive palette via CSS variables.]
+- **Motion**: [Key animation moments — page load, transitions, hover states]
+- **Spatial**: [Layout approach — asymmetry, grid-breaking, generous whitespace, controlled density]
+```
+
+**Anti-slop rules** (NEVER use):
+- Overused fonts (Inter, Roboto, Arial, Space Grotesk, system-ui)
+- Clichéd purple/blue gradients on white backgrounds
+- Cookie-cutter card layouts with rounded corners and drop shadows
+- Generic hero sections with stock-photo-style composition
+- Evenly-distributed timid color palettes
+
+**Match complexity to vision**: Maximalist designs need elaborate animations. Minimalist designs need precision in spacing and typography. Both require intentionality.
+
+### Step 7: Create Storybook Stories
 
 **HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
 Create a wireframe stub in `aidlc-docs/storybook/stubs/{ComponentName}.tsx` so the story can import and preview it:
@@ -162,7 +185,7 @@ export const Default: Story = { args: { /* minimal required props */ } };
 - `argTypes` descriptions reference token names
 - Flag design gaps in component inventory
 
-### Step 7: Create Component Inventory Document
+### Step 8: Create Component Inventory Document
 
 Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 
@@ -195,7 +218,7 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 - [ ] List any tokens that don't exist yet and need to be added to the design system
 ```
 
-### Step 8: Ensure Storybook Can Preview
+### Step 9: Ensure Storybook Can Preview
 
 **MANDATORY**: Stories must be previewable before presenting to user.
 
@@ -260,7 +283,7 @@ cd <frontend-package-dir> && npx storybook dev -p 6006
 
 Run `cd <frontend-package-dir> && npx storybook build --test` to verify no import errors. Fix before presenting to user.
 
-### Step 9: Present Review Message
+### Step 10: Present Review Message
 
 ```markdown
 # 🎨 UI Design Complete — [unit-name]
@@ -290,13 +313,13 @@ Run `cd <frontend-package-dir> && npx storybook build --test` to verify no impor
 > the stories before proceeding.
 ```
 
-### Step 10: Wait for User to Finish Reviewing
+### Step 11: Wait for User to Finish Reviewing
 
 Do NOT proceed until the user explicitly says they are done (e.g. "done", "looks good", "approved", "continue").
 
 The user may edit story files directly during this window. That is expected and encouraged.
 
-### Step 11: Re-validate Stories
+### Step 12: Re-validate Stories
 
 After the user signals they are done, re-read all story files listed in the component inventory.
 
@@ -321,7 +344,7 @@ Present a concise re-validation summary:
 
 If any story file is missing or a listed variant has no export, flag it as **⚠ Needs Fix** and ask the user to resolve before continuing.
 
-### Step 12: Final Approval Gate
+### Step 13: Final Approval Gate
 
 ```markdown
 > **🚀 <u>**READY TO PROCEED?**</u>**
@@ -332,7 +355,7 @@ If any story file is missing or a listed variant has no export, flag it as **⚠
 > ✅ **Approve and Continue** — stories are locked as the implementation spec for Code Generation
 ```
 
-### Step 13: Record Approval and Update Progress
+### Step 14: Record Approval and Update Progress
 
 Log approval in `audit.md`. Mark UI Design complete in `backlog/{unit-name}.md`.
 
