@@ -144,7 +144,7 @@ Before presenting completion to user, verify generated code against design:
 - [ ] **Update storybook stubs**: For each component in `aidlc-docs/storybook/stubs/`, replace stub content with a re-export of the real implementation (e.g., `export { Button } from '../../<frontend-package>/src/components/Button'`). Stories must render real components, not wireframe boxes.
 - [ ] Cross-check unit stories: every acceptance criterion has corresponding code
 - [ ] Verify no TODO/FIXME left in generated code (unless explicitly planned)
-- [ ] **Run tests**: Execute test suite, show actual output. Do NOT present completion without fresh passing evidence.
+- [ ] **Run tests**: Execute test suite, show actual output (Verification Iron Law from `aidlc-construction-rules`).
 - [ ] **Dispatch review sub-agent**: Provide git diff of generated code + design docs. Sub-agent checks: design compliance, test coverage, edge cases, security, code quality. Fix any blocking issues before presenting to user.
 
 **If mismatches found**: fix them now (return to Step 11 for the specific file). Do not present completion with known gaps.
@@ -208,7 +208,7 @@ Log approval in `audit.md`. Mark Code Generation row `[x]` in `backlog/{unit-nam
 
 ### Generation Phase Rules
 - **TDD ORDER**: For each layer — write tests FIRST, run them (confirm failing), THEN implement. Never write implementation before a failing test exists.
-- **VERIFICATION**: After each "Implement" step, run tests and show actual output. Never claim passing without fresh evidence.
+- **VERIFICATION**: See Verification Iron Law in `aidlc-construction-rules`. Run tests after each "Implement" step, show actual output.
 - **NO HARDCODED LOGIC**: Only execute what's written in unit plan
 - **FOLLOW PLAN EXACTLY**: Do not deviate from step sequence
 - **UPDATE CHECKBOXES**: Mark [x] immediately after completing each step

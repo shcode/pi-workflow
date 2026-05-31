@@ -12,6 +12,21 @@ Load this skill once when the first construction stage begins.
 
 ---
 
+## Verification Iron Law
+
+```
+NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+```
+
+Before presenting ANY stage completion during construction:
+1. Run the relevant verification command (tests, build, lint)
+2. Show actual output — not a summary, not "it should pass"
+3. Only claim done after evidence confirms it
+
+This applies to every construction stage. No exceptions.
+
+---
+
 ## Design-First Enforcement
 
 **CRITICAL**: Before EVERY code change during construction, verify against design.

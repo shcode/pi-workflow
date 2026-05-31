@@ -135,11 +135,7 @@ Update `build-and-test-summary.md` with actual results (not placeholders):
 
 **Trigger**: Any test failure or build error in Step 8.
 
-**Iron Law**:
-```
-NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
+**Iron Law**: `NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST` (see also Verification Iron Law in `aidlc-construction-rules`)
 
 **Process** (max 3 iterations per failure):
 1. Parse the error output — identify failing test name + file:line + error message
@@ -185,7 +181,7 @@ Update `aidlc-docs/aidlc-state.md`:
 
 ## Step 10: Present Results to User
 
-**Iron Law**: Before presenting, run the full test suite one final time and include actual output. Never claim passing without fresh evidence.
+**Verification Iron Law** (from `aidlc-construction-rules`): Run full test suite one final time and include actual output before presenting. Never claim passing without fresh evidence.
 
 ```markdown
 # 🔨 Build and Test Complete
