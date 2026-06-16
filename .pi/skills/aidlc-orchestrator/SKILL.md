@@ -162,6 +162,7 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 | Purpose | Path |
 |---------|------|
 | Goal | GOAL.md |
+| Rules | RULES.md |
 | Unit | backlog/auth-service.md |
 | Design | construction/auth-service/functional-design/business-logic-model.md |
 
@@ -169,12 +170,6 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 - Auth: Auth0 with MFA
 - Stack: Next.js + Prisma + PostgreSQL
 ```
-
----
-
-## Parallel Construction Batch
-
-For multiple independent units, load `aidlc-parallel` skill. It handles sub-agent orchestration, merge, and failure recovery.
 
 ---
 

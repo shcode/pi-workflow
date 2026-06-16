@@ -12,6 +12,28 @@ Load this skill once when the first construction stage begins.
 
 ---
 
+## Root Cause Iron Law
+
+```
+NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+```
+
+Before touching any code to fix a failure:
+1. Parse the error output — identify failing test name + file:line + error message
+2. **Targeted read only**: read the failing section (`offset+limit` around error line)
+3. Read relevant design document for context
+4. **State root cause explicitly**: "Root cause: [explanation]"
+5. Only after root cause stated:
+   - **Implementation bug** → fix source file, re-run failing test
+   - **Test bug** → fix test, re-run
+   - **Design mismatch** → trigger Mid-Construction Design Change
+6. After fix: run full test suite, show actual output
+7. Discard raw code from context — retain one-line fix summary
+
+**Escalate to user if**: 3 fix attempts exhausted, architectural change required, >3 unrelated failures, root cause cannot be determined.
+
+---
+
 ## Verification Iron Law
 
 ```
@@ -82,16 +104,16 @@ This applies to every construction stage. No exceptions.
 
 ---
 
-## Sub-Agent Temp-File Rule
+## Context Discard Rules
 
-When executing as a sub-agent in a parallel construction batch:
+After a stage produces its output artifact, discard raw input content from context:
+- After reverse engineering → discard raw source file content
+- After design stage → discard previous stage's input artifacts
+- After code generation step → discard raw code read for that step, retain one-line summary
+- After fix → discard error output and raw code, retain root cause + fix summary
+- After audit/progress write → discard the written content
 
-- `aidlc-state.md` is **READ-ONLY** during execution
-- `aidlc-progress.md` and `audit.md` are **WRITE-ONLY** (append only)
-- Write to: `aidlc-docs/construction/.parallel/{unit-name}/`
-- Mirror directory structure (e.g., `.parallel/unit-a/functional-design/`)
-- Signal completion: write `.parallel/{unit-name}/.complete`
-- Never self-promote temp files to canonical paths — parent merges
+Never discard: design docs referenced by current stage, `aidlc-state.md`, `backlog/{unit}.md`
 
 ---
 

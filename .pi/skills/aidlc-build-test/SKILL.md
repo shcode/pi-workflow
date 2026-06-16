@@ -33,64 +33,9 @@ Determine appropriate testing strategy:
 
 ---
 
-## Step 2: Generate Build Instructions
+## Step 2: Execute Build and Tests
 
-Create `aidlc-docs/construction/build-and-test/build-instructions.md`:
-
-Include sections: Prerequisites (tool, deps, env vars, system reqs), Build Steps (install deps, configure env, build all units, verify success), Troubleshooting.
-
----
-
-## Step 3: Generate Unit Test Execution Instructions
-
-Create `aidlc-docs/construction/build-and-test/unit-test-instructions.md`:
-
-Include: run command, expected pass count, coverage target, report location, fix steps if failing.
-
----
-
-## Step 4: Generate Integration Test Instructions
-
-Create `aidlc-docs/construction/build-and-test/integration-test-instructions.md`:
-
-Include: test scenarios (unit A → B interactions), environment setup, run command, expected results, cleanup.
-
----
-
-## Step 5: Generate Performance Test Instructions (If Applicable)
-
-Create `aidlc-docs/construction/build-and-test/performance-test-instructions.md`:
-
-Include: performance requirements (response time, throughput, concurrency, error rate), test parameters (duration, ramp-up, virtual users), run commands (load + stress), results analysis.
-
----
-
-## Step 6: Generate Additional Test Instructions (As Needed)
-
-- **Contract Tests** (`contract-test-instructions.md`): API contract validation, consumer-driven contracts, schema validation
-- **Security Tests** (`security-test-instructions.md`): Vulnerability scanning, dependency checks, auth testing
-- **End-to-End Tests** (`e2e-test-instructions.md`): Full user workflows, cross-service scenarios, UI testing
-
----
-
-## Step 7: Generate Test Summary
-
-Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md`:
-
-| Section | Fields |
-|---|---|
-| Build Status | Tool, status, artifacts, time |
-| Unit Tests | Total, passed, failed, coverage%, status |
-| Integration Tests | Scenarios, passed, failed, status |
-| Performance Tests | Response time, throughput, error rate (actual vs target) |
-| Additional Tests | Contract/Security/E2E: Pass/Fail/N/A |
-| Overall | Build pass?, All tests pass?, Ready for operations? |
-
----
-
-## Step 8: Execute Build and Tests
-
-**MANDATORY**: Actually run the build and test commands, don't just document them.
+**MANDATORY**: Run the build and test commands before generating any documentation.
 
 ### Destructive Command Guardrails
 
@@ -101,61 +46,41 @@ Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md`:
 - `rm -rf` on data directories or volumes
 - Any command that destroys persistent state (databases, caches, message queues)
 
-**Before running destructive test infrastructure commands** (e.g., teardown scripts, volume cleanup):
-1. Confirm the target is a local/test environment
-2. Show the command and its effect to the user
-3. Wait for explicit approval
+**Before running destructive test infrastructure commands**: confirm target is local/test, show command + effect, wait for explicit approval.
 
-### 8.1 Run Build
+### 2.1 Run Build
 
-Execute the build command from `build-instructions.md`. Capture stdout/stderr.
+Execute build command. Capture stdout/stderr.
+- **If build succeeds**: proceed to 2.2
+- **If build fails**: invoke Fix Loop (Step 2.5). Max 3 attempts.
 
-- **If build succeeds**: proceed to 8.2
-- **If build fails**: log error, attempt fix (see Fix Loop below), re-run. Max 3 attempts.
-
-### 8.2 Run Unit Tests
+### 2.2 Run Unit Tests
 
 Execute unit test command. Capture output and coverage.
 
-### 8.3 Run Integration Tests (if applicable)
+### 2.3 Run Integration Tests (if applicable)
 
 Execute integration test command. Capture output.
 
-### 8.4 Record Results
+### 2.4 Record Raw Results
 
-Update `build-and-test-summary.md` with actual results (not placeholders):
-- Real pass/fail counts from test output
-- Actual coverage percentage
-- Real build time
-- Actual error messages if any
+Capture actual: pass/fail counts, coverage %, build time, error messages. These become the source of truth for all documentation in Steps 3–7.
 
 ---
 
-## Step 8.5: Fix Loop (On Failure)
+## Step 2.5: Fix Loop (On Failure)
 
-**Trigger**: Any test failure or build error in Step 8.
+**Trigger**: Any test failure or build error in Step 2.
 
-**Iron Law**: `NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST` (see also Verification Iron Law in `aidlc-construction-rules`)
+**Root Cause Iron Law**: See `aidlc-construction-rules` (already loaded). State root cause before touching any code.
 
 **Process** (max 3 iterations per failure):
-1. Parse the error output — identify failing test name + file:line + error message
-2. **Targeted read only**: read the failing section of the test file and source file (`offset+limit` around error line)
-3. Read relevant design document for context
-4. **State root cause explicitly** before touching any code: "Root cause: [explanation]"
-5. Only after root cause is stated:
-   - **Implementation bug**: fix source file, re-run failing test
-   - **Test bug**: fix test, re-run
-   - **Design mismatch**: Load `aidlc-construction-rules` skill if not cached. Trigger Mid-Construction Design Change
-6. After fix: **run full test suite** — show actual output before claiming fixed
-7. Discard raw code from context — retain one-line fix summary
+1. Apply Root Cause Iron Law from `aidlc-construction-rules`
+2. Fix the identified issue
+3. Re-run full test suite — show actual output before claiming fixed
 
-**Escalate to user if**:
-- 3 fix attempts exhausted without resolution
-- Fix requires architectural change
-- Multiple unrelated failures (>3 distinct errors)
-- Root cause cannot be determined
+**Escalate to user if**: 3 fix attempts exhausted, architectural change required, >3 unrelated failures.
 
-**On escalation**:
 ```markdown
 ⚠️ **Build/Test failures could not be auto-resolved:**
 
@@ -168,6 +93,61 @@ Update `build-and-test-summary.md` with actual results (not placeholders):
 - 🔄 Let me try a different approach
 - ⏭️ Skip this test and continue
 ```
+
+---
+
+## Step 3: Generate Build Instructions
+
+Create `aidlc-docs/construction/build-and-test/build-instructions.md` based on actual build run:
+
+Include: Prerequisites (tools, deps, env vars), Build Steps (install deps, configure env, build all units), actual output from Step 2.1, Troubleshooting.
+
+---
+
+## Step 4: Generate Unit Test Execution Instructions
+
+Create `aidlc-docs/construction/build-and-test/unit-test-instructions.md` based on actual test run:
+
+Include: run command, actual pass count + coverage from Step 2.2, coverage target, report location, fix steps if failing.
+
+---
+
+## Step 5: Generate Integration Test Instructions
+
+Create `aidlc-docs/construction/build-and-test/integration-test-instructions.md`:
+
+Include: test scenarios (unit A → B interactions), environment setup, run command, actual results from Step 2.3, cleanup.
+
+---
+
+## Step 6: Generate Performance Test Instructions (If Applicable)
+
+Create `aidlc-docs/construction/build-and-test/performance-test-instructions.md`:
+
+Include: performance requirements (response time, throughput, concurrency, error rate), test parameters, run commands, results analysis.
+
+---
+
+## Step 7: Generate Additional Test Instructions (As Needed)
+
+- **Contract Tests** (`contract-test-instructions.md`): API contract validation, consumer-driven contracts, schema validation
+- **Security Tests** (`security-test-instructions.md`): Vulnerability scanning, dependency checks, auth testing
+- **End-to-End Tests** (`e2e-test-instructions.md`): Full user workflows, cross-service scenarios, UI testing
+
+---
+
+## Step 8: Generate Test Summary
+
+Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md` using **actual results from Step 2**:
+
+| Section | Fields |
+|---|---|
+| Build Status | Tool, status, artifacts, time |
+| Unit Tests | Total, passed, failed, coverage%, status |
+| Integration Tests | Scenarios, passed, failed, status |
+| Performance Tests | Response time, throughput, error rate (actual vs target) |
+| Additional Tests | Contract/Security/E2E: Pass/Fail/N/A |
+| Overall | Build pass?, All tests pass?, Ready for operations? |
 
 ---
 

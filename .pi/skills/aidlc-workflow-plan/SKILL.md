@@ -8,309 +8,181 @@ description: >
 
 # Workflow Planning
 
-**Purpose**: Determine which phases to execute and create comprehensive execution plan
+**Purpose**: Determine which phases to execute and create a comprehensive execution plan.
 
 **Condition**: ALWAYS EXECUTE
 
 ---
 
-## Step 1: Load All Prior Context
+## Step 1: Load Prior Context
 
-### 1.1 Load Reverse Engineering Artifacts (if brownfield)
-- architecture.md, component-inventory.md, technology-stack.md, dependencies.md
+- Reverse engineering artifacts (if brownfield): `architecture.md`, `component-inventory.md`, `technology-stack.md`, `dependencies.md`
+- Requirements: `requirements.md`, `requirement-verification-answers.md`
+- User stories (if executed): `stories.md`, `personas.md`
 
-### 1.2 Load Requirements Analysis
-- requirements.md, requirement-verification-answers.md (compact answers summary)
+---
 
-### 1.3 Load User Stories (if executed)
-- stories.md, personas.md
+## Step 2: Scope and Impact Analysis
 
-## Step 2: Detailed Scope and Impact Analysis
-
-### 2.1 Transformation Scope Detection (Brownfield Only)
-
-Analyze:
+### Transformation Scope (Brownfield)
 - Single component change vs architectural transformation
-- Infrastructure changes vs application changes
-- Deployment model changes
+- Infrastructure vs application changes
+- Related components, CDK stacks, API configs, networking, monitoring affected
 
-Identify related components:
-- Infrastructure code needing updates
-- CDK stacks requiring changes
-- API Gateway configurations
-- Load balancer requirements
-- Networking changes
-- Monitoring/logging adaptations
+### Change Impact
+Evaluate: user-facing, structural, data model, API, NFR impact.
 
-### 2.2 Change Impact Assessment
+### Risk Assessment
+Rate: Low / Medium / High / Critical
 
-Evaluate impact areas:
-1. User-facing changes
-2. Structural changes
-3. Data model changes
-4. API changes
-5. NFR impact
+### Module Coordination (Brownfield with multiple packages)
+- Build system + runtime dependencies
+- Update sequence (which modules first), parallelization opportunities
+- API contracts, shared interfaces, rollback strategy
 
-### 2.3 Component Relationship Mapping (Brownfield Only)
-
-Create dependency graph showing:
-- Primary Component
-- Infrastructure Components
-- Shared Components
-- Dependent Components
-- Supporting Components
-
-### 2.4 Risk Assessment
-
-Evaluate risk level: Low, Medium, High, Critical
+---
 
 ## Step 3: Phase Determination
 
-### 3.1 User Stories
-Already executed OR skip if:
-- Internal refactoring
-- Bug fix with clear reproduction
-- Technical debt reduction
-- Infrastructure changes
+| Stage | Execute if | Skip if |
+|---|---|---|
+| User Stories | User-facing features, multiple personas | Internal refactoring, bug fix, infra-only |
+| Application Design | New components/services, new business rules | Changes within existing boundaries, pure impl |
+| Units Generation | New data models, API changes, complex logic, multi-package | Simple logic changes, UI-only, config updates |
+| NFR | Performance, security, scalability requirements | Existing NFR sufficient, simple changes |
+| UI Design | New UI components not in Design System | No UI/frontend, all components exist |
+| Infrastructure Design | New cloud resources, deployment/networking changes | Infrastructure unchanged, no deployment changes |
 
-### 3.2 Application Design
-**Execute IF**:
-- New components or services needed
-- Component methods and business rules need definition
-- Service layer design required
+---
 
-**Skip IF**:
-- Changes within existing component boundaries
-- No new components or methods
-- Pure implementation changes
+## Step 4: Generate Workflow Visualization
 
-### 3.3 Units Generation
-**Execute IF**:
-- New data models or schemas
-- API changes or new endpoints
-- Complex algorithms or business logic
-- Multiple packages require changes
+Create Mermaid flowchart showing all stages with EXECUTE/SKIP decisions.
 
-**Skip IF**:
-- Simple logic changes
-- UI-only changes
-- Configuration updates
-
-### 3.4 NFR Implementation
-**Execute IF**:
-- Performance requirements
-- Security considerations
-- Scalability concerns
-
-**Skip IF**:
-- Existing NFR setup sufficient
-- Simple changes with no NFR impact
-
-### 3.5 UI Design
-**Execute IF**:
-- New UI components needed (not in existing Design System)
-- Frontend unit with user-facing interfaces
-- Design System needs new entries
-
-**Skip IF**:
-- No UI/frontend in this project
-- All components already exist in Design System or codebase
-- Backend-only units
-
-### 3.6 Infrastructure Design
-**Execute IF**:
-- New cloud resources or services needed
-- Deployment architecture changes
-- Networking, CDN, or storage changes
-
-**Skip IF**:
-- Infrastructure already defined and unchanged
-- Local-only or serverless-by-default projects
-- No deployment changes needed
-
-## Step 4: Note Adaptive Detail
-
-For each stage that will execute: all defined artifacts created, detail level adapts to complexity.
-
-## Step 5: Multi-Module Coordination Analysis (Brownfield Only)
-
-### 5.1 Analyze Module Dependencies
-- Build system dependencies
-- Build-time vs runtime dependencies
-- API contracts and shared interfaces
-
-### 5.2 Determine Update Strategy
-- Update sequence (which modules first)
-- Parallelization opportunities
-- Coordination requirements
-- Testing strategy
-- Rollback strategy
-
-### 5.3 Document Coordination Plan
-```markdown
-## Module Update Strategy
-- **Update Approach**: [Sequential/Parallel/Hybrid]
-- **Critical Path**: [Modules that block others]
-- **Coordination Points**: [Shared APIs, infrastructure, data contracts]
-- **Testing Checkpoints**: [When to validate integration]
-```
-
-## Step 6: Generate Workflow Visualization
-
-Create Mermaid flowchart showing:
-- All phases in sequence
-- EXECUTE or SKIP decision for each conditional phase
-- Proper styling for each phase state
-
-**Styling rules**:
-- Completed/Always execute: `fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff`
-- Conditional EXECUTE: `fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000`
-- Conditional SKIP: `fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000`
+**Styling**:
+- Always execute: `fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff`
+- Conditional EXECUTE: `fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray:5 5,color:#000`
+- Conditional SKIP: `fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray:5 5,color:#000`
 - Start/End: `fill:#CE93D8,stroke:#6A1B9A,stroke-width:3px,color:#000`
 
-## Step 7: Create Execution Plan Document
+---
 
-Create `aidlc-docs/inception/plans/execution-plan.md`:
+## Step 5: Create Execution Plan Document
+
+Save `aidlc-docs/inception/plans/execution-plan.md`:
 
 ```markdown
 # Execution Plan
 
-## Detailed Analysis Summary
-[Transformation scope, change impact, component relationships, risk assessment]
+## Analysis Summary
+- **Scope**: [transformation scope]
+- **Risk**: [Low/Medium/High/Critical]
+- **Impact**: [key impact areas]
+- **Components affected**: [list]
 
 ## Workflow Visualization
 [Mermaid flowchart]
 
-## Phases to Execute
+## Stages to Execute
 
-### 🔵 INCEPTION PHASE
+### 🔵 INCEPTION
 - [x] Workspace Detection (COMPLETED)
 - [x] Reverse Engineering (COMPLETED/SKIPPED)
 - [x] Requirements Analysis (COMPLETED)
 - [x] User Stories (COMPLETED/SKIPPED)
-- [x] Execution Plan (IN PROGRESS)
-- [ ] Application Design - [EXECUTE/SKIP]
-  - **Rationale**: [Why]
-- [ ] Units Generation - [EXECUTE/SKIP]
-  - **Rationale**: [Why]
+- [x] Workflow Planning (IN PROGRESS)
+- [ ] Application Design — EXECUTE/SKIP — Rationale: [why]
+- [ ] Units Generation — EXECUTE/SKIP — Rationale: [why]
 
-### 🟢 CONSTRUCTION PHASE
-- [ ] Functional Design - [EXECUTE/SKIP]
-- [ ] NFR Requirements & Design - [EXECUTE/SKIP]
-- [ ] UI Design - [EXECUTE/SKIP]
-- [ ] Infrastructure Design - [EXECUTE/SKIP]
-- [ ] Code Generation - EXECUTE (ALWAYS)
-- [ ] Build and Test - EXECUTE (ALWAYS)
+### 🟢 CONSTRUCTION
+- [ ] Functional Design — EXECUTE/SKIP
+- [ ] NFR Requirements & Design — EXECUTE/SKIP
+- [ ] UI Design — EXECUTE/SKIP
+- [ ] Infrastructure Design — EXECUTE/SKIP
+- [ ] Code Generation — EXECUTE (ALWAYS)
+- [ ] Build and Test — EXECUTE (ALWAYS)
 
-### 🟡 OPERATIONS PHASE
-- [ ] Operations - PLACEHOLDER
-
-## Package Change Sequence (Brownfield Only)
-[If applicable, list package update sequence]
-
-## Estimated Timeline
-- **Total Phases**: [Number]
-- **Estimated Duration**: [Time estimate]
+## Package Update Sequence (Brownfield multi-package only)
+[Package → reason]
 
 ## Success Criteria
-- **Primary Goal**: [Main objective]
-- **Key Deliverables**: [List]
-- **Quality Gates**: [List]
+- **Goal**: [main objective]
+- **Deliverables**: [list]
+- **Quality Gates**: [list]
 ```
 
-## Step 8: Initialize State Tracking
+---
+
+## Step 6: Update State Tracking
 
 Update `aidlc-docs/aidlc-state.md` with execution plan summary.
 
-## Step 9: Present Plan to User
+---
+
+## Step 7: Present Plan to User
 
 ```markdown
 # 📋 Workflow Planning Complete
 
-I've created a comprehensive execution plan based on:
-- Your request: [Summary]
-- Existing system: [Summary if brownfield]
-- Requirements: [Summary if executed]
-- User stories: [Summary if executed]
+**Recommended plan**: [X] stages to execute, [Y] to skip.
 
-**Detailed Analysis**:
-- Risk level: [Level]
-- Impact: [Summary]
-- Components affected: [List]
+**Risk**: [level] | **Impact**: [summary] | **Components**: [list]
 
-**Recommended Execution Plan**:
+[Mermaid visualization]
 
-I recommend executing [X] stages:
-🔵 INCEPTION PHASE:
-1. [Stage] - Rationale: [Why]
-...
-🟢 CONSTRUCTION PHASE:
-1. [Stage] - Rationale: [Why]
-...
+**Stages:**
+- ✅ EXECUTE: [list with one-line rationale each]
+- ⏭️ SKIP: [list with one-line rationale each]
 
-I recommend skipping [Y] stages:
-[Same format with rationale for skipping]
+[IF brownfield multi-package]
+**Package update sequence**: [list]
 
-[IF brownfield with multiple packages]
-**Recommended Package Update Sequence**:
-1. [Package] - [Reason]
-...
+> **📋 REVIEW REQUIRED:** `aidlc-docs/inception/plans/execution-plan.md`
 
-**Estimated Timeline**: [Duration]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine execution plan at: `aidlc-docs/inception/plans/execution-plan.md`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> [IF stages skipped:]
-> 📝 **Add Skipped Stages** - Include stages marked as SKIP
-> ✅ **Approve & Continue** - Approve and proceed to [Next Stage]
+> **🚀 WHAT'S NEXT?**
+> 🔧 **Request Changes** — modify stages or rationale
+> 📝 **Add Skipped Stages** — include any skipped stage
+> ✅ **Approve & Continue** — proceed to [Next Stage]
 ```
 
-## Step 10: Handle User Response
+---
 
-- **If approved**: Create GOAL.md (Step 10.1), then proceed to next stage
-- **If changes requested**: Update plan and re-confirm
-- **If user wants to force include/exclude stages**: Update plan accordingly
+## Step 8: Handle Approval
 
-## Step 10.1: Create GOAL.md
+- **Approved** → create GOAL.md (Step 8.1), proceed to next stage
+- **Changes requested** → update plan, re-present
+- **Force include/exclude** → update plan accordingly
 
-After plan approval, create `GOAL.md` in **workspace root** (not aidlc-docs/):
+### Step 8.1: Create GOAL.md
+
+After approval, create `GOAL.md` in **workspace root**:
 
 ```markdown
 # Project Goal
 
 ## Summary
-[1-3 sentence description of what we're building/changing and why]
+[1-3 sentences: what we're building/changing and why]
 
 ## Key Requirements
-- [All functional requirements, one line each, concise]
+- [One line per requirement]
 
 ## Constraints
-- [Tech stack, architecture, or business constraints]
+- [Tech stack, architecture, business constraints]
 
 ## Success Criteria
 - [How we know it's done]
 ```
 
-**Rules**:
-- Concise reference, not a requirements doc — one line per item
-- Written ONCE after workflow planning approval
-- Updated ONLY if user explicitly changes project direction
-- Always included in `aidlc-state.md` `## Resume` Load table
-- Agents read this on every session resume for project context
+**Rules**: Written ONCE after approval. Updated only if user explicitly changes direction. Always included in `aidlc-state.md` `## Resume` Load table. Agents read on every session resume.
 
-## Step 11: Log Interaction
+---
 
-Log in `audit.md`:
+## Step 9: Log Interaction
+
 ```markdown
 ## Workflow Planning - Approval
 **Timestamp**: [ISO timestamp]
-**Decision**: Plan approved with [X] stages to execute
+**Decision**: Plan approved — [X] stages to execute
 **Detail**: progress.md:[START]-[END]
 ---
 ```

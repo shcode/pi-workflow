@@ -103,8 +103,8 @@ Mark Code Generation Part 1 complete: append entry to `aidlc-progress.md`, updat
 
 ### Step 10: Load Unit Code Generation Plan
 
-- [ ] Read plan from `aidlc-docs/construction/plans/{unit-name}-code-generation-plan.md`
-- [ ] Identify next uncompleted step (first [ ] checkbox)
+- [ ] If Part 1 ran this session: plan is already in context — skip re-read, identify next uncompleted step (first [ ] checkbox) directly
+- [ ] Cold resume only: read `aidlc-docs/construction/plans/{unit-name}-code-generation-plan.md`, identify next uncompleted step
 - [ ] Load context for that step
 
 ### Step 11: Execute Current Step
@@ -145,7 +145,7 @@ Before presenting completion to user, verify generated code against design:
 - [ ] Cross-check unit stories: every acceptance criterion has corresponding code
 - [ ] Verify no TODO/FIXME left in generated code (unless explicitly planned)
 - [ ] **Run tests**: Execute test suite, show actual output (Verification Iron Law from `aidlc-construction-rules`).
-- [ ] **Dispatch review sub-agent**: Provide git diff of generated code + design docs. Sub-agent checks: design compliance, test coverage, edge cases, security, code quality. Fix any blocking issues before presenting to user.
+- [ ] **Self-review**: Read git diff of generated code against design docs. Check: design compliance, test coverage, edge cases, security, code quality. Fix any blocking issues before presenting to user.
 
 **If mismatches found**: fix them now (return to Step 11 for the specific file). Do not present completion with known gaps.
 
@@ -183,22 +183,7 @@ Log approval in `audit.md`. Mark Code Generation row `[x]` in `backlog/{unit-nam
 
 ## Critical Rules
 
-### Code Location Rules
-- **Application code**: Workspace root only (NEVER aidlc-docs/)
-- **Documentation**: aidlc-docs/ only (markdown summaries)
-- **Read workspace root** from `aidlc-state.md` (Project section) before generating
-
-**Structure patterns by project type**:
-- **Brownfield**: Use existing structure (e.g., `src/main/java/`, `lib/`, `pkg/`)
-- **Greenfield single unit**: `src/`, `tests/`, `config/` in workspace root
-- **Greenfield multi-unit (microservices)**: `{unit-name}/src/`, `{unit-name}/tests/`
-- **Greenfield multi-unit (monolith)**: `src/{unit-name}/`, `tests/{unit-name}/`
-
-### Brownfield File Modification Rules
-- Check if file exists before generating
-- If exists: Modify in-place (never create copies)
-- If doesn't exist: Create new file
-- Verify no duplicate files after generation
+> Code location, brownfield file modification, and context discard rules are in `aidlc-construction-rules` (already loaded).
 
 ### Planning Phase Rules
 - Create explicit, numbered steps

@@ -13,114 +13,68 @@ description: >
 
 **Condition**: CONDITIONAL (per-unit)
 
-**Focus**:
-- Component API design (props, variants, states)
-- Storybook story creation (Component Story Format v3)
-- Design System token compliance
-- Accessibility requirements
-- Hard approval gate before Code Generation
+**Skip if**: No UI/frontend components, all needed components already exist, backend-only unit. Log skip reason in `audit.md`.
 
 ---
 
-## Brownfield vs Greenfield Mode
+## Mode: Greenfield vs Brownfield
 
-Read `aidlc-docs/aidlc-state.md` before Step 1. Check the **Project** section for the brownfield flag.
+Check `aidlc-state.md` Project section for brownfield flag before Step 1.
 
-| Mode | Component source | Story purpose | Stub needed? |
-|---|---|---|---|
-| **Greenfield** | New components designed this stage | Spec for Code Generation | Yes — stub created first |
-| **Brownfield** | Existing components in codebase | Living documentation + visibility | No — import real implementation |
-
-Brownfield differences are marked **🟠 Brownfield** throughout the steps below.
-
----
-
-## Skip Conditions
-
-Skip this stage entirely if:
-- Unit has no UI/frontend components
-- All needed components already exist in the Design System or codebase
-- Unit is backend-only (API, database, infrastructure, CLI)
-
-When skipping: log skip reason in `audit.md`, proceed directly to Code Generation.
+| | Greenfield | Brownfield |
+|---|---|---|
+| Component source | New — designed this stage | Existing in codebase |
+| Story purpose | Spec for Code Generation | Living docs + visual regression baseline |
+| Stub needed? | Yes — wireframe stub first | No — import real implementation |
+| Variants | Design freely | Only document what exists |
 
 ---
 
-## Prerequisites
-
-- Functional Design complete (if applicable) — read `frontend-components.md`
-- Application Design complete — component boundaries understood
-- Tech stack confirmed (React/Vue/Svelte/etc. + Design System library)
-
----
-
-## Steps to Execute
+## Steps
 
 ### Step 1: Identify UI Components
 
-Read from:
-- `aidlc-docs/construction/{unit-name}/functional-design/frontend-components.md` (if exists)
-- `aidlc-docs/inception/application-design/` — component boundaries and responsibilities
+Read: `aidlc-docs/construction/{unit-name}/functional-design/frontend-components.md` (if exists), `aidlc-docs/inception/application-design/` component boundaries.
 
-**🟠 Brownfield**: Also read `aidlc-docs/inception/reverse-engineering/component-inventory.md`. For each package listed, scan the actual source files to identify existing UI components (look for `.tsx`, `.jsx`, `.vue`, `.svelte` files that export components). These are the components that need stories created for them.
+**Brownfield only**: Also read `aidlc-docs/inception/reverse-engineering/component-inventory.md`. Scan source `.tsx/.jsx/.vue/.svelte` files to find existing components.
 
-Produce a list of:
-- **New components** (Greenfield) / **Existing components without stories** (Brownfield) — target of this stage
-- **Reused components** — already have stories, no action needed, note the source
+Produce: list of **new components** (target of this stage) and **reused components** (already have stories, no action needed).
 
-### Step 2: Create UI Design Plan
+### Step 2: Create UI Design Plan + Questions
 
-Generate plan with checkboxes [] listing each component to create a story for.
+Generate plan listing each component to story. Load `aidlc-questions` skill if not cached.
 
-### Step 3: Generate Context-Appropriate Questions
+Clarify all ambiguities:
+- **Design System** — which library? (MUI, Ant Design, Shadcn, Radix, Tailwind, custom)
+- **Component Scope** — truly new vs reuse/extend existing?
+- **Variants** — sizes, colors, themes
+- **States** — hover, focus, active, loading, disabled, error, success, empty
+- **Responsive** — breakpoints, mobile vs desktop
+- **Accessibility** — ARIA roles, keyboard nav, screen reader
+- **Design Tokens** — namespace, palette, missing tokens
+- **Story Depth** — atomic only, or page/feature-level too?
 
-**DIRECTIVE**: Clarify all ambiguities before creating any stories.
+Save plan to `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`. Save questions with `[Answer]:` tags to `{unit-name}-ui-design-questions.md`. **STOP — wait for user answers. Do NOT write answers yourself.**
 
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Design System** — Which library? (MUI, Ant Design, Shadcn, Radix, Tailwind, custom)
-- **Component Scope** — Which components are truly new vs reuse/extend of existing?
-- **Visual Variants** — Sizes, colors, themes (e.g., primary/secondary/destructive)
-- **Interaction States** — Hover, focus, active, loading, disabled, error, success, empty
-- **Responsive Behavior** — Breakpoints, mobile vs desktop layout differences
-- **Accessibility** — ARIA roles, keyboard navigation, screen reader requirements
-- **Design Tokens** — Token namespace, existing palette, any missing tokens to define
-- **Story Depth** — Atomic/component-only stories, or include page/feature-level stories?
+### Step 3: Establish Design Direction
 
-### Step 4: Store Plan
-
-Save as `aidlc-docs/construction/plans/{unit-name}-ui-design-plan.md`
-
-### Step 5: Collect and Analyze Answers
-
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-ui-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Add follow-up `[Answer]:` questions for any unclear responses. Do not proceed until ALL ambiguities resolved.
-
-### Step 6: Establish Design Direction
-
-Before creating stories, commit to an aesthetic direction. Document in the UI design plan:
+Document in the UI design plan before creating stories:
 
 ```markdown
 ## Design Direction
-- **Tone**: [e.g., brutally minimal, luxury/refined, playful, editorial, organic, industrial]
-- **Differentiation**: [What makes this UI memorable? One key visual idea.]
-- **Typography**: [Display font + body font pairing. NEVER use generic: Inter, Roboto, Arial, system fonts]
-- **Color**: [Dominant color + accent. Commit to a cohesive palette via CSS variables.]
-- **Motion**: [Key animation moments — page load, transitions, hover states]
-- **Spatial**: [Layout approach — asymmetry, grid-breaking, generous whitespace, controlled density]
+- **Tone**: [e.g., brutally minimal, luxury/refined, playful, editorial]
+- **Differentiation**: [One key visual idea that makes this UI memorable]
+- **Typography**: [Display font + body font. NEVER: Inter, Roboto, Arial, Space Grotesk, system-ui]
+- **Color**: [Dominant + accent. Cohesive palette via CSS variables]
+- **Motion**: [Key animation moments — load, transitions, hover]
+- **Spatial**: [Layout approach — asymmetry, generous whitespace, controlled density]
 ```
 
-**Anti-slop rules** (NEVER use):
-- Overused fonts (Inter, Roboto, Arial, Space Grotesk, system-ui)
-- Clichéd purple/blue gradients on white backgrounds
-- Cookie-cutter card layouts with rounded corners and drop shadows
-- Generic hero sections with stock-photo-style composition
-- Evenly-distributed timid color palettes
+**Never**: purple/blue gradients on white, cookie-cutter card layouts, generic hero sections, timid evenly-distributed palettes.
 
-**Match complexity to vision**: Maximalist designs need elaborate animations. Minimalist designs need precision in spacing and typography. Both require intentionality.
+### Step 4: Create Storybook Stories
 
-### Step 7: Create Storybook Stories
-
-**HARD RULE (Greenfield)**: Stories are written BEFORE any component implementation code exists.
-Create a wireframe stub in `aidlc-docs/storybook/stubs/{ComponentName}.tsx` so the story can import and preview it:
+**Greenfield hard rule**: Stories written BEFORE any component implementation exists. Create wireframe stub at `aidlc-docs/storybook/stubs/{ComponentName}.tsx`:
 
 ```tsx
 export function ComponentName(props: Record<string, any>) {
@@ -133,19 +87,14 @@ export function ComponentName(props: Record<string, any>) {
 }
 ```
 
-This renders a labeled wireframe box showing the component name and current props — enough for Storybook review.
+**Brownfield**: Import real implementation directly — no stubs.
 
-**🟠 Brownfield**: Import the real implementation directly — no stubs. Purpose is living documentation + visual regression baseline.
-
-#### Story file convention
-
-Path: `aidlc-docs/storybook/{ComponentName}.stories.tsx` (adjust for stack)
-
-#### CSF3 structure (both modes)
+#### Story file: `aidlc-docs/storybook/{ComponentName}.stories.tsx`
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { ComponentName } from './stubs/ComponentName';
+import { ComponentName } from './stubs/ComponentName'; // greenfield
+// import { ComponentName } from '<actual-path>'; // brownfield
 
 const meta: Meta<typeof ComponentName> = {
   title: 'Design System/{Category}/{ComponentName}',
@@ -158,49 +107,27 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { /* minimal required props */ } };
-// One export per variant/state (see Required Coverage below)
+// One export per variant/state
 ```
 
-#### Mode differences
+**Required coverage**: `Default`, one story per visual variant, `Disabled`/`Loading`/`Error`/`Empty` (if supported), `LongContent` edge case. **Brownfield only**: also `AllVariants` kitchen-sink.
 
-| | Greenfield | 🟠 Brownfield |
-|---|---|---|
-| Import | Wireframe stub (dashed box + props) | Real implementation |
-| `argTypes` | Designed from scratch | Derived from actual TS props |
-| Extra story | — | `AllVariants` kitchen-sink (render all variants in a flex row) |
-| Variants | Design freely | Only document what exists — don’t invent |
-| Description | Spec for code-gen | “Existing component. Edit to reflect intended API.” |
+**Design tokens only** — no hardcoded hex/px/magic numbers. `argTypes` descriptions reference token names.
 
-#### Required story coverage (both modes)
-
-- `Default` — most common usage with realistic content
-- One story per visual `variant`
-- `Disabled`, `Loading`, `Error`, `Empty` (if component supports each)
-- `LongContent` or edge-case overflow story
-- **🟠 Brownfield only**: `AllVariants` kitchen-sink
-
-#### Design token compliance
-
-- Design system tokens only — no hardcoded hex/px/magic numbers
-- `argTypes` descriptions reference token names
-- Flag design gaps in component inventory
-
-### Step 8: Create Component Inventory Document
+### Step 5: Create Component Inventory
 
 Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 
 ```markdown
 # UI Component Inventory — {unit-name}
 
-## New Components (stories required)
+## New Components
 
 | Component | Story File | Variants | Status |
 |---|---|---|---|
 | ComponentName | aidlc-docs/storybook/ComponentName.stories.tsx | default, primary, disabled, loading | ⏳ Pending |
 
-> **🟠 Brownfield**: Source column shows the actual file path of the existing component.
-
-## Reused Components (no stories needed)
+## Reused Components
 
 | Component | Source | Notes |
 |---|---|---|
@@ -211,86 +138,28 @@ Save `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`:
 | Token | Usage | Defined? |
 |---|---|---|
 | colors.primary.500 | Button background | ✓ |
-| spacing.component.gap | Internal padding | ✓ |
 
-## Design Gaps (missing tokens or patterns)
-
-- [ ] List any tokens that don't exist yet and need to be added to the design system
+## Design Gaps
+- [ ] Any tokens that don't exist yet
 ```
 
-### Step 9: Ensure Storybook Can Preview
+### Step 6: Verify Storybook Preview
 
-**MANDATORY**: Stories must be previewable before presenting to user.
+`.storybook/` config lives in the **frontend package directory** (where `package.json` with framework deps is). Stories live in `aidlc-docs/storybook/`.
 
-**Setup**: `.storybook/` config lives in the **frontend package directory** (wherever `package.json` with React/framework deps is). Stories live in `aidlc-docs/storybook/` as design specs. Storybook is a devDependency of the frontend package.
+1. Locate frontend package dir (has React/Vue/Svelte in deps)
+2. If no `.storybook/`: `cd <frontend-package-dir> && npx storybook@latest init`
+3. Ensure `<frontend-package-dir>/.storybook/main.ts` stories path points to `aidlc-docs/storybook/**/*.stories.@(ts|tsx)`
+4. Confirm all stub files exist at `aidlc-docs/storybook/stubs/{ComponentName}.tsx`
+5. Smoke test: `cd <frontend-package-dir> && npx storybook build --test` — fix any import errors before proceeding
 
-#### 8.1 Locate Frontend Package
-
-Identify the frontend package directory (has React/Vue/Svelte in dependencies):
-- Monorepo: e.g., `apps/web/`, `packages/frontend/`
-- Standalone: e.g., `frontend/`, `client/`
-- If unclear, ask user
-
-#### 8.2 Verify/Create Storybook Configuration
-
-Check for `.storybook/` in the frontend package dir. If NOT configured:
-```bash
-cd <frontend-package-dir>
-npx storybook@latest init
-```
-
-#### 8.3 Configure Stories Path
-
-Ensure `<frontend-package-dir>/.storybook/main.ts` points to the docs storybook directory (relative path):
-
-```ts
-const config = {
-  stories: [
-    '<relative-path-to>/aidlc-docs/storybook/**/*.stories.@(ts|tsx)'
-  ],
-  framework: '@storybook/react-vite',
-};
-export default config;
-```
-
-#### 8.4 Directory Structure
-
-```
-<WORKSPACE-ROOT>/
-├── <frontend-package>/        # e.g., apps/web/
-│   ├── .storybook/            # Config (uses this package's deps)
-│   │   └── main.ts
-│   ├── package.json           # storybook as devDependency
-│   └── src/
-└── aidlc-docs/storybook/      # Stories + stubs (design specs)
-    ├── stubs/
-    │   └── {ComponentName}.tsx
-    └── {ComponentName}.stories.tsx
-```
-
-#### 8.5 Verify Stubs Are Importable
-
-Confirm all stub files exist at `aidlc-docs/storybook/stubs/{ComponentName}.tsx`.
-Stories import from `./stubs/ComponentName`. If any stub is missing, create it now.
-
-#### 8.6 Start Command
-
-```bash
-cd <frontend-package-dir> && npx storybook dev -p 6006
-```
-
-#### 8.7 Smoke Test
-
-Run `cd <frontend-package-dir> && npx storybook build --test` to verify no import errors. Fix before presenting to user.
-
-### Step 10: Present Review Message
+### Step 7: Present for Review
 
 ```markdown
 # 🎨 UI Design Complete — [unit-name]
 
 **Stories created:**
-- `aidlc-docs/storybook/ComponentA.stories.tsx` — N stories (default, primary, secondary, disabled, loading)
-- `aidlc-docs/storybook/ComponentB.stories.tsx` — N stories
+- `aidlc-docs/storybook/ComponentA.stories.tsx` — N stories (default, primary, disabled, loading)
 
 **Reused without changes:** ComponentC
 
@@ -300,82 +169,52 @@ Run `cd <frontend-package-dir> && npx storybook build --test` to verify no impor
 > ```bash
 > cd <frontend-package-dir> && npx storybook dev -p 6006
 > ```
-> Then open **http://localhost:6006** in your browser.
 
 > **🔍 Review checklist:**
-> - [ ] All component variants render correctly
-> - [ ] All interaction states (disabled, loading, error, empty) look right
-> - [ ] Design System tokens are applied consistently
-> - [ ] Accessibility annotations are present
+> - [ ] All variants render correctly
+> - [ ] All interaction states look right
+> - [ ] Design System tokens applied consistently
+> - [ ] Accessibility annotations present
 
-> ✏️ **You can edit the story files directly** while Storybook is running — it will hot-reload.
-> When you are done reviewing and editing, reply **"done"** and the agent will re-validate
-> the stories before proceeding.
+> ✏️ Edit story files directly while Storybook is running — it hot-reloads. Reply **"done"** when finished.
 ```
 
-### Step 11: Wait for User to Finish Reviewing
+### Step 8: Re-validate After User Review
 
-Do NOT proceed until the user explicitly says they are done (e.g. "done", "looks good", "approved", "continue").
-
-The user may edit story files directly during this window. That is expected and encouraged.
-
-### Step 12: Re-validate Stories
-
-After the user signals they are done, re-read all story files listed in the component inventory.
-
-For each component in the **New Components** table:
-- Re-read the story file at the path listed in `Story File` column
-- Confirm the file still exists
-- Confirm `Default` story export is present
-- Confirm all variants listed in the `Variants` column have a corresponding story export
-- Note any additions or removals the user made during editing
-- Update the `component-inventory.md` **Variants** and **Status** columns to reflect the final state
-
-Present a concise re-validation summary:
+After user signals done: re-read all story files in the component inventory. For each component:
+- Confirm file exists, `Default` export present, all listed variants have exports
+- Note any additions/removals user made
 
 ```markdown
 ## 🔄 Re-validation Summary
-
-| Component | Stories Found | Changes Detected | Status |
+| Component | Stories Found | Changes | Status |
 |---|---|---|---|
-| ComponentA | Default, Primary, Disabled | + Error variant added | ✅ Ready |
-| ComponentB | Default, Secondary | No changes | ✅ Ready |
+| ComponentA | Default, Primary, Disabled | + Error added | ✅ Ready |
 ```
 
-If any story file is missing or a listed variant has no export, flag it as **⚠ Needs Fix** and ask the user to resolve before continuing.
+Flag missing variants as **⚠ Needs Fix** — resolve before continuing.
 
-### Step 13: Final Approval Gate
+### Step 9: Final Approval Gate
 
 ```markdown
-> **🚀 <u>**READY TO PROCEED?**</u>**
->
-> All stories validated. You may:
->
-> 🔧 **Request More Changes** — continue editing stories, reply "done" again when ready
-> ✅ **Approve and Continue** — stories are locked as the implementation spec for Code Generation
+> ✅ **Approve and Continue** — stories locked as implementation spec for Code Generation
+> 🔧 **Request More Changes** — edit stories, reply "done" again when ready
 ```
 
-### Step 14: Record Approval and Update Progress
+### Step 10: Record Approval
 
-Log approval in `audit.md`. Mark UI Design complete in `backlog/{unit-name}.md`.
+Log in `audit.md`. Mark UI Design `[x]` in `backlog/{unit-name}.md`.
 
 ---
 
-## Design-First Enforcement During Code Generation
-
-**Greenfield only** — this section does not apply to brownfield (components already exist).
+## Handoff to Code Generation
 
 Pass to `aidlc-code-gen`:
 - Component inventory: `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md`
 - Story files: `aidlc-docs/storybook/*.stories.tsx`
 
-`aidlc-code-gen` MUST:
-- Implement components to match approved story specs exactly (same props, variants, states)
-- Replace stubs with real implementations — never alter the story file
-- Never create a new UI component without a corresponding approved story
-
-If a **new component is discovered** during Code Generation:
-1. **Pause** Code Generation
-2. Return to UI Design — create story for the new component
-3. Get explicit approval
-4. Resume Code Generation
+`aidlc-code-gen` rules:
+- Implement to match approved story specs exactly (same props, variants, states)
+- Replace stubs with real implementations — never alter `.stories.tsx` files
+- Never create a UI component not in the approved inventory
+- If new component discovered mid-generation: **STOP**, run UI Design for it, resume after approval
