@@ -34,8 +34,8 @@ Based on `aidlc-state.md`:
 - **Step**: [Current Work.Step]
 
 **Resume context** (from `## Resume`):
-- Key decisions: [list from Decisions section]
 - Files to load: [list from Load table]
+- Key decisions: see `GOAL.md` → `## Key Decisions`
 
 **What would you like to work on today?**
 - A) Continue — Pick up from current step
@@ -96,7 +96,8 @@ Let's begin!
 After completing any stage:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + append decision entry to `audit.md`
 2. **Update state**: In `aidlc-state.md` — mark row `[x]`, update `## Current Work`, update `## Resume` manifest, set `## Next`
-3. **Load next skill**
+3. **Update GOAL.md**: Append any key decisions made this stage to `## Key Decisions` (one line each)
+4. **Load next skill**
 
 ---
 
@@ -163,11 +164,12 @@ All defined artifacts are created; depth controls detail level within them.
 
 ### Item Format
 ```
-- [todo] item-name — brief description
-- [in progress] item-name — brief description
-- [pending] item-name — interrupted/blocked/waiting
-- [done] item-name — brief description
+- [todo] item-name (domain: {domain}) — brief description
+- [in progress] item-name (domain: {domain}) — brief description
+- [pending] item-name (domain: {domain}) — interrupted/blocked/waiting
+- [done] item-name (domain: {domain}) — brief description
 ```
+`(domain: {domain})` is omitted for single-domain projects — only include when the project has multiple domains.
 
 ### Per-Item Tracking (`backlog/{item-name}.md`)
 
@@ -176,6 +178,9 @@ Every backlog item gets its own tracking file with the stages IT needs:
 **Unit of work** (from inception → only needs construction):
 ```markdown
 # Unit: {unit-name}
+
+## Domain
+{domain-name, or — if single-domain project}
 
 ## Stages
 | # | Stage | Status |
@@ -248,6 +253,7 @@ When user requests work outside existing units:
 
 - **Phase**: INCEPTION / CONSTRUCTION / OPERATIONS
 - **Stage**: Individual activity within a phase
+- **Domain**: Business grouping / bounded context. Not always 1:1 with Unit of Work — see `aidlc-units`
 - **Unit of Work**: Logical grouping of stories for development
 - **Service**: Independently deployable component
 - **Module**: Logical grouping within a service

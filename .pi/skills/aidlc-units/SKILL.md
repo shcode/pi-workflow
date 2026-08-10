@@ -15,6 +15,8 @@ description: >
 
 **Definition**: A unit of work is a logical grouping of stories for development. For microservices, each unit = independently deployable service. For monoliths, single unit = entire application with logical modules.
 
+**Domain vs Unit of Work**: A domain (bounded context) is a business grouping; a unit of work is a delivery grouping. They are not always 1:1 — one domain may span multiple units (e.g. `billing-api` + `billing-worker`), or one unit may contain multiple domains (e.g. a monolith unit with `billing` + `inventory` modules). Assign each unit a Domain in `unit-of-work.md` based on the Business Domain question (Step 3). For single-domain projects, use one domain name project-wide (no extra ceremony).
+
 **Terminology**: Use "Service" for independently deployable components, "Module" for logical groupings within a service, "Unit of Work" for planning context.
 
 ---
@@ -37,7 +39,7 @@ description: >
 
 ### Step 2: Include Mandatory Unit Artifacts in Plan
 
-- [ ] Generate `unit-of-work.md` with unit definitions and responsibilities
+- [ ] Generate `unit-of-work.md` with unit definitions, responsibilities, and Domain mapping (which domain/bounded context each unit belongs to — see Business Domain question in Step 3)
 - [ ] Generate `unit-of-work-dependency.md` with dependency matrix
 - [ ] Generate `unit-of-work-story-map.md` mapping stories to units
 - [ ] **Greenfield only**: Document code organization strategy in `unit-of-work.md`
@@ -140,12 +142,16 @@ Mark Units Generation complete in `aidlc-state.md`.
 
 **MANDATORY**: Add all generated units to `aidlc-docs/backlog.md` under `## Units of Work`:
 ```markdown
-- [todo] unit-name — brief description (stories: US-1, US-3)
+- [todo] unit-name (domain: {domain}) — brief description (stories: US-1, US-3)
 ```
+Omit `(domain: {domain})` if the project has only one domain.
 
 **MANDATORY**: Create `aidlc-docs/backlog/{unit-name}.md` for each unit:
 ```markdown
 # Unit: {unit-name}
+
+## Domain
+{domain-name, or — if single-domain project}
 
 ## Construction Stages
 | # | Stage | Status |
