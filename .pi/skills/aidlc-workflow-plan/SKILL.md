@@ -171,6 +171,9 @@ After approval, create `GOAL.md` in **workspace root**:
 
 ## Success Criteria
 - [How we know it's done]
+
+## Key Decisions
+<!-- Append after each stage. One line per decision. No limit. -->
 ```
 
 **Rules**: Written ONCE after approval. Updated only if user explicitly changes direction. Always included in `aidlc-state.md` `## Resume` Load table. Agents read on every session resume.

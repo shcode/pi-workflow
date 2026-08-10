@@ -107,14 +107,10 @@ The `## Resume` section in `aidlc-state.md` is the **single source of truth** fo
 ### Load
 | Purpose | Path |
 |---------|------|
+| Goal | GOAL.md |
 | Requirements | inception/requirements/requirement-verification-answers.md |
 | Design | inception/application-design/components.md |
 | Unit progress | backlog/auth-service.md |
-
-### Decisions
-- Auth: Auth0 with MFA required
-- Architecture: Monolith with modules
-- Stack: Next.js + Prisma + PostgreSQL
 ```
 
 A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. No guessing.

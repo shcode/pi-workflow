@@ -147,8 +147,9 @@ When user requests work outside existing units:
 The `## Resume` section in `aidlc-state.md` is the **single source of truth** for cold resume. After every stage transition, update it with:
 
 - **Load table**: Exact file paths the next stage needs to read
-- **Decisions**: Key choices made so far (max 7 lines, one per decision)
 - **Skills**: Which skills the agent needs to load on resume
+
+`GOAL.md` is always in the Load table once it exists.
 
 A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. No guessing.
 
@@ -165,10 +166,6 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 | Rules | RULES.md |
 | Unit | backlog/auth-service.md |
 | Design | construction/auth-service/functional-design/business-logic-model.md |
-
-### Decisions
-- Auth: Auth0 with MFA
-- Stack: Next.js + Prisma + PostgreSQL
 ```
 
 ---
