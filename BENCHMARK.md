@@ -47,7 +47,7 @@ Comparison of `aidlc-workflows` (this repo) vs `aidlc-aws` (upstream reference i
 | Audit/progress reads | Write-only + targeted line-range pointers | No explicit write-only rule |
 | Fast path (simple fixes) | ✅ Skip 9 stages | ❌ Not present |
 | UI Design stage | ✅ Storybook-first | ❌ Not present |
-| Parallel construction | ✅ Built-in | ❌ Not present |
+| Parallel construction | 🟡 Planned | ❌ Not present |
 
 ---
 
@@ -71,10 +71,10 @@ Comparison of `aidlc-workflows` (this repo) vs `aidlc-aws` (upstream reference i
 | Startup cost | 649 | 1,244 | ✅ Ours (-48%) |
 | Per-stage overhead | ~0 extra | ~1,133 extra | ✅ Ours (-100%) |
 | Full workflow token load | ~3,355 | ~19,337 | ✅ Ours (-83%) |
-| Feature coverage | 16 skills + fast path + UI design + parallel | 14 stages, no fast path | ✅ Ours |
+| Feature coverage | 16 skills + fast path + UI design | 14 stages, no fast path | ✅ Ours |
 | Resume efficiency | Write-only logs + targeted pointers | No explicit optimization | ✅ Ours |
 
-**Overall: ~83% less token consumption** for a full workflow run, with more features (fast path, UI design, parallel construction, audit→progress line-range pointers).
+**Overall: ~83% less token consumption** for a full workflow run, with more features (fast path, UI design, audit→progress line-range pointers).
 
 ---
 
@@ -106,7 +106,7 @@ Comparison of `aidlc-workflows` (this repo) vs `aidlc-aws` (upstream reference i
 |---|---|---|
 | **Fast Path** | ~20 | Simple brownfield fixes skip 9 stages (Workspace → Code Gen → Build) |
 | **UI Design (Storybook-first)** | 299 | Approval gate before code gen; stories = implementation spec |
-| **Parallel Construction** | ~50 | Independent units run concurrently via sub-agents |
+| **Parallel Construction** | 🟡 Planned | Independent units run concurrently via sub-agents (post-MVP) |
 | **Audit→Progress line-range pointers** | ~25 | Targeted history lookup without reading full files |
 | **Backlog tracking** | ~30 | Deferred features/tech debt surfaced during planning |
 | **Design-first rule** | ~15 | Hard constraint: code must match design docs |
