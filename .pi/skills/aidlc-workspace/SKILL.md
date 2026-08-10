@@ -97,16 +97,13 @@ Record:
 <!-- GOAL.md is always included once it exists. -->
 
 ### Skills
-aidlc-orchestrator, aidlc-common
+aidlc-orchestrator, aidlc-common, aidlc-extensions
 
 ### Load
 | Purpose | Path |
 |---------|------|
 | Goal | GOAL.md |
 | Rules | RULES.md |
-
-### Decisions
-<!-- Max 7 lines. Key choices that constrain future stages. -->
 ```
 
 **Rules**:
@@ -114,7 +111,6 @@ aidlc-orchestrator, aidlc-common
 - Per-unit construction stages are tracked in `backlog/{unit-name}.md`.
 - During CONSTRUCTION, `## Current Work` Unit = active backlog item name.
 - Update `## Resume` after every stage with artifacts the NEXT stage needs.
-- `## Decisions` captures key choices — max 7 lines, one per decision.
 
 ### `aidlc-docs/aidlc-progress.md`
 

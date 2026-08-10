@@ -41,6 +41,15 @@ The corresponding rules file is in the same directory, derived by convention:
 
 ## Opt-In Mechanism
 
+### On Resume
+
+When `aidlc-docs/aidlc-state.md` already exists (cold resume):
+1. Skip the Discovery Process and opt-in prompts entirely
+2. Read `## Extensions` table in `aidlc-state.md`
+3. For each entry with `Enabled: Yes`: load its full rules file now (derive path by convention)
+4. For each entry with `Enabled: No`: skip — do NOT load
+5. Do NOT re-present opt-in questions to user
+
 ### During Requirements Analysis
 
 Opt-in prompts from loaded `*.opt-in.md` files are presented to user as part of clarifying questions. Present each opt-in question in the same language as the user's conversation.
