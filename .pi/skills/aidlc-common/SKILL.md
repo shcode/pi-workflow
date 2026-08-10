@@ -82,7 +82,7 @@ Display ONCE at start of new workflow:
 **Three-Phase Lifecycle:**
 - 🔵 **INCEPTION** — Planning & Design
 - 🟢 **CONSTRUCTION** — Implementation & Test
-- 🟡 **OPERATIONS** — Deployment & Monitoring (placeholder)
+- 🟢 **OPERATIONS** — Deployment pipeline, monitoring, runbooks, production readiness gate
 
 **Key Principles:** Adaptive stages • User approval at each gate • Complete audit trail • Design-first
 

@@ -76,6 +76,7 @@ Record:
 | 6 | Application Design | [ ] |
 | 7 | Units Generation | [ ] |
 | 8 | Build and Test | [ ] |
+| 9 | Operations | [ ] |
 
 ## Extensions
 | Name | Enabled |
@@ -107,7 +108,7 @@ aidlc-orchestrator, aidlc-common, aidlc-extensions
 ```
 
 **Rules**:
-- `aidlc-state.md` tracks project-wide stages: Inception (1-7) + Build and Test (8).
+- `aidlc-state.md` tracks project-wide stages: Inception (1-7) + Build and Test (8) + Operations (9).
 - Per-unit construction stages are tracked in `backlog/{unit-name}.md`.
 - During CONSTRUCTION, `## Current Work` Unit = active backlog item name.
 - Update `## Resume` after every stage with artifacts the NEXT stage needs.

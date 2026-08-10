@@ -43,12 +43,13 @@ For each stage: read skill file → execute → present completion → wait for 
 | 4 | Infrastructure Design | Infrastructure changes | `aidlc-infra-design` |
 | 5 | Code Generation | ALWAYS | `aidlc-code-gen` |
 
-### Final (project-wide, tracked in `aidlc-state.md` row 8)
-| Stage | Condition | Skill |
-|---|---|---|
-| Build and Test | After ALL units done | `aidlc-build-test` |
+### Final (project-wide, tracked in `aidlc-state.md` rows 8-9)
+| # | Stage | Condition | Skill |
+|---|---|---|---|
+| 8 | Build and Test | After ALL units done | `aidlc-build-test` |
+| 9 | Operations | After Build and Test complete | `aidlc-operations` |
 
-🟡 **OPERATIONS**: Placeholder for future deployment/monitoring workflows.
+🟢 **OPERATIONS**: Deployment pipeline, monitoring/alerting, runbooks, production readiness gate. Final phase of the AIDLC lifecycle.
 
 ### Additional skills loaded on demand:
 | Skill | When loaded |
@@ -74,7 +75,7 @@ After completing any stage:
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Execute stages per `backlog/{unit}.md` checklist
 5. Unit complete → mark `[done]` in `backlog.md` → pick next unit
-6. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8)
+6. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
 
@@ -158,7 +159,7 @@ A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. 
 │   │   │   └── code/              # Markdown summaries
 │   │   └── build-and-test/
 │   ├── storybook/                  # 📖 Stories + wireframe stubs
-│   ├── operations/                 # 🟡 Placeholder
+│   ├── operations/                 # 🟢 Deployment pipeline, monitoring, runbooks
 │   ├── backlog/                    # Per-unit construction tracking
 │   │   └── {unit-name}.md
 │   ├── aidlc-state.md              # Project-wide routing + Resume (~50 lines)

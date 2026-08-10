@@ -130,6 +130,7 @@ Stages load on-demand. Only the orchestrator + common + current stage skill are 
 | 13 | `aidlc-infra-design` | Per-unit — infrastructure changes |
 | 14 | `aidlc-code-gen` | Per-unit — generate/modify code |
 | 15 | `aidlc-build-test` | Always — after all units |
+| 16 | `aidlc-operations` | Always — after Build and Test, deployment/monitoring/readiness |
 
 ## Context Window
 
@@ -206,6 +207,7 @@ Workspace Detection
   → [Units]               (conditional)
   → Code Generation
   → Build & Test
+  → Operations
 ```
 
 **Brownfield** (existing project):
@@ -219,6 +221,7 @@ Workspace Detection
   → [Units]               (conditional)
   → Per-Unit Loop
   → Build & Test
+  → Operations
 ```
 
 Per-Unit Loop (for each unit):

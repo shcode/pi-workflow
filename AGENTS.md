@@ -41,7 +41,7 @@ AIDLC repo (this project)
   │   copies core-workflow.md    │  (others: full workflow)
   │                                 ▼
   │                         target project
-  │                           ├── .pi/skills/      # 18 skills (pi only)
+  │                           ├── .pi/skills/      # 19 skills (pi only)
   │                           ├── .pi/extensions/  # task panel, etc. (pi only)
   │                           ├── AGENTS.md        # pi (slim) or kiro (full)
   │                           ├── CLAUDE.md        # Claude Code (full)
@@ -100,6 +100,8 @@ AIDLC repo (this project)
     │   │   └── SKILL.md           # Per-unit code generation
     │   ├── aidlc-build-test/
     │   │   └── SKILL.md           # Build instructions, tests, integration
+    │   ├── aidlc-operations/
+    │   │   └── SKILL.md           # Deployment pipeline, monitoring, runbooks, readiness gate
     │   ├── aidlc-reverse-eng/
     │   │   └── SKILL.md           # Brownfield codebase analysis
     │   └── aidlc-extensions/
@@ -209,7 +211,7 @@ Before committing changes:
 mkdir -p /tmp/test-aidlc && ./install.sh /tmp/test-aidlc
 
 # 2. Verify all pi resources copied
-ls /tmp/test-aidlc/.pi/skills/ | wc -l   # expect 18 skill dirs
+ls /tmp/test-aidlc/.pi/skills/ | wc -l   # expect 19 skill dirs
 ls /tmp/test-aidlc/.pi/extensions/ | wc -l  # expect >=1 extension
 
 # 3. Verify steering files created for all agents
@@ -218,7 +220,7 @@ test -f /tmp/test-aidlc/CLAUDE.md && echo "CLAUDE.md OK"
 test -f /tmp/test-aidlc/.github/copilot-instructions.md && echo "copilot-instructions.md OK"
 
 # 4. Verify every skill has SKILL.md
-find .pi/skills -mindepth 2 -maxdepth 2 -name "SKILL.md" | wc -l   # expect 18
+find .pi/skills -mindepth 2 -maxdepth 2 -name "SKILL.md" | wc -l   # expect 19
 
 # 5. Check for broken relative references in skills
 grep -rn "\](" .pi/skills/ | grep -v "http" | grep -v "SKILL.md" || echo "No local relative refs found"

@@ -73,12 +73,13 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 | 4 | Infrastructure Design | Infrastructure changes | `aidlc-infra-design` |
 | 5 | Code Generation | ALWAYS | `aidlc-code-gen` |
 
-### Final (project-wide, tracked in `aidlc-state.md` row 8)
-| Stage | Condition | Skill |
-|---|---|---|
-| Build and Test | After ALL units done | `aidlc-build-test` |
+### Final (project-wide, tracked in `aidlc-state.md` rows 8-9)
+| # | Stage | Condition | Skill |
+|---|---|---|---|
+| 8 | Build and Test | After ALL units done | `aidlc-build-test` |
+| 9 | Operations | After Build and Test complete | `aidlc-operations` |
 
-🟡 **OPERATIONS**: Placeholder for future deployment/monitoring workflows.
+🟢 **OPERATIONS**: Deployment pipeline, monitoring/alerting, runbooks, production readiness gate. Final phase of the AIDLC lifecycle.
 
 ### Additional skills loaded on demand:
 | Skill | When loaded |
@@ -122,7 +123,7 @@ This avoids the overhead of Units Generation for simple projects.
 4. Load `aidlc-construction-rules` skill (once, cached)
 5. Execute stages per `backlog/{unit}.md` checklist
 6. Unit complete → mark `[done]` in `backlog.md` → pick next unit
-7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8)
+7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
 
@@ -206,7 +207,7 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 │   │   │   └── code/
 │   │   └── build-and-test/
 │   ├── storybook/
-│   ├── operations/                 # 🟡 Placeholder
+│   ├── operations/                 # 🟢 Deployment pipeline, monitoring, runbooks
 │   ├── aidlc-state.md
 │   ├── aidlc-progress.md
 │   ├── backlog.md
