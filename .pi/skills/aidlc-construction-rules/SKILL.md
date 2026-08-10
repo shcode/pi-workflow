@@ -21,14 +21,10 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 Before touching any code to fix a failure:
 1. Parse the error output — identify failing test name + file:line + error message
 2. **Targeted read only**: read the failing section (`offset+limit` around error line)
-3. Read relevant design document for context
+3. Classify and act per Design-First Enforcement (below)
 4. **State root cause explicitly**: "Root cause: [explanation]"
-5. Only after root cause stated:
-   - **Implementation bug** → fix source file, re-run failing test
-   - **Test bug** → fix test, re-run
-   - **Design mismatch** → trigger Mid-Construction Design Change
-6. After fix: run full test suite, show actual output
-7. Discard raw code from context — retain one-line fix summary
+5. After fix: run test suite, show actual output
+6. Discard raw code from context — retain one-line fix summary
 
 **Escalate to user if**: 3 fix attempts exhausted, architectural change required, >3 unrelated failures, root cause cannot be determined.
 
@@ -51,16 +47,24 @@ This applies to every construction stage. No exceptions.
 
 ## Design-First Enforcement
 
-**CRITICAL**: Before EVERY code change during construction, verify against design.
+**CRITICAL**: All code changes must align with design documents. This applies to bug fixes, feature work, refactoring — any code modification during construction.
 
-### Pre-change check:
-1. Read the relevant design artifact for the current unit:
-   - `functional-design/` — data models, schemas, business logic
-   - `nfr-design/` — performance/security patterns
-   - `infrastructure-design/` — service mappings, deployment
-   - `components.md` / `services.md` — component boundaries, interfaces
-2. Confirm intended code change matches design specification
-3. Only proceed if design explicitly supports the change
+**Design docs** (per unit):
+- `functional-design/` — data models, schemas, business logic
+- `nfr-design/` — performance/security patterns
+- `infrastructure-design/` — service mappings, deployment
+- `components.md` / `services.md` — component boundaries, interfaces
+
+### Classification (before every code change):
+
+**Implementation bug** (code wrong, design correct):
+- Trivial (typo, null check, wrong variable, config value, off-by-one) → fix first, verify against design doc after
+- Complex (multi-file, structural, unclear boundaries) → read design doc first, then fix
+
+**Design gap** (design missing or doesn't support what's needed):
+→ read design doc first, trigger Mid-Construction Design Change before coding
+
+**If a fix changes behavior** → update the relevant design doc to match.
 
 ### If design is ambiguous or missing detail:
 - Do NOT guess or invent behavior
