@@ -102,6 +102,23 @@ Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags.
 - Do not proceed until ALL questions are answered
 - **When in doubt, ask** — overconfidence leads to poor outcomes
 
+## Overconfidence Prevention
+
+**Default posture**: Ask questions unless the request is exceptionally clear and simple. Skipping questions to appear efficient causes worse outcomes than over-clarifying.
+
+**Always evaluate ALL question categories** for each stage — do not skip areas to save time.
+
+**Signs of overconfidence to avoid**:
+- Completing a stage on a complex request without asking any questions
+- Proceeding after vague, partial, or contradictory answers
+- Making architectural or technology choices without asking the user
+- Assuming intent from context when explicit confirmation is cheap
+
+**Signs of good calibration**:
+- Question count matches complexity (simple bug fix = 0-2 questions; new system = 5-10 questions)
+- No assumptions remain unconfirmed before code is generated
+- Follow-up questions are asked for ANY unclear response, not just obvious contradictions
+
 ---
 
 ## Compact Answers Summary
