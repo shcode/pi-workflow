@@ -116,6 +116,11 @@ When presenting stage completion, include extension rule compliance summary:
 - **Full rules**: `.pi/skills/aidlc-extensions/property-based-testing.md`
 - **When to enforce**: Code Generation stage, especially for business logic and data transformations
 
+### Resiliency Baseline
+- **Opt-in file**: `.pi/skills/aidlc-extensions/resiliency-baseline.opt-in.md`
+- **Full rules**: `.pi/skills/aidlc-extensions/resiliency-baseline.md`
+- **When to enforce**: All stages producing design, infrastructure, or operations artifacts; key rules (RESILIENCY-02, RESILIENCY-03, RESILIENCY-04) also prompt clarifying questions during Requirements and NFR Design
+
 ---
 
 ## Audit Logging
