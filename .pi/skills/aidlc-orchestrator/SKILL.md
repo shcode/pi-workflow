@@ -171,6 +171,44 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 
 ---
 
+## Mid-Workflow Changes
+
+Users may request changes to the plan or stage execution at any time. Handle all requests explicitly — never silently alter state.
+
+### Adding a skipped stage
+1. Confirm request and check all prerequisite stages are complete
+2. Warn if later artifacts may need updating
+3. Add stage to plan with rationale, mark PENDING in `aidlc-state.md`
+4. Execute normally; log in `audit.md`
+
+### Skipping a planned stage
+1. State what will be missing and consequences for downstream stages
+2. Get explicit user confirmation of the impact
+3. Mark stage SKIPPED in `aidlc-state.md`; log reason in `audit.md`
+
+### Restarting current stage
+1. Ask what specifically needs to change
+2. Offer: (A) modify existing artifacts or (B) full restart
+3. If restart: archive existing artifacts as `{artifact}.backup`, reset checkboxes, re-execute from beginning
+
+### Restarting a completed stage
+1. Identify all downstream stages that depend on it
+2. Warn user: "Restarting X requires redoing: [list of affected stages]"
+3. Get explicit confirmation, then archive all affected artifacts and reset affected rows in `aidlc-state.md`
+
+### Changing depth mid-flight
+1. Confirm the new depth level
+2. Update the execution plan note; adjust approach for current stage
+3. Log change in `audit.md`
+
+### General rules
+- **Always confirm** before destructive changes (archive before overwrite)
+- **Update all tracking** — `aidlc-state.md`, plan checkboxes, `audit.md` must stay in sync
+- **Offer modification over restart** when possible — restart is a last resort
+- Log every mid-workflow change with: request, impact assessment, user confirmation, action taken
+
+---
+
 ## Key Principles
 
 - Only execute stages that add value
