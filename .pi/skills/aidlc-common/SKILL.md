@@ -35,7 +35,7 @@ Based on `aidlc-state.md`:
 
 **Resume context** (from `## Resume`):
 - Files to load: [list from Load table]
-- Key decisions: see `GOAL.md` → `## Key Decisions`
+- Key decisions: see `audit.md`
 
 **What would you like to work on today?**
 - A) Continue — Pick up from current step
@@ -96,7 +96,7 @@ Let's begin!
 After completing any stage:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + append decision entry to `audit.md`
 2. **Update state**: In `aidlc-state.md` — mark row `[x]`, update `## Current Work`, update `## Resume` manifest, set `## Next`
-3. **Update GOAL.md**: Append any key decisions made this stage to `## Key Decisions` (one line each)
+3. **Update GOAL.md**: If this stage produced an architectural choice, tech stack selection, or major direction change — append one line to `## Key Decisions`. Skip for routine stage completions.
 4. **Load next skill**
 
 ---
