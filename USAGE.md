@@ -31,11 +31,12 @@ Or from inside your project:
 
 ```
 your-project/
-├── .pi/skills/              # 15 AIDLC skills
+├── .pi/skills/              # 19 AIDLC skills
 │   ├── aidlc-orchestrator/
 │   ├── aidlc-common/
 │   ├── aidlc-extensions/
 │   ├── aidlc-workspace/
+│   ├── aidlc-reverse-eng/
 │   ├── aidlc-requirements/
 │   ├── aidlc-stories/
 │   ├── aidlc-workflow-plan/
@@ -44,9 +45,12 @@ your-project/
 │   ├── aidlc-functional-design/
 │   ├── aidlc-nfr/
 │   ├── aidlc-infra-design/
+│   ├── aidlc-ui-design/
 │   ├── aidlc-code-gen/
 │   ├── aidlc-build-test/
-│   └── aidlc-reverse-eng/
+│   ├── aidlc-operations/
+│   ├── aidlc-questions/
+│   └── aidlc-construction-rules/
 └── AGENTS.md                # Workflow rules (do not edit)
 ```
 
@@ -146,32 +150,63 @@ Generated in `aidlc-docs/` during workflow:
 
 | File | Purpose | Size |
 |------|---------|------|
-| `aidlc-state.md` | Compact routing table | ~30 lines, bounded |
-| `aidlc-progress.md` | Narrative progress tracker | Grows with project |
-| `audit.md` | Append-only audit trail | Archived daily |
+| `aidlc-state.md` | Compact routing table | ~50 lines, bounded |
+| `aidlc-progress.md` | Narrative progress tracker (append-only) | Grows with project |
+| `audit.md` | Decision log, archived daily to `audit/YYYY-MM-DD.md` | Append-only |
+| `backlog.md` | Units, features, tech debt, deferred decisions | Grows with project |
+| `GOAL.md` | Project goal, requirements summary, key decisions | Written once |
+| `backlog/{unit}.md` | Per-unit construction progress + required reading list | One per unit |
 
 ### Sample `aidlc-state.md`
 
 ```markdown
-# AIDLC State
-
-## Current Stage
-| Status | Stage | Skill |
-|--------|-------|-------|
-| [x] | Workspace Detection | aidlc-workspace |
-| [x] | Requirements Analysis | aidlc-requirements |
-| [ ] | User Stories | aidlc-stories |
-| [ ] | Workflow Planning | aidlc-workflow-plan |
-
-## Extensions
-| Extension | Status |
-|-----------|--------|
-| Security Baseline | Disabled |
-| Property-Based Testing | Enabled |
+# AI-DLC State
 
 ## Project
 - **Type**: Greenfield
-- **Current unit**: —
+- **Start**: 2026-01-01T00:00:00Z
+- **Workspace**: /path/to/project
+
+## Stages (Project-wide)
+| # | Stage | Status |
+|---|-------|--------|
+| 1 | Workspace Detection | [x] |
+| 2 | Reverse Engineering | [ ] |
+| 3 | Requirements Analysis | [x] |
+| 4 | User Stories | [ ] |
+| 5 | Workflow Planning | [ ] |
+| 6 | Application Design | [ ] |
+| 7 | Units Generation | [ ] |
+| 8 | Build and Test | [ ] |
+| 9 | Operations | [ ] |
+
+## Extensions
+| Name | Enabled |
+|------|---------|
+| Security Baseline | No |
+| Resiliency Baseline | No |
+| Property-Based Testing | Yes |
+
+## Current Work
+| Field | Value |
+|-------|-------|
+| Phase | INCEPTION |
+| Stage | Requirements Analysis |
+| Unit | — |
+| Step | Generating questions |
+
+## Next
+Workflow Planning
+
+## Resume
+### Skills
+aidlc-orchestrator, aidlc-common, aidlc-extensions
+
+### Load
+| Purpose | Path |
+|---------|------|
+| Goal | GOAL.md |
+| Requirements | inception/requirements/requirements.md |
 ```
 
 ### Git setup
@@ -186,14 +221,15 @@ Or commit it if you want to track design decisions and audit history.
 
 ## Extensions
 
-Two opt-in extensions ship with the skills:
+Three opt-in extensions ship with the skills:
 
-| Extension | File | When to Enable |
-|-----------|------|----------------|
-| Security Baseline | `.pi/skills/aidlc-extensions/security-baseline.md` | Production apps |
-| Property-Based Testing | `.pi/skills/aidlc-extensions/property-based-testing.md` | Business logic, data transformations |
+| Extension | When to Enable |
+|-----------|----------------|
+| Security Baseline | Production apps — enforces OWASP Top 10 2025 rules as blocking constraints |
+| Resiliency Baseline | Business-critical workloads — enforces 15 reliability rules across 6 pillars |
+| Property-Based Testing | Business logic, data transformations, serialization |
 
-Enable during Requirements Analysis. The orchestrator asks via multiple-choice question.
+Enabled during Requirements Analysis via multiple-choice prompt. Disabled extensions never load — saves context.
 
 ## Brownfield vs Greenfield
 
@@ -230,6 +266,33 @@ Functional Design → NFR → Infra Design → Code Generation
 ```
 
 Brownfield rule: **modify existing files in-place**. Never create duplicates like `ClassName_new.java`.
+
+## pmai Integration
+
+[pmai](https://github.com/pmai/pmai) is a project management web app that delegates tasks to pi as an AI agent. When pmai spawns pi with a `task.md` brief, the orchestrator detects the mode automatically — no manual setup needed.
+
+### Modes
+
+| Mode | What runs | When |
+|------|-----------|------|
+| `inception` | Full AIDLC lifecycle in the workspace repo | Developer initiates project planning in pmai |
+| `construction` | Single-unit construction only | pmai dispatches a unit issue to pi |
+
+### Interactive Q&A
+
+When `PI_PMAI_CONTRACT_VERSION=1` is set by pmai, pi emits questions as structured JSON events to stdout instead of writing `[Answer]:` files. pmai surfaces these as interactive forms in the web UI. Answers flow back to pi via stdin.
+
+Standalone pi usage is unaffected — all pmai behavior is gated on `task.md` presence and the env var.
+
+### Parallel Construction
+
+Each construction unit runs in an isolated git worktree on its own branch (`feat/aidlc-{unit}`). Units whose dependencies are all `[done]` are dispatched concurrently. Design artifacts are committed to git per unit; operational logs (`aidlc-progress.md`, `audit.md`) are session-scoped and stored in pmai's database.
+
+### Required Reading
+
+Each `backlog/{unit}.md` is pre-populated with a `## Resume → Load` table listing all design artifacts the agent must read before touching any code — including dependency unit artifacts. This works in both manual and pmai sessions.
+
+---
 
 ## Recovery
 
