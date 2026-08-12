@@ -207,6 +207,7 @@ Every backlog item gets its own tracking file with the stages IT needs:
 | Requirements | inception/requirements/requirements.md |
 | Components | inception/application-design/components.md |
 | Unit def | inception/application-design/unit-of-work.md |
+| Dependencies | inception/application-design/unit-of-work-dependency.md |
 | Story map | inception/application-design/unit-of-work-story-map.md |
 | Dep: {dep-unit} backlog | backlog/{dep-unit}.md |
 | Dep: {dep-unit} design | construction/{dep-unit}/functional-design/ |
