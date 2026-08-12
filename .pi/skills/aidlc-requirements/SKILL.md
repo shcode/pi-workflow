@@ -139,14 +139,7 @@ Create `aidlc-docs/inception/requirements/requirements.md`:
 
 ### Step 8: Update State Tracking
 
-Update `aidlc-docs/aidlc-state.md`:
-```markdown
-## Stage Progress
-### 🔵 INCEPTION PHASE
-- [x] Workspace Detection
-- [x] Reverse Engineering (if applicable)
-- [x] Requirements Analysis
-```
+Follow Stage Transition from `aidlc-orchestrator`: mark row 3 `[x]` in `## Stages`, update `## Current Work`, update `## Resume` manifest, set `## Next`.
 
 ### Step 9: Log and Present Completion
 

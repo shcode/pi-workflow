@@ -164,11 +164,7 @@ When user requests work outside existing units:
 5. Execute stages per `backlog/{feature}.md`
 6. When done → `[done]`, switch back to previous `[pending]` unit
 
-`aidlc-state.md` is NEVER overwritten or reset. It’s the project shell.
-
-<!-- TODO: Git worktrees for brownfield construction units (post-MVP).
-     Each [in progress] unit on brownfield gets: git worktree add .worktrees/{unit} -b feat/{unit}
-     Use finishing-a-development-branch pattern when unit is [done]. -->
+`aidlc-state.md` is NEVER overwritten or reset. It's the project shell.
 
 ---
 

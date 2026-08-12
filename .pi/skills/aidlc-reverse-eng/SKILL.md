@@ -326,7 +326,7 @@ All completion details, timestamps, artifact inventory, and findings go to `aidl
 
 ## Step 14: Transition to Next Stage
 
-After user approves:
-1. Load `/skill:aidlc-requirements`
-2. Pass context: brownfield flag, reverse engineering artifacts path, workspace findings
-3. Log transition in `audit.md`
+After user approves, follow the Stage Transition steps from `aidlc-orchestrator`:
+1. Append narrative to `aidlc-progress.md` + decision entry to `audit.md`
+2. Mark row 2 `[x]` in `aidlc-state.md` `## Stages`, update `## Current Work`, `## Resume`, `## Next` (next = Requirements Analysis)
+3. Orchestrator routes to `aidlc-requirements` — do NOT load it directly here

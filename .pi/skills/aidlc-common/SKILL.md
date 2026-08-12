@@ -82,7 +82,7 @@ Display ONCE at start of new workflow:
 **Three-Phase Lifecycle:**
 - 🔵 **INCEPTION** — Planning & Design
 - 🟢 **CONSTRUCTION** — Implementation & Test
-- 🟢 **OPERATIONS** — Deployment pipeline, monitoring, runbooks, production readiness gate
+- 🟡 **OPERATIONS** — Deployment pipeline, monitoring, runbooks, production readiness gate
 
 **Key Principles:** Adaptive stages • User approval at each gate • Complete audit trail • Design-first
 
@@ -93,7 +93,7 @@ Let's begin!
 
 ## Stage Transition (compressed)
 
-After completing any stage:
+See `aidlc-orchestrator` for the canonical Stage Transition steps. Summary:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + append decision entry to `audit.md`
 2. **Update state**: In `aidlc-state.md` — mark row `[x]`, update `## Current Work`, update `## Resume` manifest, set `## Next`
 3. **Update GOAL.md**: If this stage produced an architectural choice, tech stack selection, or major direction change — append one line to `## Key Decisions`. Skip for routine stage completions.
