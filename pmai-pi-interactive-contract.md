@@ -150,6 +150,14 @@ If timeout fires while waiting: session → `failed`, pi process killed.
 
 ## pi Process Lifecycle in Interactive Mode
 
+> **Requires `--mode rpc`**: The stdin-based Q&A protocol described below requires
+> pi to run in `--mode rpc` so that stdin is free for extension use. In `--mode json`,
+> pi owns stdin for its own command protocol and extensions cannot safely read from it.
+> Until pmai's harness is updated to use `--mode rpc`, the fallback is file-based
+> `[Answer]:` tags — pi writes questions to `requirements-questions.md`, commits,
+> exits. pmai reads the file, renders a form, commits answers, retries via
+> `RetrySession` with `modified_context`.
+
 ```
 pmai spawns pi subprocess
   └─→ pi emits JSONL events to stdout
