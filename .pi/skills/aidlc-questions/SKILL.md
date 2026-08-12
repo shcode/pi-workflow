@@ -31,42 +31,35 @@ Fall back to **file-based `[Answer]:`** when ANY applies:
 
 ### pmai Interactive Mode
 
-When `PI_PMAI_CONTRACT_VERSION` environment variable is set, use **JSON event emission** instead of file-based or tool methods:
+When `PI_PMAI_CONTRACT_VERSION` environment variable is set, use the **`questionnaire` tool** to ask questions. The pmai extension intercepts this tool call and surfaces the questions to the user in the pmai UI, then returns answers as the tool result.
 
-```json
-{
-  "type": "questions",
-  "stage": "{current-stage-name}",
-  "round": 1,
-  "questions": [
+**MANDATORY**: Call `questionnaire` tool with all questions for the stage. Do NOT write files, do NOT answer yourself.
+
+Example:
+```
+questionnaire({
+  questions: [
     {
-      "id": "q1",
-      "text": "Question text?",
-      "options": [
-        {"label": "A", "text": "Option description"},
-        {"label": "B", "text": "Option description"}
+      id: "auth",
+      label: "Auth",
+      prompt: "Which authentication method should we use?",
+      options: [
+        { value: "jwt", label: "JWT", description: "Stateless token-based auth" },
+        { value: "session", label: "Session", description: "Server-side sessions" },
+        { value: "oauth", label: "OAuth2", description: "Third-party OAuth provider" }
       ],
-      "multi_select": false,
-      "required": true
+      allowOther: true
     }
   ]
-}
-```
-
-Emit this JSON as a single line to stdout, then **block reading stdin** for the answers response:
-
-```json
-{"type": "answers", "stage": "{stage}", "round": 1, "answers": [{"id": "q1", "selected": ["A"], "free_text": null}]}
+})
 ```
 
 **Rules for pmai interactive mode**:
-- All questions for a stage go in one `questions` event (one round per batch)
-- Follow-up questions = new `questions` event with `round` incremented
-- `multi_select: true` for questions where multiple options apply (e.g. extension opt-ins)
-- Free-text answers: emit option with `label: "X"` and `text: "Other"` — user's free text arrives in `free_text` field
-- After receiving answers JSON from stdin, proceed exactly as with tool/file answers — same compact answers summary, same ambiguity detection
+- Call `questionnaire` once per stage with ALL questions for that stage
+- Use `allowOther: true` to allow free-text responses
+- After tool returns answers, proceed exactly as with file/tool answers — same compact answers summary, same ambiguity detection
 - Do NOT write `[Answer]:` files in pmai interactive mode
-- See `pmai-pi-interactive-contract.md` for full contract details
+- Do NOT answer questions yourself — the `questionnaire` tool blocks until the user responds
 
 ### ask_user_question Usage
 
