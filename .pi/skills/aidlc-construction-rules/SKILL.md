@@ -12,6 +12,25 @@ Load this skill once when the first construction stage begins.
 
 ---
 
+## Required Reading Rule
+
+```
+NEVER TOUCH CODE BEFORE READING DESIGN ARTIFACTS
+```
+
+At the start of ANY construction session (fresh, resume, or pmai delegated):
+1. Read `aidlc-docs/backlog/{unit}.md` first — this is the single entry point
+2. Load ALL files listed in its `## Resume → Load` table, in order (skip paths that don't exist yet)
+3. Only after all listed artifacts are loaded: proceed to construction stages
+
+This applies equally to:
+- Manual pi sessions (fresh or resume)
+- pmai construction mode (`task.md` contains `Unit backlog:` path — read that file first, then its Load table)
+
+**Never start coding, never read application code, never run build commands** until all Load table artifacts are read. No exceptions.
+
+---
+
 ## Root Cause Iron Law
 
 ```

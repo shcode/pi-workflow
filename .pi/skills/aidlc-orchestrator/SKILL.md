@@ -42,6 +42,7 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
   - `Inception docs:` — relative path to inception artifacts (e.g. `../../_base/aidlc-docs/`)
   - `Unit backlog:` — relative path to this unit's backlog file
 - Load `aidlc-common` + `aidlc-construction-rules` + `aidlc-extensions` (re-enforce enabled extensions)
+- **Read `Unit backlog:` file first**, then load ALL files in its `## Resume → Load` table (skip missing paths) — before any other action
 - Read inception docs from the `Inception docs:` path (read-only — never write there)
 - Run CONSTRUCTION phase for the specified unit only: [Functional Design] → [NFR] → [Infra Design] → Code Generation → Build and Test
 - Track unit progress in `aidlc-docs/backlog/{unit-name}.md` (relative to working directory)
@@ -150,7 +151,7 @@ This avoids the overhead of Units Generation for simple projects.
 ### Multi-Unit Flow
 
 1. Inception completes → all units added to `backlog.md` as `[todo]`
-2. Agent picks first `[todo]` unit (or asks user) → marks `[in progress]` → creates `backlog/{unit}.md`
+2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` → loads ALL files listed in its `## Resume → Load` table (skip missing paths) → marks `[in progress]`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
 5. Execute stages per `backlog/{unit}.md` checklist

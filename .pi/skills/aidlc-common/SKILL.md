@@ -182,6 +182,10 @@ Every backlog item gets its own tracking file with the stages IT needs:
 ## Domain
 {domain-name, or — if single-domain project}
 
+## Dependencies
+<!-- Units this unit depends on. Empty if none. -->
+- {dep-unit-name}
+
 ## Stages
 | # | Stage | Status |
 |---|-------|--------|
@@ -196,8 +200,17 @@ Every backlog item gets its own tracking file with the stages IT needs:
 
 ## Resume
 ### Load
+<!-- Pre-populated at creation. Read ALL entries before touching any code. -->
 | Purpose | Path |
 |---------|------|
+| Goal | GOAL.md |
+| Requirements | inception/requirements/requirements.md |
+| Components | inception/application-design/components.md |
+| Unit def | inception/application-design/unit-of-work.md |
+| Story map | inception/application-design/unit-of-work-story-map.md |
+| Dep: {dep-unit} backlog | backlog/{dep-unit}.md |
+| Dep: {dep-unit} design | construction/{dep-unit}/functional-design/ |
+```
 ```
 
 **New feature** (added mid-project → needs mini-inception + construction):
