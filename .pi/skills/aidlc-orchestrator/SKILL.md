@@ -29,9 +29,10 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 - Skip normal startup sequence and welcome message
 - Load `aidlc-common` + `aidlc-extensions` (no opt-in prompts — skip directly to enforcing any already-enabled extensions)
 - Skip `aidlc-workspace` — working directory IS the workspace, treat as **greenfield** unless source files exist (brownfield)
+- If `PI_PMAI_CONTRACT_VERSION` is set: use pmai interactive Q&A mode (emit `questions` JSON events, block on stdin for answers) — see `aidlc-questions` skill
 - Run full INCEPTION phase: Workspace Detection → Requirements → [Stories] → Workflow Planning → [App Design] → Units Generation
 - All `aidlc-docs/` artifacts written to working directory
-- On completion: append a short summary of what was done to the `progress.md` path specified in `task.md`
+- On completion: write `aidlc-docs/inception-complete.json` with units and dependency map, then append a short summary to the `progress.md` path specified in `task.md`
 
 ### AIDLC Mode: construction
 - Skip ALL inception stages

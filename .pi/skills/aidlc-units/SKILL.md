@@ -173,6 +173,19 @@ Not started
 | Story map | inception/application-design/unit-of-work-story-map.md |
 ```
 
+**IF running in pmai mode** (`PI_PMAI_CONTRACT_VERSION` set): write `aidlc-docs/inception-complete.json` as the final inception artifact:
+```json
+{
+  "completed_at": "[ISO timestamp]",
+  "units": ["unit-name-1", "unit-name-2"],
+  "dependency_map": {
+    "unit-name-2": ["unit-name-1"],
+    "unit-name-1": []
+  }
+}
+```
+This file signals to pmai that inception completed successfully and provides the unit list and dependency DAG for issue creation and dispatch. Only write this file after ALL other inception artifacts are committed to git.
+
 ---
 
 ## Critical Rules

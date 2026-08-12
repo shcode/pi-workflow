@@ -29,6 +29,45 @@ Fall back to **file-based `[Answer]:`** when ANY applies:
 
 **Mix both**: Use tool for structured subset first, then file/chat for open-ended remainder.
 
+### pmai Interactive Mode
+
+When `PI_PMAI_CONTRACT_VERSION` environment variable is set, use **JSON event emission** instead of file-based or tool methods:
+
+```json
+{
+  "type": "questions",
+  "stage": "{current-stage-name}",
+  "round": 1,
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Question text?",
+      "options": [
+        {"label": "A", "text": "Option description"},
+        {"label": "B", "text": "Option description"}
+      ],
+      "multi_select": false,
+      "required": true
+    }
+  ]
+}
+```
+
+Emit this JSON as a single line to stdout, then **block reading stdin** for the answers response:
+
+```json
+{"type": "answers", "stage": "{stage}", "round": 1, "answers": [{"id": "q1", "selected": ["A"], "free_text": null}]}
+```
+
+**Rules for pmai interactive mode**:
+- All questions for a stage go in one `questions` event (one round per batch)
+- Follow-up questions = new `questions` event with `round` incremented
+- `multi_select: true` for questions where multiple options apply (e.g. extension opt-ins)
+- Free-text answers: emit option with `label: "X"` and `text: "Other"` — user's free text arrives in `free_text` field
+- After receiving answers JSON from stdin, proceed exactly as with tool/file answers — same compact answers summary, same ambiguity detection
+- Do NOT write `[Answer]:` files in pmai interactive mode
+- See `pmai-pi-interactive-contract.md` for full contract details
+
 ### ask_user_question Usage
 
 ```
