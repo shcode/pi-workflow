@@ -107,12 +107,18 @@ This applies to every construction stage. No exceptions.
 - New constraint invalidates prior design decision
 - Scope change requested by user
 - Design-First check fails
+- **New dependency discovered** — current unit needs artifacts from another unit not in its Load table
 
 ### Process:
 1. **Pause** current coding work
 2. **Identify** affected design document(s)
 3. **Update** the design doc in `aidlc-docs/`
-4. **Append** to `aidlc-docs/construction/design-changes.md`:
+4. **If a new dependency was discovered**:
+   - Update `unit-of-work-dependency.md` — add the new dependency for this unit
+   - Update current unit's `backlog/{unit}.md` `## Dependencies` — add the new dep
+   - Update current unit's `backlog/{unit}.md` `## Resume → Load` — add dep's `backlog/{dep}.md` and `construction/{dep}/functional-design/`
+   - Read the newly added dependency artifacts before continuing
+5. **Append** to `aidlc-docs/construction/design-changes.md`:
    ```markdown
    ## [ISO timestamp] — [Unit Name]
    **Change**: [what changed]
@@ -120,8 +126,8 @@ This applies to every construction stage. No exceptions.
    **Affected docs**: [list]
    **Impact**: [which units/stages affected]
    ```
-5. **Log** in `audit.md`
-6. **Continue** construction with updated design
+6. **Log** in `audit.md`
+7. **Continue** construction with updated design
 
 **Never** code around a design flaw without updating the design document.
 

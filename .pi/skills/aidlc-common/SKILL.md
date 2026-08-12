@@ -257,9 +257,12 @@ Read `backlog.md` on every fresh session. Pick first `[in progress]` or ask user
 When user requests work outside existing units:
 1. Add to `backlog.md` under `## Features`
 2. Current unit → `[pending]`
-3. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed)
-4. Switch `## Current Work` to the new feature
-5. When done → mark `[done]`, switch back to previous unit
+3. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — pre-populate `## Resume → Load` with inception artifacts as per unit template
+4. **Update `unit-of-work-dependency.md`** — add the new unit with its dependencies (empty list if none)
+5. **Update `unit-of-work.md`** — add the new unit definition and responsibilities
+6. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies` and Load table to include the new unit's artifacts
+7. Switch `## Current Work` to the new feature
+8. When done → mark `[done]`, switch back to previous unit
 
 ---
 
