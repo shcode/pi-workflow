@@ -164,12 +164,14 @@ All defined artifacts are created; depth controls detail level within them.
 
 ### Item Format
 ```
-- [todo] item-name (domain: {domain}) — brief description
-- [in progress] item-name (domain: {domain}) — brief description
-- [pending] item-name (domain: {domain}) — interrupted/blocked/waiting
-- [done] item-name (domain: {domain}) — brief description
+- [todo] item-name (unit: {unit-name}) (domain: {domain}) — brief description
+- [in progress] item-name (unit: {unit-name}) (domain: {domain}) — brief description
+- [pending] item-name (unit: {unit-name}) (domain: {domain}) — interrupted/blocked/waiting
+- [done] item-name (unit: {unit-name}) (domain: {domain}) — brief description
 ```
-`(domain: {domain})` is omitted for single-domain projects — only include when the project has multiple domains.
+- `(unit: {unit-name})` — the unit of work this item belongs to. Use `cross-unit` if it spans multiple units.
+- `(domain: {domain})` — omit for single-domain projects.
+- Units of work themselves omit the `(unit:)` tag — they ARE the unit.
 
 ### Per-Item Tracking (`backlog/{item-name}.md`)
 
@@ -218,6 +220,16 @@ Every backlog item gets its own tracking file with the stages IT needs:
 ```markdown
 # Feature: {feature-name}
 
+## Unit
+{unit-name, or cross-unit if spans multiple units}
+
+## Domain
+{domain-name, or — if single-domain project}
+
+## Dependencies
+<!-- Inherited from the unit this feature belongs to. Add extras if needed. -->
+- {dep-unit-name}
+
 ## Stages
 | # | Stage | Status |
 |---|-------|--------|
@@ -232,8 +244,16 @@ Every backlog item gets its own tracking file with the stages IT needs:
 
 ## Resume
 ### Load
+<!-- Pre-populated at creation. Read ALL entries before touching any code. -->
 | Purpose | Path |
 |---------|------|
+| Goal | GOAL.md |
+| Requirements | inception/requirements/requirements.md |
+| Unit def | inception/application-design/unit-of-work.md |
+| Dependencies | inception/application-design/unit-of-work-dependency.md |
+| Parent unit backlog | backlog/{unit-name}.md |
+| Parent unit design | construction/{unit-name}/functional-design/ |
+```
 ```
 
 **Rules**:
@@ -255,14 +275,15 @@ Read `backlog.md` on every fresh session. Pick first `[in progress]` or ask user
 
 ### Adding New Features Mid-Project
 When user requests work outside existing units:
-1. Add to `backlog.md` under `## Features`
-2. Current unit → `[pending]`
-3. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — pre-populate `## Resume → Load` with inception artifacts as per unit template
-4. **Update `unit-of-work-dependency.md`** — add the new unit with its dependencies (empty list if none)
-5. **Update `unit-of-work.md`** — add the new unit definition and responsibilities
-6. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies` and Load table to include the new unit's artifacts
-7. Switch `## Current Work` to the new feature
-8. When done → mark `[done]`, switch back to previous unit
+1. Determine which unit the feature belongs to (ask user if unclear). If it spans multiple units, tag as `cross-unit`.
+2. Add to `backlog.md` under `## Features` with `(unit: {unit-name})` tag
+3. Current unit → `[pending]`
+4. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — set `## Unit`, `## Domain`, `## Dependencies` (inherited from parent unit), pre-populate `## Resume → Load` with parent unit's inception artifacts
+5. **Update `unit-of-work-dependency.md`** — add the new unit with its dependencies (empty list if none)
+6. **Update `unit-of-work.md`** — add the new unit definition and responsibilities
+7. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies` and Load table to include the new unit's artifacts
+8. Switch `## Current Work` to the new feature
+9. When done → mark `[done]`, switch back to previous unit
 
 ---
 
