@@ -16,6 +16,8 @@ description: >
 
 ## Step 1: Check for Existing AI-DLC Project
 
+**Check for pmai delegated mode first**: if `task.md` exists in the working directory and contains `## AIDLC Mode`, the orchestrator already handled routing — do NOT run workspace detection. This skill is not loaded in pmai delegated mode.
+
 Check if `aidlc-docs/aidlc-state.md` exists:
 - **If exists**: This is a resume. Read `aidlc-state.md` → follow `## Resume` manifest → present Welcome Back prompt (from `aidlc-common`). Do NOT re-run workspace detection.
 - **If not exists**: Continue with new project assessment (Step 2+)

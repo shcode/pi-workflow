@@ -19,6 +19,35 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 
 ---
 
+## pmai Delegated Mode
+
+**Check FIRST, before any other logic**: if a file named `task.md` exists in the working directory, read it and look for `## AIDLC Mode`.
+
+### AIDLC Mode: inception
+- Skip normal startup sequence and welcome message
+- Load `aidlc-common` + `aidlc-extensions` (no opt-in prompts — skip directly to enforcing any already-enabled extensions)
+- Skip `aidlc-workspace` — working directory IS the workspace, treat as **greenfield** unless source files exist (brownfield)
+- Run full INCEPTION phase: Workspace Detection → Requirements → [Stories] → Workflow Planning → [App Design] → Units Generation
+- All `aidlc-docs/` artifacts written to working directory
+- On completion: append a short summary of what was done to the `progress.md` path specified in `task.md`
+
+### AIDLC Mode: construction
+- Skip ALL inception stages
+- Read from `task.md`:
+  - `Unit:` — name of the unit to construct
+  - `Domain:` — domain label (optional)
+  - `Inception docs:` — relative path to inception artifacts (e.g. `../../_base/aidlc-docs/`)
+  - `Unit backlog:` — relative path to this unit's backlog file
+- Load `aidlc-common` + `aidlc-construction-rules` + `aidlc-extensions` (re-enforce enabled extensions)
+- Read inception docs from the `Inception docs:` path (read-only — never write there)
+- Run CONSTRUCTION phase for the specified unit only: [Functional Design] → [NFR] → [Infra Design] → Code Generation → Build and Test
+- Track unit progress in `aidlc-docs/backlog/{unit-name}.md` (relative to working directory)
+- On completion: append a short summary to the `progress.md` path specified in `task.md`
+
+**If `task.md` exists but has no `## AIDLC Mode` line**: treat as a plain task description — continue with normal startup sequence below.
+
+---
+
 ## Fast Path (Simple Changes)
 
 **Condition**: Brownfield + ALL of:

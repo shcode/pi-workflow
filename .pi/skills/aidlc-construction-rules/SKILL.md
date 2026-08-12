@@ -121,6 +121,33 @@ Never discard: design docs referenced by current stage, `aidlc-state.md`, `backl
 
 ---
 
+### pmai Delegated Run Paths
+
+When running in **pmai construction mode** (task.md contains `AIDLC Mode: construction`):
+
+| Resource | Path |
+|---|---|
+| Inception docs (read-only) | Path from `Inception docs:` field in task.md (e.g. `../../_base/aidlc-docs/`) |
+| Unit backlog | Path from `Unit backlog:` field in task.md |
+| Application code | Working directory root (current worktree) |
+| Unit aidlc-docs | `aidlc-docs/` relative to working directory |
+| design-changes.md | `aidlc-docs/construction/design-changes.md` relative to working directory |
+
+**NEVER write to the inception docs path** — it is shared across all units and read-only.
+
+### pmai Completion Rule
+
+When running in any pmai delegated mode (inception or construction), on stage completion:
+- Append a short summary (3–5 lines max) to the `progress.md` path shown in `task.md`
+- Format:
+  ```markdown
+  ## Attempt {N} — {stage}
+  {What was done, what artifacts were created, any blockers or decisions made}
+  ```
+- This is **mandatory** — pmai reads `progress.md` to populate the session output and retry context
+
+---
+
 ## Code Location Rules
 
 - **Application code**: Workspace root ONLY (never aidlc-docs/)
