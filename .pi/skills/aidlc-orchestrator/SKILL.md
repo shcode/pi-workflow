@@ -21,6 +21,8 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 
 ## pmai Delegated Mode
 
+**pmai** is a project management tool that delegates tasks to pi as an AI agent. It spawns pi in an isolated git worktree with a `task.md` brief, then collects the output (diff, summary, log) after pi exits.
+
 **Check FIRST, before any other logic**: if a file named `task.md` exists in the working directory, read it and look for `## AIDLC Mode`.
 
 ### AIDLC Mode: inception
