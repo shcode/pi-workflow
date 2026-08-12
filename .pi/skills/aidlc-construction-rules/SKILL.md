@@ -135,6 +135,24 @@ When running in **pmai construction mode** (task.md contains `AIDLC Mode: constr
 
 **NEVER write to the inception docs path** — it is shared across all units and read-only.
 
+**NEVER write to `aidlc-state.md`** during construction — it lives in `_base` and is owned by inception and project-wide phases only. Construction agents update only `aidlc-docs/backlog/{unit}.md` in their own worktree.
+
+**`aidlc-progress.md` and `audit.md` are worktree-local** — each construction agent writes to its own copies. They are not shared with other parallel units.
+
+### pmai Commit Rule
+
+The worktree is **removed by pmai immediately after pi exits** (before PR review). Any file not committed to git is lost.
+
+**MANDATORY**: Before completing any construction stage, commit all `aidlc-docs/` artifacts produced by that stage:
+```
+git add aidlc-docs/
+git commit -m "aidlc({unit-name}): {stage-name} artifacts"
+```
+
+This includes: `backlog/{unit}.md`, `functional-design/`, `nfr-design/`, `infrastructure-design/`, `design-changes.md`. Application code commits follow normal development practice.
+
+Do NOT commit `aidlc-progress.md` or `audit.md` — these are session-scoped ephemeral files managed by pmai.
+
 ### pmai Completion Rule
 
 When running in any pmai delegated mode (inception or construction), on stage completion:
