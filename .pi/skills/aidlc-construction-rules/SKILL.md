@@ -143,15 +143,23 @@ When running in **pmai construction mode** (task.md contains `AIDLC Mode: constr
 
 The worktree is **removed by pmai immediately after pi exits** (before PR review). Any file not committed to git is lost.
 
-**MANDATORY**: Before completing any construction stage, commit all `aidlc-docs/` artifacts produced by that stage:
+**MANDATORY**: Before completing the construction run, commit all design artifacts:
 ```
-git add aidlc-docs/
-git commit -m "aidlc({unit-name}): {stage-name} artifacts"
+git add aidlc-docs/backlog/{unit}.md \
+        aidlc-docs/construction/{unit}/functional-design/ \
+        aidlc-docs/construction/{unit}/nfr-design/ \
+        aidlc-docs/construction/{unit}/infrastructure-design/ \
+        aidlc-docs/construction/design-changes.md
+git commit -m "aidlc({unit-name}): construction artifacts"
 ```
 
-This includes: `backlog/{unit}.md`, `functional-design/`, `nfr-design/`, `infrastructure-design/`, `design-changes.md`. Application code commits follow normal development practice.
+**NEVER commit** `aidlc-progress.md` or `audit.md` — these are operational session logs. They belong in pmai's Postgres records, not in git. If a `.gitignore` does not already exclude them, add entries:
+```
+aidlc-docs/aidlc-progress.md
+aidlc-docs/audit.md
+```
 
-Do NOT commit `aidlc-progress.md` or `audit.md` — these are session-scoped ephemeral files managed by pmai.
+**`design-changes.md` is the only narrative artifact that goes into git.** It captures what changed and why — durable, reviewer-visible, lives with the code permanently. All other decision history lives in pmai's session records (`output_summary`, `output_log`, retry lineage).
 
 ### pmai Completion Rule
 
