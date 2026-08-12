@@ -92,6 +92,12 @@ pi)
   cp -r "$SCRIPT_DIR/.pi/skills/"* "$TARGET_DIR/.pi/skills/"
   skill_count=$(find "$SCRIPT_DIR/.pi/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)
   echo "  ✓ Copied .pi/skills/ ($skill_count skills)"
+  if [[ -d "$SCRIPT_DIR/.pi/extensions" ]]; then
+    mkdir -p "$TARGET_DIR/.pi/extensions"
+    cp -r "$SCRIPT_DIR/.pi/extensions/"* "$TARGET_DIR/.pi/extensions/"
+    ext_count=$(find "$SCRIPT_DIR/.pi/extensions" -maxdepth 1 -name "*.ts" | wc -l)
+    echo "  ✓ Copied .pi/extensions/ ($ext_count extensions)"
+  fi
   cp "$SCRIPT_DIR/core-workflow-pi.md" "$TARGET_DIR/AGENTS.md"
   echo "  ✓ Created AGENTS.md (pi — slim trigger, skills handle the rest)"
   ;;
