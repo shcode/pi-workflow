@@ -1,26 +1,22 @@
 /**
  * pmai Interactive Q&A Extension
  *
- * When pi runs inside pmai (detected via PI_PMAI_CONTRACT_VERSION env var),
- * this extension intercepts `questionnaire` tool calls and bridges them to
- * pmai's interactive session protocol instead of rendering a TUI widget.
+ * Registers the `questionnaire` tool and, when running inside pmai
+ * (PI_PMAI_CONTRACT_VERSION env var set), intercepts calls to bridge them
+ * to pmai's interactive session protocol instead of rendering a TUI widget.
  *
- * Protocol (see pmai-pi-interactive-contract.md):
- *   pi  → pmai: write {"type":"questions", ...} as a JSONL line to stdout
- *   pi blocks reading a single line from stdin
- *   pmai → pi:  write {"type":"answers", ...} as a JSONL line to stdin
- *   pi unblocks, tool_call returns blocked with answer text as the reason
- *   LLM receives answers as the questionnaire tool result
- *
- * In TUI mode or when PI_PMAI_CONTRACT_VERSION is not set, this extension
- * is a no-op — the normal questionnaire tool runs as-is.
+ * Protocol:
+ *   pi  → pmai: {"type":"questions", ...} written to stdout
+ *   pi  blocks reading stdin for answers
+ *   pmai → pi:  {"type":"answers", ...} written to stdin
+ *   pi unblocks, tool returns answers as text to LLM
  */
 
 import { createInterface } from "node:readline";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { isToolCallEventType } from "@earendil-works/pi-coding-agent";
 
-// --- Types matching pmai-pi-interactive-contract.md ---
+// --- Types ---
 
 interface QuestionOption {
   label: string;
@@ -55,8 +51,6 @@ interface AnswersEvent {
   answers: AnswerItem[];
 }
 
-// --- Questionnaire tool input shape (mirrors questionnaire.ts) ---
-
 interface QuestionnaireOption {
   value: string;
   label: string;
@@ -69,6 +63,7 @@ interface QuestionnaireQuestion {
   prompt: string;
   options: QuestionnaireOption[];
   allowOther?: boolean;
+  multiSelect?: boolean;
 }
 
 interface QuestionnaireParams {
@@ -81,39 +76,28 @@ function isPmaiMode(): boolean {
   return !!process.env["PI_PMAI_CONTRACT_VERSION"];
 }
 
-/** Derive a stage name from the first question label for the contract event. */
 function deriveStage(questions: QuestionnaireQuestion[]): string {
   return questions[0]?.label?.toLowerCase().replace(/\s+/g, "-") ?? "questionnaire";
 }
 
-/** Convert questionnaire tool questions to pmai contract format. */
 function toContractQuestions(questions: QuestionnaireQuestion[]): ContractQuestion[] {
   return questions.map((q) => {
     const options: QuestionOption[] = q.options.map((o, i) => ({
-      label: String.fromCharCode(65 + i), // A, B, C, ...
+      label: String.fromCharCode(65 + i),
       text: o.description ? `${o.label} — ${o.description}` : o.label,
     }));
-
     if (q.allowOther !== false) {
       options.push({ label: "X", text: "Other (please describe)" });
     }
-
-    return {
-      id: q.id,
-      text: q.prompt,
-      options,
-      multi_select: false,
-      required: true,
-    };
+    const isMulti = q.multiSelect === true;
+    return { id: q.id, text: q.prompt, options, multi_select: isMulti, required: true };
   });
 }
 
-/** Read one JSON line from stdin (blocking until pmai writes the answers). */
 async function readAnswersFromStdin(): Promise<AnswersEvent | null> {
   return new Promise((resolve) => {
     const rl = createInterface({ input: process.stdin, terminal: false });
     let resolved = false;
-
     rl.once("line", (line) => {
       resolved = true;
       rl.close();
@@ -124,26 +108,20 @@ async function readAnswersFromStdin(): Promise<AnswersEvent | null> {
         resolve(null);
       }
     });
-
-    rl.once("close", () => {
-      if (!resolved) resolve(null);
-    });
+    rl.once("close", () => { if (!resolved) resolve(null); });
   });
 }
 
-/** Format answers as human-readable text the LLM can interpret as a tool result. */
 function formatAnswersAsText(
   questions: QuestionnaireQuestion[],
   contractQuestions: ContractQuestion[],
   answers: AnswerItem[]
 ): string {
   const lines: string[] = ["[Questionnaire answers from user]"];
-
   for (const answer of answers) {
     const q = questions.find((q) => q.id === answer.id);
     const cq = contractQuestions.find((cq) => cq.id === answer.id);
     const label = q?.label || q?.id || answer.id;
-
     if (answer.free_text) {
       lines.push(`${label}: ${answer.free_text}`);
     } else if (answer.selected.length > 0) {
@@ -155,15 +133,75 @@ function formatAnswersAsText(
       lines.push(`${label}: (no answer provided)`);
     }
   }
-
   return lines.join("\n");
 }
 
-// --- Extension entry point ---
+// --- Extension ---
 
 export default function pmaiQna(pi: ExtensionAPI) {
+  // Register the questionnaire tool so the LLM can call it.
+  // In pmai mode the tool_call handler below intercepts before execute() runs.
+  // In TUI mode the execute() renders a native UI widget.
+  pi.registerTool({
+    name: "questionnaire",
+    label: "Questionnaire",
+    description:
+      "Ask the user one or more clarifying questions with predefined options. " +
+      "Use during requirements analysis, NFR selection, and extension opt-ins. " +
+      "Group all questions for a stage into one call.",
+    parameters: {
+      type: "object" as const,
+      properties: {
+        questions: {
+          type: "array",
+          description: "Questions to ask the user",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Unique question ID" },
+              label: { type: "string", description: "Short tab label (max 12 chars)" },
+              prompt: { type: "string", description: "Full question text" },
+              options: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    value: { type: "string" },
+                    label: { type: "string" },
+                    description: { type: "string" },
+                  },
+                  required: ["value", "label"],
+                },
+              },
+              allowOther: { type: "boolean", description: "Allow free-text Other answer" },
+              multiSelect: { type: "boolean", description: "Allow selecting multiple options" },
+            },
+            required: ["id", "prompt", "options"],
+          },
+        },
+      },
+      required: ["questions"],
+    } as any,
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      // In non-pmai TUI mode: inform that UI is unavailable in this mode.
+      if (!isPmaiMode()) {
+        return {
+          content: [{ type: "text" as const, text: "Questionnaire UI is only available in pmai interactive mode." }],
+          details: {},
+        };
+      }
+      // In pmai mode this execute() should never be reached —
+      // the tool_call handler below intercepts first.
+      // Fallback in case interception didn't fire.
+      return {
+        content: [{ type: "text" as const, text: "pmai Q&A bridge error: execute() called directly. Check pmai-qna extension." }],
+        details: {},
+      };
+    },
+  });
+
+  // Intercept questionnaire tool calls in pmai mode (before execute runs).
   pi.on("tool_call", async (event, ctx) => {
-    // Only intercept questionnaire tool in json/rpc mode with pmai contract
     if (ctx.mode === "tui" || !isPmaiMode()) return;
     if (!isToolCallEventType<"questionnaire", QuestionnaireParams>("questionnaire", event)) return;
 
@@ -173,16 +211,18 @@ export default function pmaiQna(pi: ExtensionAPI) {
     const stage = deriveStage(params.questions);
     const contractQuestions = toContractQuestions(params.questions);
 
-    // Emit questions event to stdout — pmai reads this, renders form, waits for user
     const questionsEvent: QuestionsEvent = {
       type: "questions",
       stage,
       round: 1,
       questions: contractQuestions,
     };
-    process.stdout.write(JSON.stringify(questionsEvent) + "\n");
+    // Emit questions via ctx.ui.notify() — this goes through pi's RPC output
+    // mechanism (writeRawStdout) which writes to the real stdout pipe.
+    // The server intercepts extension_ui_request with method=notify containing
+    // a pmai_questions payload and transitions the session to waiting_for_input.
+    ctx.ui.notify(JSON.stringify(questionsEvent), "info");
 
-    // Block on stdin — pmai writes answers after user submits the form
     const answersEvent = await readAnswersFromStdin();
 
     if (!answersEvent) {
@@ -192,15 +232,7 @@ export default function pmaiQna(pi: ExtensionAPI) {
       };
     }
 
-    const answerText = formatAnswersAsText(
-      params.questions,
-      contractQuestions,
-      answersEvent.answers
-    );
-
-    return {
-      block: true,
-      reason: answerText,
-    };
+    const answerText = formatAnswersAsText(params.questions, contractQuestions, answersEvent.answers);
+    return { block: true, reason: answerText };
   });
 }
