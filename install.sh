@@ -136,6 +136,40 @@ copilot)
   ;;
 esac
 
+# --- Commit installed files so agent worktrees inherit them ---
+# `git worktree add` only checks out *committed* files. pmai delegates agent
+# sessions into isolated worktrees, so AGENTS.md + .pi/skills/ must be committed
+# to the base repo — otherwise every delegated session starts without the AIDLC
+# workflow (no AGENTS.md routing, no loadable skills).
+case "$AGENT" in
+  pi)      AIDLC_FILES="AGENTS.md .pi" ;;
+  claude)  AIDLC_FILES="CLAUDE.md .claude" ;;
+  kiro)    AIDLC_FILES="AGENTS.md .kiro" ;;
+  copilot) AIDLC_FILES=".github" ;;
+esac
+
+if git -C "$TARGET_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git -C "$TARGET_DIR" add -- $AIDLC_FILES 2>/dev/null || true
+  if git -C "$TARGET_DIR" diff --cached --quiet; then
+    echo "  ✓ AIDLC workflow files already committed"
+  else
+    COMMIT_OK=1
+    if ! git -C "$TARGET_DIR" config user.email >/dev/null 2>&1; then
+      git -C "$TARGET_DIR" -c user.name="pmai-agent" -c user.email="pmai-agent@localhost" \
+        commit -m "chore: install AIDLC workflow (AGENTS.md + skills)" >/dev/null 2>&1 || COMMIT_OK=0
+    else
+      git -C "$TARGET_DIR" commit -m "chore: install AIDLC workflow (AGENTS.md + skills)" >/dev/null 2>&1 || COMMIT_OK=0
+    fi
+    if [ "$COMMIT_OK" -eq 1 ]; then
+      echo "  ✓ Committed AIDLC workflow files"
+    else
+      echo "  ⚠ Could not commit AIDLC workflow files (git identity?)"
+    fi
+  fi
+else
+  echo "  ⚠ Target is not a git repository — AIDLC files will not reach agent worktrees"
+fi
+
 echo ""
 echo "Done. AIDLC workflow installed for $AGENT."
 echo ""
