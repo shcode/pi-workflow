@@ -13,11 +13,23 @@ Load this skill when a stage needs to present clarifying questions to the user.
 
 ---
 
-## Delivery Method
+## Delivery Method: Hybrid
 
-> **Check pmai mode first** before choosing any other delivery method.
+Use **`ask_user_question` tool** when ALL conditions met:
+- ≤4 questions in the batch
+- Each question has 2–4 clear, predefined options
+- No free-text / "Other" answer needed
+- Interactive session available
 
-### 1. pmai Interactive Mode (HIGHEST PRIORITY)
+Fall back to **file-based `[Answer]:`** when ANY applies:
+- >4 questions to ask
+- Question needs free-text or open-ended response
+- More than 4 options needed
+- Running as sub-agent (headless)
+
+**Mix both**: Use tool for structured subset first, then file/chat for open-ended remainder.
+
+### pmai Interactive Mode
 
 When `PI_PMAI_CONTRACT_VERSION` environment variable is set, use the **`questionnaire` tool** to ask questions. The pmai extension intercepts this tool call and surfaces the questions to the user in the pmai UI, then returns answers as the tool result.
 
@@ -61,25 +73,32 @@ questionnaire({
 - Do NOT write `[Answer]:` files in pmai interactive mode
 - Do NOT answer questions yourself — the `questionnaire` tool blocks until the user responds
 
-### 2. ask_user_question (pi TUI mode only)
+### ask_user_question Usage
 
-Use **`ask_user_question` tool** when ALL conditions met:
-- `PI_PMAI_CONTRACT_VERSION` is NOT set
-- ≤4 questions in the batch
-- Each question has 2–4 clear, predefined options
-- No free-text / "Other" answer needed
-- Interactive session available
+```
+ask_user_question({
+  questions: [
+    {
+      question: "Which auth provider should we use?",
+      header: "Auth",          // max 12 chars
+      options: [
+        { label: "Auth0", description: "Managed, OAuth/OIDC" },
+        { label: "Cognito", description: "AWS-native" },
+        { label: "Custom JWT", description: "Full control" }
+      ],
+      multiSelect: false
+    }
+  ]
+})
+```
 
-### 3. File-based `[Answer]:` (fallback)
-
-Fall back to **file-based `[Answer]:`** when ANY applies:
-- `PI_PMAI_CONTRACT_VERSION` is NOT set
-- >4 questions to ask
-- Question needs free-text or open-ended response
-- More than 4 options needed
-- Running as sub-agent (headless)
-
-**Mix both**: Use tool for structured subset first, then file/chat for open-ended remainder.
+**Rules**:
+- `header`: max 12 characters, used as tab label
+- `options`: 2–4 items, `label` is the answer value returned
+- `multiSelect: true` when multiple options can apply (answers joined with ", ")
+- After receiving answers, ask: **"Any comments or context for your choices? (or say 'none')"**
+- Record comments in the Notes column of the compact answers summary
+- Then proceed to compact answers summary
 
 ---
 
