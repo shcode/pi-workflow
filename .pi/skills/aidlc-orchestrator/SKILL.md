@@ -125,7 +125,7 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 ## Stage Transition (3 steps)
 
 After completing any stage:
-1. **Log**: Append narrative to `aidlc-progress.md` (record line range) + decision entry to `audit.md`
+1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + decision entry to `audit.md`
 2. **Update state**:
    - **Inception stages**: Mark row `[x]` in `aidlc-state.md`, update `## Current Work`, `## Resume`, `## Next`
    - **Construction stages**: Mark row `[x]` in `backlog/{unit-name}.md`, update its Current Step + Resume. Update `aidlc-state.md` `## Current Work` Step only.
@@ -169,6 +169,18 @@ When user requests work outside existing units:
 6. When done → `[done]`, switch back to previous `[pending]` unit
 
 `aidlc-state.md` is NEVER overwritten or reset. It's the project shell.
+
+---
+
+## State File Rules
+
+| File | Access | Purpose |
+|---|---|---|
+| `aidlc-state.md` | READ + UPDATE | Project-wide stages + Current Work + Resume (~50 lines, bounded). |
+| `backlog/{unit}.md` | READ + UPDATE | Per-unit construction progress. Created at Units Generation. |
+| `backlog.md` | READ + UPDATE | Master tracker. Read at session start + planning. |
+| `aidlc-progress.md` | APPEND-ONLY | Narrative log. Never read except targeted offset+limit via audit.md pointers. |
+| `audit.md` | APPEND-ONLY | Decision log. Never read except: `head -n 5` for rotation, `tail -n 50` for history. |
 
 ---
 
@@ -238,6 +250,14 @@ Users may request changes to the plan or stage execution at any time. Handle all
 
 ---
 
+## Cross-Cutting Rules
+
+- Questions use `[Answer]:` file-based format or `ask_user_question` tool (see `aidlc-questions` skill)
+- Extensions are hard constraints; check `Enabled` status in `aidlc-state.md` `## Extensions` table
+- Design-first: code must match approved design documents (see `aidlc-construction-rules` skill)
+- Welcome message displayed once only
+- When in doubt, ask — overconfidence leads to poor outcomes
+
 ## Key Principles
 
 - Only execute stages that add value
@@ -247,6 +267,8 @@ Users may request changes to the plan or stage execution at any time. Handle all
 - App code in workspace root ONLY; docs in `aidlc-docs/` ONLY
 - `aidlc-state.md` is bounded (~50 lines) — never add rows
 - `aidlc-progress.md` is append-only — agents never read it (except targeted offset via audit pointer)
+- Log decisions in `audit.md` with ISO 8601 timestamps — always append, never overwrite
+- Mark checkboxes `[x]` immediately in same interaction
 
 ---
 

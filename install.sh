@@ -99,8 +99,8 @@ pi)
   else
     echo "  ✓ Copied .pi/extensions/ (empty, ready for future extensions)"
   fi
-  cp "$SCRIPT_DIR/core-workflow-pi.md" "$TARGET_DIR/AGENTS.md"
-  echo "  ✓ Created AGENTS.md (pi — slim trigger, skills handle the rest)"
+  cp "$SCRIPT_DIR/core-workflow.md" "$TARGET_DIR/AGENTS.md"
+  echo "  ✓ Created AGENTS.md (pi — workflow trigger, skills handle detail)"
   ;;
 claude)
   mkdir -p "$TARGET_DIR/.claude/skills"

@@ -19,38 +19,36 @@ This repo is the **source of truth** for the AIDLC workflow. It is not consumed 
 
 ### Multi-agent architecture
 
-`core-workflow.md` is the **universal steering document** for non-pi agents. Pi uses a slim trigger (`core-workflow-pi.md`) to avoid duplication with the orchestrator skill.
+`core-workflow.md` is the **universal steering document** for all agents. It contains a slim always-on trigger. The full workflow detail lives in `aidlc-orchestrator/SKILL.md`, which is loaded on demand by pi and referenced directly by other agents.
 
-| Agent | Location | Loading mechanism |
+| Agent | Steering file | Full workflow |
 |---|---|---|
-| **pi** | `AGENTS.md` (slim trigger) + `.pi/skills/*` | Progressive-disclosure skills (`/skill:`) |
-| **Claude Code** | `CLAUDE.md` | Full context load |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | Full context load |
-| **Kiro** | `AGENTS.md` (full workflow) | Full context load |
+| **pi** | `AGENTS.md` ← `core-workflow.md` (slim trigger) | `aidlc-orchestrator` skill (progressive disclosure) |
+| **Claude Code** | `CLAUDE.md` ← `core-workflow.md` (slim trigger) | `aidlc-orchestrator` skill (loaded as context) |
+| **GitHub Copilot** | `.github/copilot-instructions.md` ← `core-workflow.md` | `aidlc-orchestrator` skill (loaded as context) |
+| **Kiro** | `AGENTS.md` ← `core-workflow.md` (slim trigger) | `aidlc-orchestrator` skill (loaded as context) |
 
-**Key rule**: `core-workflow.md` is the canonical source for non-pi agents. For pi, the orchestrator skill IS the workflow. Changes to workflow structure must update both `core-workflow.md` and `aidlc-orchestrator/SKILL.md`.
+**Key rule**: `core-workflow.md` is a slim always-loaded trigger for all agents. `aidlc-orchestrator/SKILL.md` is the single source of truth for the full workflow. Changes to workflow rules go in the orchestrator skill only.
 
-**Key rule**: `.pi/` is pi-specific progressive disclosure. Other agents get the full workflow in their steering file. Do NOT add agent-specific logic to `core-workflow.md` — keep it agent-agnostic.
+**Key rule**: `.pi/` is pi-specific progressive disclosure. `core-workflow.md` is agent-agnostic — never add agent-specific logic there.
 
 ```
 AIDLC repo (this project)
   │
   ├── install.sh ───────────────────┐
-  │   copies .pi/skills/*        │
-  │   copies core-workflow-pi.md │  (pi: slim trigger)
-  │   copies core-workflow.md    │  (others: full workflow)
+  │   copies .pi/skills/*           │
+  │   copies core-workflow.md  ─────┤  (all agents: slim trigger)
   │                                 ▼
   │                         target project
   │                           ├── .pi/skills/      # 19 skills (pi only)
   │                           ├── .pi/extensions/  # task panel, etc. (pi only)
-  │                           ├── AGENTS.md        # pi (slim) or kiro (full)
-  │                           ├── CLAUDE.md        # Claude Code (full)
+  │                           ├── AGENTS.md        # pi + kiro ← core-workflow.md
+  │                           ├── CLAUDE.md        # Claude Code ← core-workflow.md
   │                           └── .github/
-  │                               └── copilot-instructions.md  # Copilot (full)
+  │                               └── copilot-instructions.md  # Copilot ← core-workflow.md
   │
   ├── AGENTS.md (this file) ────► contributor/maintainer guide
-  ├── core-workflow.md ─────────► canonical workflow rules (non-pi agents)
-  ├── core-workflow-pi.md ──────► slim trigger (pi only)
+  ├── core-workflow.md ─────────► slim always-on trigger (all agents)
   ├── USAGE.md ─────────────────► end-user documentation
   └── README.md ────────────────► public project readme
 ```
@@ -60,8 +58,7 @@ AIDLC repo (this project)
 ```
 .
 ├── AGENTS.md                  # This file — contributor/maintainer guide
-├── core-workflow.md           # Canonical workflow rules → installed for non-pi agents
-├── core-workflow-pi.md        # Slim trigger for pi (avoids duplication with orchestrator)
+├── core-workflow.md           # Slim always-on trigger → installed for ALL agents
 ├── install.sh                 # Distribution script
 ├── USAGE.md                   # End-user documentation
 ├── README.md                  # Public project readme
@@ -192,15 +189,14 @@ These files are generated in `aidlc-docs/` during workflow execution. Skill auth
 
 | If you modify... | You must also update... |
 |---|---|
-| Add/remove/rename a skill | `core-workflow.md` stage router, `USAGE.md` stage table, `AGENTS.md` repo structure |
-| Skill content changes stage routing logic | `aidlc-orchestrator/SKILL.md` |
-| Workflow principles/rules | `core-workflow.md` + `aidlc-orchestrator/SKILL.md` (both must stay in sync) |
+| Add/remove/rename a skill | `aidlc-orchestrator/SKILL.md` stage router, `USAGE.md` stage table, `AGENTS.md` repo structure |
+| Workflow principles/rules | `aidlc-orchestrator/SKILL.md` (single source of truth for full workflow) |
+| Startup trigger / always-on rules | `core-workflow.md` (slim trigger for all agents) |
 | Question format changes | `aidlc-questions/SKILL.md` (single source for question rules) |
 | Construction rules changes | `aidlc-construction-rules/SKILL.md` (single source for design-first rules) |
 | Extension files | `aidlc-extensions/SKILL.md` discovery logic if the extension needs explicit prompt registration |
 | `install.sh` behavior | `USAGE.md` installation section |
 | Add new agent support | `install.sh` agent-specific copy block, `USAGE.md` agent table |
-| Pi-specific steering | `core-workflow-pi.md` (slim trigger for pi) |
 
 ### Validation checklist
 
