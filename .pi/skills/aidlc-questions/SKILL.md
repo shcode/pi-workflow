@@ -15,13 +15,18 @@ Load this skill when a stage needs to present clarifying questions to the user.
 
 ## Delivery Method: Hybrid
 
+**MODE GATE — read this first:**
+
+- **pmai mode** (`PI_PMAI_CONTRACT_VERSION` env var set): ALWAYS use the **`questionnaire` tool** for every question of the stage — see "pmai Interactive Mode" below. The questionnaire tool has **no question-count limit**: put ALL questions in ONE call, even if there are more than 4. Do NOT split batches, do NOT write `[Answer]:` files, do NOT use `ask_user_question`. The rules below apply to manual mode only.
+- **manual mode** (env var NOT set): continue below — Q&A is limited (≤4 questions per tool call), so split large batches or use file-based.
+
 Use **`ask_user_question` tool** when ALL conditions met:
 - ≤4 questions in the batch
 - Each question has 2–4 clear, predefined options
 - No free-text / "Other" answer needed
 - Interactive session available
 
-Fall back to **file-based `[Answer]:`** when ANY applies:
+Fall back to **file-based `[Answer]:`** (manual mode only) when ANY applies:
 - >4 questions to ask
 - Question needs free-text or open-ended response
 - More than 4 options needed
@@ -38,6 +43,7 @@ When `PI_PMAI_CONTRACT_VERSION` environment variable is set, use the **`question
 Example:
 ```
 questionnaire({
+  stage: "Requirements Analysis",
   questions: [
     {
       id: "auth",
@@ -66,7 +72,8 @@ questionnaire({
 ```
 
 **Rules for pmai interactive mode**:
-- Call `questionnaire` once per stage with ALL questions for that stage
+- **Always pass `stage`**: set it to the current AIDLC stage name (e.g., `"Requirements Analysis"`, `"User Stories"`, `"Workflow Planning"`, `"Application Design"`, `"Functional Design"`, `"NFR Requirements"`, `"UI Design"`, `"Infrastructure Design"`). This populates the Q&A history with meaningful section headers.
+- Call `questionnaire` once per stage with ALL questions for that stage — the tool has **NO question-count limit**, so do NOT split even if there are more than 4 questions
 - Use `allowOther: true` to allow free-text responses
 - Use `multiSelect: true` when the user should be able to pick multiple options ("select all that apply")
 - After tool returns answers, proceed exactly as with file/tool answers — same compact answers summary, same ambiguity detection

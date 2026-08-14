@@ -5,15 +5,15 @@
  * (PI_PMAI_CONTRACT_VERSION env var set), intercepts calls to bridge them
  * to pmai's interactive session protocol instead of rendering a TUI widget.
  *
- * Protocol:
+ * Protocol (contract v2 — exit + resume):
  *   pi  → pmai: {"type":"questions", ...} written to stdout
- *   pi  blocks reading stdin for answers
- *   pmai → pi:  {"type":"answers", ...} written to stdin
- *   pi unblocks, tool returns answers as text to LLM
+ *   pi  ends the turn (terminate) — pmai closes stdin so pi exits and
+ *       persists the session to disk
+ *   pmai → pi (resume): `pi --session <id> -p "<formatted answers>"`
+ *   pi  resumes the session with the answers as a new user message
  */
 
-import { createInterface } from "node:readline";
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { isToolCallEventType } from "@earendil-works/pi-coding-agent";
 
 // --- Types ---
@@ -38,19 +38,6 @@ interface QuestionsEvent {
   questions: ContractQuestion[];
 }
 
-interface AnswerItem {
-  id: string;
-  selected: string[];
-  free_text: string | null;
-}
-
-interface AnswersEvent {
-  type: "answers";
-  stage: string;
-  round: number;
-  answers: AnswerItem[];
-}
-
 interface QuestionnaireOption {
   value: string;
   label: string;
@@ -67,6 +54,7 @@ interface QuestionnaireQuestion {
 }
 
 interface QuestionnaireParams {
+  stage?: string; // AIDLC stage context, e.g. "Requirements Analysis"
   questions: QuestionnaireQuestion[];
 }
 
@@ -94,54 +82,12 @@ function toContractQuestions(questions: QuestionnaireQuestion[]): ContractQuesti
   });
 }
 
-async function readAnswersFromStdin(): Promise<AnswersEvent | null> {
-  return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin, terminal: false });
-    let resolved = false;
-    rl.once("line", (line) => {
-      resolved = true;
-      rl.close();
-      try {
-        const parsed = JSON.parse(line.trim()) as AnswersEvent;
-        resolve(parsed.type === "answers" ? parsed : null);
-      } catch {
-        resolve(null);
-      }
-    });
-    rl.once("close", () => { if (!resolved) resolve(null); });
-  });
-}
-
-function formatAnswersAsText(
-  questions: QuestionnaireQuestion[],
-  contractQuestions: ContractQuestion[],
-  answers: AnswerItem[]
-): string {
-  const lines: string[] = ["[Questionnaire answers from user]"];
-  for (const answer of answers) {
-    const q = questions.find((q) => q.id === answer.id);
-    const cq = contractQuestions.find((cq) => cq.id === answer.id);
-    const label = q?.label || q?.id || answer.id;
-    if (answer.free_text) {
-      lines.push(`${label}: ${answer.free_text}`);
-    } else if (answer.selected.length > 0) {
-      const selectedTexts = answer.selected
-        .map((sel) => cq?.options.find((o) => o.label === sel)?.text ?? sel)
-        .join(", ");
-      lines.push(`${label}: ${selectedTexts}`);
-    } else {
-      lines.push(`${label}: (no answer provided)`);
-    }
-  }
-  return lines.join("\n");
-}
-
 // --- Extension ---
 
 export default function pmaiQna(pi: ExtensionAPI) {
   // Register the questionnaire tool so the LLM can call it.
   // In pmai mode the tool_call handler below intercepts before execute() runs.
-  // In TUI mode the execute() renders a native UI widget.
+  // In TUI mode the execute() renders the native UI widget (manual workflow unaffected).
   pi.registerTool({
     name: "questionnaire",
     label: "Questionnaire",
@@ -152,6 +98,13 @@ export default function pmaiQna(pi: ExtensionAPI) {
     parameters: {
       type: "object" as const,
       properties: {
+        stage: {
+          type: "string",
+          description:
+            "AIDLC stage this questionnaire belongs to, e.g. 'Requirements Analysis', " +
+            "'User Stories', 'Application Design', 'NFR Requirements'. " +
+            "Always pass this so the Q&A history shows meaningful context.",
+        },
         questions: {
           type: "array",
           description: "Questions to ask the user",
@@ -208,7 +161,7 @@ export default function pmaiQna(pi: ExtensionAPI) {
     const params = event.input as QuestionnaireParams;
     if (!params.questions || params.questions.length === 0) return;
 
-    const stage = deriveStage(params.questions);
+    const stage = params.stage ?? deriveStage(params.questions);
     const contractQuestions = toContractQuestions(params.questions);
 
     const questionsEvent: QuestionsEvent = {
@@ -223,16 +176,12 @@ export default function pmaiQna(pi: ExtensionAPI) {
     // a pmai_questions payload and transitions the session to waiting_for_input.
     ctx.ui.notify(JSON.stringify(questionsEvent), "info");
 
-    const answersEvent = await readAnswersFromStdin();
-
-    if (!answersEvent) {
-      return {
-        block: true,
-        reason: "pmai Q&A: no answers received (session may have timed out)",
-      };
-    }
-
-    const answerText = formatAnswersAsText(params.questions, contractQuestions, answersEvent.answers);
-    return { block: true, reason: answerText };
+    // Contract v2: end the turn and let pmai exit the process (session is
+    // persisted to disk). pmai resumes later via `pi --session <id> -p "<answers>"`.
+    return {
+      block: true,
+      terminate: true,
+      reason: "awaiting user answers (session will resume)",
+    };
   });
 }
