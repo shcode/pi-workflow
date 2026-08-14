@@ -7,6 +7,11 @@ for interactive sessions. It extends the existing JSONL event stream with two ne
 types that enable pmai to surface questions to the user mid-session and feed answers back
 to pi.
 
+**Contract version: 2** — sessions are now **persisted and resumed** (exit + resume model).
+A session no longer blocks on stdin while waiting for answers; instead pi ends the turn and
+exits (persisting the session to disk), and pmai resumes it via `pi --session <id>` when the
+user submits answers. This makes sessions survive a pmai backend restart.
+
 ---
 
 ## Existing Event Stream (unchanged)
@@ -16,12 +21,13 @@ pi emits JSONL to stdout. pmai's poller reads and parses each line. Existing eve
 | Type | When emitted | pmai action |
 |---|---|---|
 | `agent_start` | pi process starts | Update session status → running |
+| `session` | session created (contains `id`) | Capture pi session id for resume |
 | `tool_execution_end` | edit/write tool completes | Capture diff + file changes |
 | `message_end` | assistant message completes | Capture output summary |
 
 ---
 
-## New Event Types
+## Event Types
 
 ### 1. `questions`
 
@@ -38,146 +44,78 @@ Emitted when pi needs user input to continue. Session enters `waiting_for_input`
       "text": "What is the primary authentication method?",
       "options": [
         {"label": "A", "text": "JWT tokens"},
-        {"label": "B", "text": "OAuth2 / OIDC"},
-        {"label": "C", "text": "API Key"},
-        {"label": "D", "text": "Session-based (cookies)"}
+        {"label": "B", "text": "OAuth2 / OIDC"}
       ],
       "multi_select": false,
       "required": true
-    },
-    {
-      "id": "q2",
-      "text": "Is this a greenfield or brownfield project?",
-      "options": [
-        {"label": "A", "text": "Greenfield — starting from scratch"},
-        {"label": "B", "text": "Brownfield — existing codebase"}
-      ],
-      "multi_select": false,
-      "required": true
-    },
-    {
-      "id": "q3",
-      "text": "Which extensions should be enabled?",
-      "options": [
-        {"label": "A", "text": "Security Baseline"},
-        {"label": "B", "text": "Resiliency Baseline"},
-        {"label": "C", "text": "Property-Based Testing"}
-      ],
-      "multi_select": true,
-      "required": false
     }
   ]
 }
 ```
 
-**Fields**:
-
-| Field | Type | Description |
-|---|---|---|
-| `type` | string | Always `"questions"` |
-| `stage` | string | AIDLC stage that generated the questions (e.g. `"requirements"`, `"nfr"`, `"extensions"`) |
-| `round` | int | Question round within the stage (1 = initial, 2+ = follow-up) |
-| `questions[].id` | string | Stable identifier for the question within this stage+round |
-| `questions[].text` | string | Full question text |
-| `questions[].options` | array | Selectable options. Empty array = free-text answer |
-| `questions[].multi_select` | bool | Whether multiple options can be selected |
-| `questions[].required` | bool | Whether an answer is required before pi can continue |
-
 **pmai behavior on receiving `questions`**:
-1. Pause session — do NOT kill pi process, keep it alive waiting on stdin
-2. Store questions in DB linked to session ID
-3. Set session status → `waiting_for_input`
-4. Notify user (in-app notification or UI state change)
-5. Render interactive form in session detail view
+1. Store questions in DB linked to session ID
+2. Set session status → `waiting_for_input`
+3. **Close the stdin pipe** — pi ends the turn (`terminate`), receives EOF on stdin, exits gracefully, and **persists the session** to `--session-dir`
+4. Render the interactive form in the session viewer
 
----
+### 2. `answers` (via resume, not stdin)
 
-### 2. `answers` (pmai → pi, via stdin)
+After the user submits answers, pmai **resumes** the persisted session instead of writing to
+a live stdin pipe:
 
-After user submits answers in pmai UI, pmai writes a single JSON line to pi's stdin:
-
-```json
-{
-  "type": "answers",
-  "stage": "requirements",
-  "round": 1,
-  "answers": [
-    {"id": "q1", "selected": ["B"], "free_text": null},
-    {"id": "q2", "selected": ["A"], "free_text": null},
-    {"id": "q3", "selected": ["A", "B"], "free_text": null}
-  ]
-}
+```bash
+pi --session <pi-session-id> --session-dir <worktree>/.pmai/sessions \
+   --provider <p> --model <m> -p "<resume prompt>"
 ```
 
-**Fields**:
+Where the **resume prompt** is the answers formatted as a user message:
 
-| Field | Type | Description |
-|---|---|---|
-| `type` | string | Always `"answers"` |
-| `stage` | string | Must match the `stage` from the corresponding `questions` event |
-| `round` | int | Must match the `round` from the corresponding `questions` event |
-| `answers[].id` | string | Must match a `questions[].id` from the same stage+round |
-| `answers[].selected` | array\<string\> | Selected option labels (e.g. `["A"]`, `["A","C"]`). Empty for free-text only |
-| `answers[].free_text` | string\|null | Free-text answer when options don't apply or user selects "Other" |
+```text
+Here are the answers to your pending questions — continue from where you left off:
 
-**pi behavior on receiving `answers`**:
-1. Parse the JSON line from stdin
-2. Validate all required questions have answers
-3. Continue execution using answers — no file writing needed
-4. Emit next `questions` event if follow-up questions needed, or continue to next stage
+[q1 label]: Selected option text (or free text)
+[q2 label]: ...
+```
+
+pi resumes the session with the answers as a new user turn and continues execution.
 
 ---
 
-## Session State Machine (extended)
+## Session State Machine
 
 ```
 pending
-  └─→ running
-        ├─→ waiting_for_input  (questions event emitted)
-        │     └─→ running      (answers received via stdin)
+  └─→ running ──(questions event)──▶ waiting_for_input   [pi EXITED, session persisted]
+        │                                └─→ running      [pi resumed via --session]
         ├─→ completed
         └─→ failed
 ```
 
-`waiting_for_input` is a sub-state of `running` — the pi process is still alive.
-Timeout (TIME-01, 15 min) continues counting during `waiting_for_input`.
-If timeout fires while waiting: session → `failed`, pi process killed.
-
-**Implication**: pmai should notify user immediately when session enters
-`waiting_for_input`. Long-idle interactive sessions will time out.
+`waiting_for_input` is now a **paused** state: the pi process has exited, the session is on
+disk, and no runtime budget is consumed. pmai resumes it on answer (or on backend restart).
 
 ---
 
-## pi Process Lifecycle in Interactive Mode
+## pi Process Lifecycle (interactive)
 
-> **Requires `--mode rpc`**: The stdin-based Q&A protocol described below requires
-> pi to run in `--mode rpc` so that stdin is free for extension use. In `--mode json`,
-> pi owns stdin for its own command protocol and extensions cannot safely read from it.
-> Until pmai's harness is updated to use `--mode rpc`, the fallback is file-based
-> `[Answer]:` tags — pi writes questions to `requirements-questions.md`, commits,
-> exits. pmai reads the file, renders a form, commits answers, retries via
-> `RetrySession` with `modified_context`.
+> **Requires `--mode rpc`** and a persistent `--session-dir`.
 
 ```
-pmai spawns pi subprocess
-  └─→ pi emits JSONL events to stdout
-        ├─→ {"type": "questions", ...}   pi blocks reading stdin
-        │         ↓
-        │   pmai writes {"type": "answers", ...} to pi stdin
-        │         ↓
-        │   pi continues, may emit more questions
-        ├─→ {"type": "message_end", ...}  final summary
-        └─→ pi exits (stdout EOF)
+pmai spawns pi (rpc mode, --session-dir <worktree>/.pmai/sessions)
+  └─→ pi emits {"type":"session","id":...}         (pmai captures session id)
+  └─→ pi emits {"type":"questions", ...}           (pmai → waiting_for_input)
+  └─→ pi ends turn (terminate), pmai closes stdin → pi exits, session flushed to disk
+  └─→ [user answers] pmai spawns pi --session <id> -p "<answers>"
+  └─→ pi resumes, continues, may emit more questions
+  └─→ {"type":"agent_settled"} or {"type":"agent_end"}  → pmai marks completed/failed
 ```
-
-pi must read stdin non-blocking during normal execution and blocking only when
-explicitly waiting for answers (after emitting a `questions` event).
 
 ---
 
 ## pmai Implementation Notes
 
-### New DB columns (sessions table)
+### DB columns (sessions table)
 
 | Column | Type | Purpose |
 |---|---|---|
@@ -185,37 +123,34 @@ explicitly waiting for answers (after emitting a `questions` event).
 | `pending_questions` | JSONB | Stored questions while `waiting_for_input` |
 | `questions_stage` | string | Stage that emitted the pending questions |
 | `questions_round` | int | Round number of pending questions |
+| `pi_session_id` | string (nullable) | pi session id captured from the `session` event — used to resume |
+| `pi_session_dir` | string (nullable) | absolute `--session-dir` path for the session (worktree-scoped) |
 
-### New REST endpoints
+### REST endpoints
 
 | Endpoint | Purpose |
 |---|---|
 | `GET /agent/sessions/{id}/questions` | Fetch pending questions for UI rendering |
-| `POST /agent/sessions/{id}/answers` | Submit user answers → feeds to pi stdin |
+| `POST /agent/sessions/{id}/answers` | Submit answers → **resume** the persisted session |
 
 ### Harness changes (`harness_subprocess.go`)
 
-- Keep stdin pipe open for interactive sessions (`cmd.StdinPipe()`)
-- On `questions` event: store pipe reference, update session status
-- On `POST /answers`: write JSON line to stored stdin pipe, resume status
-- Timeout behavior unchanged — clock keeps running during `waiting_for_input`
-
----
-
-## pi Skills Implementation Notes
-
-See `aidlc-questions` skill for the question emission rules. In pmai interactive mode:
-- Use `{"type": "questions", ...}` stdout emission instead of file-based `[Answer]:` tags
-- Block on stdin after emitting questions
-- Parse `{"type": "answers", ...}` from stdin to get user responses
-- Fall back to file-based format if not in pmai interactive mode (standalone pi usage unaffected)
+- Run `pi --mode rpc --session-dir <worktree>/.pmai/sessions ...` (drop `--no-session`).
+- Capture the pi session id from the `session` event.
+- On `questions`: set `waiting_for_input`, **close stdin** so pi exits and persists; keep the
+  session in `waiting_for_input` (not `completed`).
+- On resume: spawn `pi --session <id> --session-dir <dir> ... -p "<resume prompt>"` and drain
+  stdout with the same event loop.
+- On startup reconciliation: re-attach (`pi --session <id>`) instead of marking `failed`.
 
 ---
 
 ## Versioning
 
-This contract is versioned via a `PI_PMAI_CONTRACT_VERSION` environment variable
-set by pmai when spawning pi. Pi checks this to determine which interactive features
-are supported. Current version: `1`.
+`PI_PMAI_CONTRACT_VERSION` env var, set by pmai when spawning pi. **Current version: 2.**
 
-If the env var is absent, pi assumes standalone mode — file-based Q&A only.
+- v1: blocking stdin Q&A (deprecated).
+- v2: persisted session + exit/resume (this document).
+
+If the env var is absent, pi assumes standalone mode — file-based/TUI Q&A only (manual
+workflow, unaffected).
