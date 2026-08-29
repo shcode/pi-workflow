@@ -35,7 +35,6 @@ Based on `aidlc-state.md`:
 
 **Resume context** (from `## Resume`):
 - Files to load: [list from Load table]
-- Then read `backlog/{unit}.md` for additional per-unit context
 - Key decisions: see `audit.md`
 
 **What would you like to work on today?**
@@ -48,7 +47,7 @@ Based on `aidlc-state.md`:
 
 ### Mandatory: Load Resume Manifest
 
-On resume, read `aidlc-state.md` `## Resume` section. Load ONLY the project-wide files listed there. Then, if `## Current Work.Unit` is set, read `backlog/{unit}.md` and load its `## Resume` Load table. Do NOT guess or load extra files.
+On resume, read `aidlc-state.md` `## Resume` section. Load ALL files listed in the Load table. Do NOT guess or load extra files.
 
 ### Mandatory: Load RULES.md
 
