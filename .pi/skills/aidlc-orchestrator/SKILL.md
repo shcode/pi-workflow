@@ -42,7 +42,7 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
   - `Inception docs:` — relative path to inception artifacts (e.g. `../../_base/aidlc-docs/`)
   - `Unit backlog:` — relative path to this unit's backlog file
 - Load `aidlc-common` + `aidlc-construction-rules` + `aidlc-extensions` (re-enforce enabled extensions)
-- **Read `Unit backlog:` file first**, then load ALL files in its `## Resume → Load` table (skip missing paths) — before any other action
+- **Read `Unit backlog:` file first** — this is the single entry point for the unit. Find the current stage via `## Current Step`.
 - Read inception docs from the `Inception docs:` path (read-only — never write there)
 - Run CONSTRUCTION phase for the specified unit only: [Functional Design] → [NFR] → [Infra Design] → Code Generation → Build and Test
 - Track unit progress in `aidlc-docs/backlog/{unit-name}.md` (relative to working directory)
@@ -128,7 +128,7 @@ After completing any stage:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + decision entry to `audit.md`
 2. **Update state**:
    - **Inception stages**: Mark row `[x]` in `aidlc-state.md`, update `## Current Work`, `## Resume`, `## Next`
-   - **Construction stages**: Mark row `[x]` in `backlog/{unit-name}.md`, update its Current Step + Resume. Copy its Resume Load table into `aidlc-state.md` (keeping `GOAL.md` + `RULES.md` prepended). Update `aidlc-state.md` `## Current Work` Step.
+   - **Construction stages**: Mark row `[x]` in `backlog/{unit-name}.md`, update its Current Step. Update `aidlc-state.md` `## Current Work` Step.
 3. **Load next skill**
 
 **Skill caching**: Once loaded, a skill stays in context. Do NOT re-load.
@@ -150,12 +150,12 @@ This avoids the overhead of Units Generation for simple projects.
 
 ### Multi-Unit Flow
 
-1. Inception completes → all units added to `backlog.md` as `[todo]`. **Copy first unit's `## Resume` from `backlog/{unit}.md` into `aidlc-state.md`** (prepend `GOAL.md`, `RULES.md`).
-2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` → loads ALL files listed in its `## Resume → Load` table (skip missing paths) → marks `[in progress]`
+1. Inception completes → all units added to `backlog.md` as `[todo]`.
+2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` for dependencies and current step → marks `[in progress]`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
-5. Execute stages per `backlog/{unit}.md` checklist. After each stage that produces new artifacts: update `backlog/{unit}.md` `## Resume` Load table, then **copy it into `aidlc-state.md`** (keep `GOAL.md` + `RULES.md` prepended).
-6. Unit complete → mark `[done]` in `backlog.md` → pick next unit → **copy next unit's Load table from its `backlog/{unit}.md`** into `aidlc-state.md`.
+5. Execute stages per `backlog/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only.
+6. Unit complete → mark `[done]` in `backlog.md` → pick next unit.
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
@@ -189,29 +189,16 @@ When user requests work outside existing units:
 The `## Resume` section in `aidlc-state.md` is the **single source of truth** for cold resume. After every stage transition, update it with:
 
 - **Skills**: Which skills the agent needs to load on resume
-- **Load table**: Project-wide files (`GOAL.md`, `RULES.md`) + current unit's artifacts, **copied from `backlog/{unit}.md` `## Resume`**
 
-`GOAL.md` is always in the Load table once it exists.
+`GOAL.md` is always read on resume once it exists. `RULES.md` if it exists.
 
-When switching units: copy the new unit's Load table from its `backlog/{unit}.md` into `aidlc-state.md`. When a construction stage produces new artifacts: update both `backlog/{unit}.md` and `aidlc-state.md`.
-
-The table is bounded — one unit's worth of context, not all units. A new session reads ONLY what `## Resume` specifies. No guessing. No hopping.
+A new session reads `aidlc-state.md` and activates the listed skills. Each skill's Step 1 declares its own context — no static Load table. No guessing.
 
 Example during construction:
 ```markdown
 ## Resume
 ### Skills
 aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
-
-### Load
-| Purpose | Path |
-|---------|------|
-| Goal | GOAL.md |
-| Rules | RULES.md |
-| Unit | backlog/auth-service.md |
-| Design | construction/auth-service/functional-design/business-logic-model.md |
-| Dep: billing backlog | backlog/billing.md |
-| Dep: billing design | construction/billing/functional-design/ |
 ```
 
 ---

@@ -168,28 +168,11 @@ Omit `(domain: {domain})` if the project has only one domain.
 
 ## Current Step
 Not started
-
-## Resume
-### Load
-<!-- Pre-populated at creation. Read ALL entries before touching any code. -->
-| Purpose | Path |
-|---------|------|
-| Goal | GOAL.md |
-| Requirements | inception/requirements/requirements.md |
-| Components | inception/application-design/components.md |
-| Unit def | inception/application-design/unit-of-work.md |
-| Dependencies | inception/application-design/unit-of-work-dependency.md |
-| Story map | inception/application-design/unit-of-work-story-map.md |
-| Dep: {dep-unit} backlog | backlog/{dep-unit}.md |
-| Dep: {dep-unit} design | construction/{dep-unit}/functional-design/ |
 ```
 
-Rules for populating `## Dependencies` and `## Resume → Load`:
+Rules for populating `## Dependencies`:
 - Read `unit-of-work-dependency.md` to find dependencies for this unit
 - List each dependency in `## Dependencies` (omit section or write `none` if no dependencies)
-- Pre-populate `## Resume → Load` with: Goal, Requirements, Components, Unit def, Dependencies, Story map
-- For each dependency unit: add its `backlog/{dep}.md` and `construction/{dep}/functional-design/` to the Load table (these paths may not exist yet — that's fine, agent skips missing paths)
-- Omit `Dep:` rows if unit has no dependencies
 
 **IF running in pmai mode** (`PI_PMAI_CONTRACT_VERSION` set): write `aidlc-docs/inception-complete.json` as the final inception artifact:
 ```json

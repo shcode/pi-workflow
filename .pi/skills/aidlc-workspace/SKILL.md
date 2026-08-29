@@ -96,24 +96,16 @@ Record:
 [Next stage name]
 
 ## Resume
-<!-- Updated after every stage. New sessions load ONLY these files for context. -->
-<!-- GOAL.md is always included once it exists. -->
+<!-- Updated after every stage. Skills line only — each skill's Step 1 declares its own context. -->
 
 ### Skills
 aidlc-orchestrator, aidlc-common, aidlc-extensions
-
-### Load
-| Purpose | Path |
-|---------|------|
-| Goal | GOAL.md |
-| Rules | RULES.md |
 ```
 
 **Rules**:
 - `aidlc-state.md` tracks project-wide stages: Inception (1-7) + Build and Test (8) + Operations (9).
 - Per-unit construction stages are tracked in `backlog/{unit-name}.md`.
 - During CONSTRUCTION, `## Current Work` Unit = active backlog item name.
-- Update `## Resume` after every stage with artifacts the NEXT stage needs.
 
 ### `aidlc-docs/aidlc-progress.md`
 
@@ -178,7 +170,5 @@ No user approval required — automatically proceed to next phase.
 1. Mark row 1 `[x]` in Stages table
 2. Update `## Current Work` (Stage = next stage name)
 3. Update `## Next`
-4. Update `## Resume` → Load table with paths the next stage needs:
-   - Brownfield → reverse-eng artifacts (if they exist)
-   - Greenfield → empty (requirements stage needs no prior artifacts)
+4. Update `## Resume` → Skills: list only the skills active for the current phase (aidlc-orchestrator, aidlc-common, aidlc-extensions for inception; add aidlc-construction-rules + current stage skill for construction).
 5. Append to `aidlc-progress.md` + `audit.md`

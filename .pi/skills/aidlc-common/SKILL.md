@@ -34,7 +34,7 @@ Based on `aidlc-state.md`:
 - **Step**: [Current Work.Step]
 
 **Resume context** (from `## Resume`):
-- Files to load: [list from Load table]
+- Skills to load: [list from Skills line]
 - Key decisions: see `audit.md`
 
 **What would you like to work on today?**
@@ -47,7 +47,7 @@ Based on `aidlc-state.md`:
 
 ### Mandatory: Load Resume Manifest
 
-On resume, read `aidlc-state.md` `## Resume` section. Load ALL files listed in the Load table. Do NOT guess or load extra files.
+On resume, read `aidlc-state.md` `## Resume` section. Activate the listed skills. Each skill's Step 1 declares which context files to load. Do NOT guess or load extra files.
 
 ### Mandatory: Load RULES.md
 
@@ -200,22 +200,6 @@ Every backlog item gets its own tracking file with the stages IT needs:
 ## Current Step
 [Current step within the active stage]
 
-## Resume
-### Load
-<!-- Pre-populated at creation. Read ALL entries before touching any code. -->
-| Purpose | Path |
-|---------|------|
-| Goal | GOAL.md |
-| Requirements | inception/requirements/requirements.md |
-| Components | inception/application-design/components.md |
-| Unit def | inception/application-design/unit-of-work.md |
-| Dependencies | inception/application-design/unit-of-work-dependency.md |
-| Story map | inception/application-design/unit-of-work-story-map.md |
-| Dep: {dep-unit} backlog | backlog/{dep-unit}.md |
-| Dep: {dep-unit} design | construction/{dep-unit}/functional-design/ |
-```
-```
-
 **New feature** (added mid-project → needs mini-inception + construction):
 ```markdown
 # Feature: {feature-name}
@@ -242,18 +226,6 @@ Every backlog item gets its own tracking file with the stages IT needs:
 ## Current Step
 [Current step within the active stage]
 
-## Resume
-### Load
-<!-- Pre-populated at creation. Read ALL entries before touching any code. -->
-| Purpose | Path |
-|---------|------|
-| Goal | GOAL.md |
-| Requirements | inception/requirements/requirements.md |
-| Unit def | inception/application-design/unit-of-work.md |
-| Dependencies | inception/application-design/unit-of-work-dependency.md |
-| Parent unit backlog | backlog/{unit-name}.md |
-| Parent unit design | construction/{unit-name}/functional-design/ |
-```
 ```
 
 **Rules**:
@@ -278,10 +250,10 @@ When user requests work outside existing units:
 1. Determine which unit the feature belongs to (ask user if unclear). If it spans multiple units, tag as `cross-unit`.
 2. Add to `backlog.md` under `## Features` with `(unit: {unit-name})` tag
 3. Current unit → `[pending]`
-4. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — set `## Unit`, `## Domain`, `## Dependencies` (inherited from parent unit), pre-populate `## Resume → Load` with parent unit's inception artifacts
+4. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — set `## Unit`, `## Domain`, `## Dependencies` (inherited from parent unit). Each stage's Step 1 declares its context.
 5. **Update `unit-of-work-dependency.md`** — add the new unit with its dependencies (empty list if none)
 6. **Update `unit-of-work.md`** — add the new unit definition and responsibilities
-7. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies` and Load table to include the new unit's artifacts
+7. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies`
 8. Switch `## Current Work` to the new feature
 9. When done → mark `[done]`, switch back to previous unit
 

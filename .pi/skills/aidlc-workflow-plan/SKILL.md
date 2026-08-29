@@ -176,7 +176,7 @@ After approval, create `GOAL.md` in **workspace root**:
 <!-- Only architectural choices, tech stack selections, major direction changes, or decisions that future sessions need to understand the project. NOT every stage action. -->
 ```
 
-**Rules**: Written ONCE after approval. Updated only if user explicitly changes direction. Always included in `aidlc-state.md` `## Resume` Load table. Agents read on every session resume.
+**Rules**: Written ONCE after approval. Updated only if user explicitly changes direction. Agents read on every session resume.
 
 ---
 

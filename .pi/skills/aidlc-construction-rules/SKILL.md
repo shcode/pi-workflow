@@ -19,15 +19,15 @@ NEVER TOUCH CODE BEFORE READING DESIGN ARTIFACTS
 ```
 
 At the start of ANY construction session (fresh, resume, or pmai delegated):
-1. Read `aidlc-docs/backlog/{unit}.md` first — this is the single entry point
-2. Load ALL files listed in its `## Resume → Load` table, in order (skip paths that don't exist yet)
-3. Only after all listed artifacts are loaded: proceed to construction stages
+1. Read `aidlc-docs/backlog/{unit}.md` first — this is the single entry point. Find the current stage via `## Current Step`.
+2. Proceed to the current stage's skill. Its **Step 1 declares which context files to load** — the skill knows what it needs, not a frozen snapshot.
+3. Load exactly what the stage's Step 1 says, then proceed.
 
 This applies equally to:
 - Manual pi sessions (fresh or resume)
-- pmai construction mode (`task.md` contains `Unit backlog:` path — read that file first, then its Load table)
+- pmai construction mode (`task.md` contains `Unit backlog:` path — read that file first)
 
-**Never start coding, never read application code, never run build commands** until all Load table artifacts are read. No exceptions.
+**Never start coding, never read application code, never run build commands** until the stage's Step 1 context is loaded. No exceptions.
 
 ---
 
@@ -107,7 +107,7 @@ This applies to every construction stage. No exceptions.
 - New constraint invalidates prior design decision
 - Scope change requested by user
 - Design-First check fails
-- **New dependency discovered** — current unit needs artifacts from another unit not in its Load table
+- **New dependency discovered** — current unit needs artifacts from another unit
 
 ### Process:
 1. **Pause** current coding work
@@ -116,7 +116,6 @@ This applies to every construction stage. No exceptions.
 4. **If a new dependency was discovered**:
    - Update `unit-of-work-dependency.md` — add the new dependency for this unit
    - Update current unit's `backlog/{unit}.md` `## Dependencies` — add the new dep
-   - Update current unit's `backlog/{unit}.md` `## Resume → Load` — add dep's `backlog/{dep}.md` and `construction/{dep}/functional-design/`
    - Read the newly added dependency artifacts before continuing
 5. **Append** to `aidlc-docs/construction/design-changes.md`:
    ```markdown
