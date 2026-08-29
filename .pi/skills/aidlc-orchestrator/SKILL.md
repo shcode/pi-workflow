@@ -150,12 +150,12 @@ This avoids the overhead of Units Generation for simple projects.
 
 ### Multi-Unit Flow
 
-1. Inception completes → all units added to `backlog.md` as `[todo]`. **Reset `aidlc-state.md` `## Resume` Load to project-wide only**: `GOAL.md`, `RULES.md`, `backlog.md`.
+1. Inception completes → all units added to `backlog.md` as `[todo]`. **Reset `aidlc-state.md` `## Resume` Load to project-wide only**: `GOAL.md`, `RULES.md`.
 2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` → loads ALL files listed in its `## Resume → Load` table (skip missing paths) → marks `[in progress]`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
 5. Execute stages per `backlog/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only — never add per-unit files to its Resume.
-6. Unit complete → mark `[done]` in `backlog.md` → pick next unit. Update `aidlc-state.md` `## Resume` Load to point to next unit's backlog (via `backlog.md` — it's already listed).
+6. Unit complete → mark `[done]` in `backlog.md` → pick next unit.
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
@@ -191,7 +191,7 @@ The `## Resume` section in `aidlc-state.md` is the **single source of truth** fo
 - **Skills**: Which skills the agent needs to load on resume
 - **Load table**: Project-wide files ONLY — never per-unit artifacts
 
-`GOAL.md` is always in the Load table once it exists. `backlog.md` is always included (it points to the current unit).
+`GOAL.md` is always in the Load table once it exists. `RULES.md` if it exists.
 
 **Per-unit artifacts live in `backlog/{unit}.md` `## Resume` — never leak into `aidlc-state.md`.**
 
@@ -208,7 +208,6 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 |---------|------|
 | Goal | GOAL.md |
 | Rules | RULES.md |
-| Backlog | backlog.md |
 ```
 
 ---
