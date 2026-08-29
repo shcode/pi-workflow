@@ -150,12 +150,12 @@ This avoids the overhead of Units Generation for simple projects.
 
 ### Multi-Unit Flow
 
-1. Inception completes → all units added to `backlog.md` as `[todo]`
+1. Inception completes → all units added to `backlog.md` as `[todo]`. **Reset `aidlc-state.md` `## Resume` Load to project-wide only**: `GOAL.md`, `RULES.md`, `backlog.md`.
 2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` → loads ALL files listed in its `## Resume → Load` table (skip missing paths) → marks `[in progress]`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
-5. Execute stages per `backlog/{unit}.md` checklist
-6. Unit complete → mark `[done]` in `backlog.md` → pick next unit
+5. Execute stages per `backlog/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only — never add per-unit files to its Resume.
+6. Unit complete → mark `[done]` in `backlog.md` → pick next unit. Update `aidlc-state.md` `## Resume` Load to point to next unit's backlog (via `backlog.md` — it's already listed).
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
@@ -188,12 +188,14 @@ When user requests work outside existing units:
 
 The `## Resume` section in `aidlc-state.md` is the **single source of truth** for cold resume. After every stage transition, update it with:
 
-- **Load table**: Exact file paths the next stage needs to read
 - **Skills**: Which skills the agent needs to load on resume
+- **Load table**: Project-wide files ONLY — never per-unit artifacts
 
-`GOAL.md` is always in the Load table once it exists.
+`GOAL.md` is always in the Load table once it exists. `backlog.md` is always included (it points to the current unit).
 
-A new session reads `aidlc-state.md` and loads ONLY what `## Resume` specifies. No guessing.
+**Per-unit artifacts live in `backlog/{unit}.md` `## Resume` — never leak into `aidlc-state.md`.**
+
+A new session reads `aidlc-state.md` → finds `Current Work.Unit` → reads `backlog/{unit}.md` → loads its Load table. Two-stage, no guessing.
 
 Example during construction:
 ```markdown
@@ -206,8 +208,7 @@ aidlc-orchestrator, aidlc-common, aidlc-construction-rules, aidlc-code-gen
 |---------|------|
 | Goal | GOAL.md |
 | Rules | RULES.md |
-| Unit | backlog/auth-service.md |
-| Design | construction/auth-service/functional-design/business-logic-model.md |
+| Backlog | backlog.md |
 ```
 
 ---
