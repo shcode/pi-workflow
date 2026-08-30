@@ -173,22 +173,9 @@ Update `aidlc-docs/aidlc-state.md`:
 
 **Verification Iron Law** (from `aidlc-construction-rules`): Run full test suite one final time and include actual output before presenting. Never claim passing without fresh evidence.
 
-```markdown
-# 🔨 Build and Test Complete
+Load `aidlc-stage-common` completion message for: "🔨 Build and Test", `aidlc-docs/construction/build-and-test/`, "Operations".
 
-[AI Summary - bullet points of build status and test results by category]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine build and test summary at:
-> `aidlc-docs/construction/build-and-test/build-and-test-summary.md`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications to build/test instructions
-> ✅ **Approve & Continue** - Approve and proceed to **Operations**
-```
+Wait for explicit user approval before proceeding.
 
 ---
 

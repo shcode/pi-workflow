@@ -3,7 +3,8 @@ name: aidlc-questions
 description: >
   Question format, answer validation, and contradiction detection for AIDLC stages.
   Load when a stage needs to ask clarifying questions. Covers file-based [Answer]: tags,
-  ask_user_question tool (pi), compact answers summaries, and ambiguity resolution.
+  ask_user_question tool (pi, expanded: 1–6 questions, 2–10 options, free-text, multi-select),
+  compact answers summaries, and ambiguity resolution.
   Loaded once, cached for session.
 ---
 
@@ -18,19 +19,19 @@ Load this skill when a stage needs to present clarifying questions to the user.
 **MODE GATE — read this first:**
 
 - **pmai mode** (`PI_PMAI_CONTRACT_VERSION` env var set): ALWAYS use the **`questionnaire` tool** for every question of the stage — see "pmai Interactive Mode" below. The questionnaire tool has **no question-count limit**: put ALL questions in ONE call, even if there are more than 4. Do NOT split batches, do NOT write `[Answer]:` files, do NOT use `ask_user_question`. The rules below apply to manual mode only.
-- **manual mode** (env var NOT set): continue below — Q&A is limited (≤4 questions per tool call), so split large batches or use file-based.
+- **manual mode** (env var NOT set): continue below — Q&A is limited to 6 questions per tool call, so split large batches into multiple `ask_user_question` calls.
 
-Use **`ask_user_question` tool** when ALL conditions met:
-- ≤4 questions in the batch
-- Each question has 2–4 clear, predefined options
-- No free-text / "Other" answer needed
+### Manual Mode (Default)
+
+Use **`ask_user_question` tool** for ALL questions when ALL conditions met:
+- Each question has 2–10 clear, predefined options
+- Free-text available via "Type your own answer..." option
 - Interactive session available
 
-Fall back to **file-based `[Answer]:`** (manual mode only) when ANY applies:
-- >4 questions to ask
-- Question needs free-text or open-ended response
-- More than 4 options needed
-- Running as sub-agent (headless)
+If >6 questions: split into multiple `ask_user_question` calls of ≤6 questions each.
+
+Fall back to **file-based `[Answer]:`** only when:
+- Running as sub-agent (headless) — no interactive session available
 
 **Mix both**: Use tool for structured subset first, then file/chat for open-ended remainder.
 
@@ -91,7 +92,9 @@ ask_user_question({
       options: [
         { label: "Auth0", description: "Managed, OAuth/OIDC" },
         { label: "Cognito", description: "AWS-native" },
-        { label: "Custom JWT", description: "Full control" }
+        { label: "Custom JWT", description: "Full control" },
+        { label: "Firebase Auth", description: "Google-managed" },
+        { label: "Supabase Auth", description: "Open-source, pg-based" }
       ],
       multiSelect: false
     }
@@ -101,8 +104,9 @@ ask_user_question({
 
 **Rules**:
 - `header`: max 12 characters, used as tab label
-- `options`: 2–4 items, `label` is the answer value returned
+- `options`: 2–10 items, `label` is the answer value returned
 - `multiSelect: true` when multiple options can apply (answers joined with ", ")
+- Free-text supported via "Type your own answer..." option (last option by default)
 - After receiving answers, ask: **"Any comments or context for your choices? (or say 'none')"**
 - Record comments in the Notes column of the compact answers summary
 - Then proceed to compact answers summary
@@ -111,7 +115,7 @@ ask_user_question({
 
 ## File-Based Format
 
-Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags.
+Create `aidlc-docs/{stage}-questions.md` with questions and `[Answer]:` tags. **Only use in sub-agent (headless) mode** — no interactive session available.
 
 ### With options (≤5 concrete choices):
 ```markdown
@@ -198,7 +202,7 @@ After all answers arrive (from tool or file), create `aidlc-docs/inception/{phas
 "mix of", "somewhere between", "not sure", "depends", "maybe", "probably"
 
 ### If contradictions or vagueness found:
-1. Ask follow-up questions (prefer `ask_user_question` tool if ≤4 structured follow-ups)
+1. Ask follow-up questions (prefer `ask_user_question` tool if ≤6 structured follow-ups)
 2. Wait for user response
 3. After resolution, update compact answers summary
 

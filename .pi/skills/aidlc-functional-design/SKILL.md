@@ -41,31 +41,23 @@ description: >
 - Generate plan with checkboxes [] for functional design
 - Focus on business logic, domain models, business rules
 
-### Step 3: Generate Context-Appropriate Questions
+### Step 3: Q&A
 
-**DIRECTIVE**: Analyze unit definition and functional design artifacts to identify ALL areas where clarification improves design.
+Load `aidlc-stage-common` for Standard Q&A with:
+- Plan path: `construction/plans/{unit-name}-functional-design-plan.md`
+- Questions path: `construction/plans/{unit-name}-functional-design-questions.md`
+- Answers path: `construction/{unit-name}/functional-design/answers.md`
+- Categories:
+  - **Business Logic Modeling** — Core entities, workflows, data transformations
+  - **Domain Model** — Domain concepts, entity relationships, data structures
+  - **Business Rules** — Decision rules, validation logic, constraints, policies
+  - **Data Flow** — Inputs, outputs, transformations, persistence
+  - **Integration Points** — External system interactions, APIs, data exchange
+  - **Error Handling** — Error scenarios, validation failures, exceptions
+  - **Business Scenarios** — Edge cases, alternative flows, complex situations
+  - **Frontend Components** (if applicable) — UI structure, interactions, state management, form handling
 
-**CRITICAL**: Default to asking questions when ANY ambiguity exists.
-
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Business Logic Modeling** - Core entities, workflows, data transformations
-- **Domain Model** - Domain concepts, entity relationships, data structures
-- **Business Rules** - Decision rules, validation logic, constraints, policies
-- **Data Flow** - Inputs, outputs, transformations, persistence
-- **Integration Points** - External system interactions, APIs, data exchange
-- **Error Handling** - Error scenarios, validation failures, exceptions
-- **Business Scenarios** - Edge cases, alternative flows, complex situations
-- **Frontend Components** (if applicable) - UI structure, interactions, state management, form handling
-
-### Step 4: Store Plan
-
-Save as `aidlc-docs/construction/plans/{unit-name}-functional-design-plan.md`
-
-### Step 5: Collect and Analyze Answers
-
-Save questions with `[Answer]:` tags to `aidlc-docs/functional-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. **MANDATORY**: Review ALL responses for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses. Do not proceed until ALL ambiguities resolved.
-
-### Step 6: Generate Functional Design Artifacts
+### Step 4: Generate Functional Design Artifacts
 
 Create:
 - `aidlc-docs/construction/{unit-name}/functional-design/business-logic-model.md`
@@ -79,28 +71,10 @@ Create:
     - Form validation rules
     - API integration points
 
-### Step 7: Present Completion Message
+### Step 5: Present Completion
 
-```markdown
-# 🔧 Functional Design Complete - [unit-name]
+Load `aidlc-stage-common` completion message for: "🔧 Functional Design", `aidlc-docs/construction/{unit-name}/functional-design/`, "[next-stage-name]"
 
-[AI Summary - bullet points of business logic, entities, rules]
+### Step 6: Approval Gate
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine functional design at: `aidlc-docs/construction/[unit-name]/functional-design/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Continue to Next Stage** - Approve and proceed to [next-stage-name]
-```
-
-### Step 8: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### Step 9: Record Approval and Update Progress
-
-Log approval in `audit.md`. Mark Functional Design complete in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Functional Design `[x]` in `backlog/{unit-name}.md`.

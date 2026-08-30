@@ -94,38 +94,14 @@ After receiving answers:
 
 2. **Deferred Rule Loading**: For extensions opted IN, load full rules file now (strip `.opt-in.md`, append `.md`). For opted OUT, do NOT load.
 
-### Step 6: Generate Clarifying Questions
+### Step 6: Q&A
 
-- **ALWAYS** present clarifying questions unless requirements are exceptionally clear
-- Ask about ANY missing, unclear, or ambiguous areas
-- Focus on functional requirements, non-functional requirements, user scenarios, business context
-- Load `aidlc-questions` skill if not cached. Use `[Answer]:` file-based format
-- Save questions to `aidlc-docs/requirements-questions.md`
-- STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
-- **MANDATORY**: Analyze ALL answers for ambiguities, present follow-up questions if needed
-- **MANDATORY**: Keep asking until ALL ambiguities resolved OR user explicitly asks to proceed
+Load `aidlc-stage-common` for Standard Q&A with:
+- Questions path: `inception/plans/requirements-questions.md`
+- Answers path: `inception/requirements/requirement-verification-answers.md`
+- Categories: Functional Requirements, Non-Functional Requirements, User Scenarios, Business Context, Technical Context, Quality Attributes
 
-### ⛔ GATE: Await All [Answer]: Tags
-
-DO NOT proceed to Step 7 until all questions are answered and validated.
-
-### Step 6.5: Generate Compact Answers Summary
-
-After validation, create `aidlc-docs/inception/requirements/requirement-verification-answers.md`:
-
-```markdown
-# Requirements Answers Summary
-
-| # | Question | Answer | Notes |
-|---|----------|--------|-------|
-```
-
-- One row per Q+A = one line of information
-- Condensed question (≤10 words)
-- Answer = letter + option text
-- Notes = "Other" free-text, contradictions, clarifications
-
-**Future stages MUST read this summary for context.**
+Note: No plan file for requirements — the questions ARE the plan. Generate the compact answers summary as `requirement-verification-answers.md` with one row per Q+A (condensed question ≤10 words).
 
 ### Step 7: Generate Requirements Document
 
@@ -141,29 +117,10 @@ Create `aidlc-docs/inception/requirements/requirements.md`:
 
 Follow Stage Transition from `aidlc-orchestrator`: mark row 3 `[x]` in `## Stages`, update `## Current Work`, update `## Resume` manifest, set `## Next`.
 
-### Step 9: Log and Present Completion
+### Step 9: Present Completion
 
-Log approval prompt with timestamp in `audit.md`.
+Load `aidlc-stage-common` completion message for: "🔍 Requirements Analysis", `aidlc-docs/inception/requirements/`, "[User Stories/Workflow Planning]"
 
-Present completion message:
+> [IF User Stories will be skipped: add "📝 **Add User Stories**" option]
 
-```markdown
-# 🔍 Requirements Analysis Complete
-
-[AI Summary - bullet points of key functional and non-functional requirements]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine the requirements document at: `aidlc-docs/inception/requirements/requirements.md`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications to the requirements
-> [IF User Stories will be skipped:]
-> 📝 **Add User Stories** - Choose to include User Stories stage
-> ✅ **Approve & Continue** - Approve and proceed to [User Stories/Workflow Planning]
-```
-
-- Wait for explicit user approval
-- Record approval response with timestamp
+Wait for explicit user approval. Record approval response with timestamp.

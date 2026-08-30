@@ -57,38 +57,25 @@ Record findings:
 **Greenfield or nothing found**: generate everything relevant to the project (Step 3+).
 **Brownfield with existing artifacts**: only generate what's missing or ask whether to extend existing setup.
 
-### Step 3: Generate Context-Appropriate Questions
+### Step 3: Q&A
 
-**DIRECTIVE**: Analyze infrastructure design, NFR requirements, and existing artifacts to identify ALL areas needing clarification.
+Load `aidlc-stage-common` for Question-Only with:
+- Plan path: `operations/operations-plan.md`
+- Questions path: `operations/operations-questions.md`
+- Answers path: `operations/operations-answers.md`
+- Categories:
+  - **Environments** — dev/staging/prod, promotion flow
+  - **Release Strategy** — rolling, blue-green, canary; deployment frequency
+  - **CI/CD Platform** — GitHub Actions, GitLab CI, Jenkins, CircleCI
+  - **Monitoring & Observability** — stack preference, key metrics/SLOs
+  - **Alerting** — thresholds, notification channels, on-call rotation
+  - **Rollback Strategy** — automated vs manual, RTO/RPO targets
+  - **Incident Response** — severity levels, escalation path, communication channels
+  - **Compliance & Audit** — log retention, audit trail (cross-check security-baseline if enabled)
 
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
+### Step 4: Log and Request Approval
 
-- **Environments** — which environments exist (dev/staging/prod), promotion flow between them
-- **Release Strategy** — rolling, blue-green, canary, recreate; deployment frequency
-- **CI/CD Platform** — GitHub Actions, GitLab CI, Jenkins, CircleCI, or use existing if brownfield
-- **Monitoring & Observability** — stack preference (Prometheus+Grafana, Datadog, CloudWatch, New Relic), key metrics/SLOs
-- **Alerting** — thresholds, notification channels, on-call rotation/escalation
-- **Rollback Strategy** — automated vs manual, RTO/RPO targets
-- **Incident Response** — severity levels, escalation path, communication channels
-- **Compliance & Audit** — log retention requirements, audit trail needs (cross-check security-baseline SECURITY-14 if enabled)
-
-### Step 4: Store Plan
-
-Save as `aidlc-docs/operations/operations-plan.md` with checkboxes `[ ]` for each artifact to generate.
-
-Save questions with `[Answer]:` tags to `aidlc-docs/operations-questions.md`. **STOP.** Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
-
-### Step 5: Analyze Answers and Follow Up
-
-**MANDATORY**: Review ALL answers for vagueness ("mix of", "not sure", "depends", "maybe"). Add follow-up `[Answer]:` questions for anything unclear. Do not proceed until all ambiguities resolved or user says "proceed".
-
-### Step 6: Generate Compact Answers Summary
-
-Create `aidlc-docs/operations/operations-answers.md` (same format as other stages — see `aidlc-questions`).
-
-### Step 7: Log and Request Approval
-
-Log approval prompt with timestamp in `audit.md`. Present the operations plan, wait for explicit approval before generation.
+Log approval prompt in `audit.md`. Present the operations plan, wait for explicit approval before generation.
 
 ---
 
@@ -188,18 +175,12 @@ If more steps remain, return to Step 8. If all artifacts generated, proceed to S
 > ✅ **Approve & Continue** - Mark production-ready, complete the AIDLC lifecycle
 ```
 
-### Step 17: Wait for Explicit Approval
+### Step 17: Approval Gate
 
-Do not proceed until user explicitly approves. This is the final gate of the AIDLC lifecycle — no silent completion.
-
-### Step 18: Record Approval and Update State
-
-Log approval in `audit.md`. Update `aidlc-state.md`:
-1. Mark row 9 `[x]` Operations in `## Stages`
-2. Update `## Current Work` — Phase = OPERATIONS, Stage = Complete
-3. Update `## Next` — "AIDLC lifecycle complete. Re-run for new features via backlog."
-
-Append final summary entry to `aidlc-progress.md`.
+Load `aidlc-stage-common` approval gate. This is the final gate of the AIDLC lifecycle — no silent completion. On approval:
+1. Log in `audit.md`
+2. In `aidlc-state.md`: mark row 9 `[x]`, update `## Current Work` (Phase = OPERATIONS, Stage = Complete), set `## Next` to "AIDLC lifecycle complete. Re-run for new features via backlog."
+3. Append final summary entry to `aidlc-progress.md`
 
 ---
 

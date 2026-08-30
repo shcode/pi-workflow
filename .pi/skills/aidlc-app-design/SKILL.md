@@ -47,40 +47,20 @@ description: >
 - [ ] Generate `application-design.md` that consolidates all above into a single reference document
 - [ ] Validate design completeness and consistency
 
-### 4. Generate Context-Appropriate Questions
+### 4. Q&A
 
-**DIRECTIVE**: Analyze requirements and stories to generate questions relevant to THIS specific design.
+Load `aidlc-stage-common` for Standard Q&A with:
+- Plan path: `inception/plans/application-design-plan.md`
+- Questions path: `inception/plans/application-design-questions.md`
+- Answers path: `inception/application-design/answers.md`
+- Categories:
+  - **Component Identification** — Boundaries, organization, grouping
+  - **Component Methods** — Method signatures, input/output, interface contracts
+  - **Service Layer Design** — Orchestration, boundaries, coordination patterns
+  - **Component Dependencies** — Communication patterns, dependency management, coupling
+  - **Design Patterns** — Architectural style, pattern choices, constraints
 
-**CRITICAL**: Default to asking questions when ANY ambiguity exists. Overconfidence leads to poor designs.
-
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Component Identification** - Boundaries, organization, grouping
-- **Component Methods** - Method signatures, input/output, interface contracts
-- **Service Layer Design** - Orchestration, boundaries, coordination patterns
-- **Component Dependencies** - Communication patterns, dependency management, coupling
-- **Design Patterns** - Architectural style, pattern choices, constraints
-
-### 5. Store Application Design Plan
-
-Save as `aidlc-docs/inception/plans/application-design-plan.md`
-
-### 6. Save Questions
-
-Save questions with `[Answer]:` tags to `aidlc-docs/application-design-questions.md`.
-
-### 7. Collect Answers
-
-STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
-
-### 8. ANALYZE ANSWERS (MANDATORY)
-
-Review for vague responses: "mix of", "somewhere between", "not sure", "depends"
-
-### 9. MANDATORY Follow-up Questions
-
-If ANY ambiguous answers, add follow-up questions. DO NOT proceed until resolved.
-
-### 10. Generate Application Design Artifacts
+### 5. Generate Application Design Artifacts
 
 Create:
 - `aidlc-docs/inception/application-design/components.md`
@@ -103,38 +83,12 @@ Create:
 - `aidlc-docs/inception/application-design/application-design.md`
   - Consolidated single document
 
-### 11. Log Approval
+### 6. Present Completion
 
-Log approval prompt with timestamp in `audit.md`.
+Load `aidlc-stage-common` completion message for: "🏗️ Application Design", `aidlc-docs/inception/application-design/`, "[Units Generation/CONSTRUCTION]"
 
-### 12. Present Completion Message
+> [IF Units Generation skipped: add "📝 **Add Units Generation**" option]
 
-```markdown
-# 🏗️ Application Design Complete
+### 7. Approval Gate
 
-[AI Summary - bullet points of design artifacts]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine application design at: `aidlc-docs/inception/application-design/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> [IF Units Generation skipped:]
-> 📝 **Add Units Generation** - Include Units Generation stage
-> ✅ **Approve & Continue** - Approve and proceed to [Units Generation/CONSTRUCTION]
-```
-
-### 13. Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### 14. Record Approval Response
-
-Log response with timestamp in `audit.md`.
-
-### 15. Update Progress
-
-Mark Application Design complete in `aidlc-state.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Application Design `[x]` in `aidlc-state.md`, update `## Current Work`.

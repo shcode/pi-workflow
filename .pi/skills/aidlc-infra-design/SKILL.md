@@ -34,56 +34,32 @@ description: >
 
 - Generate plan with checkboxes []. Focus on mapping to actual services (AWS, Azure, GCP, on-premise).
 
-### Step 3: Generate Context-Appropriate Questions
+### Step 3: Q&A
 
-**DIRECTIVE**: Analyze functional and NFR design to identify ALL areas where clarification improves infrastructure decisions.
+Load `aidlc-stage-common` for Standard Q&A with:
+- Plan path: `construction/plans/{unit-name}-infrastructure-design-plan.md`
+- Questions path: `construction/plans/{unit-name}-infra-design-questions.md`
+- Answers path: `construction/{unit-name}/infrastructure-design/answers.md`
+- Categories:
+  - **Deployment Environment** — Cloud provider, environment setup, deployment targets
+  - **Compute Infrastructure** — Compute service choices, sizing, scaling
+  - **Storage Infrastructure** — Database selection, storage patterns, data lifecycle
+  - **Messaging Infrastructure** — Messaging/queuing, event-driven patterns, async processing
+  - **Networking Infrastructure** — Load balancing, API gateway, network topology
+  - **Monitoring Infrastructure** — Observability, alerting strategy, logging
+  - **Shared Infrastructure** — Sharing strategy, multi-tenancy, resource isolation
 
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Deployment Environment** - Cloud provider, environment setup, deployment targets
-- **Compute Infrastructure** - Compute service choices, sizing, scaling
-- **Storage Infrastructure** - Database selection, storage patterns, data lifecycle
-- **Messaging Infrastructure** - Messaging/queuing, event-driven patterns, async processing
-- **Networking Infrastructure** - Load balancing, API gateway, network topology
-- **Monitoring Infrastructure** - Observability, alerting strategy, logging
-- **Shared Infrastructure** - Sharing strategy, multi-tenancy, resource isolation
-
-### Step 4: Store Plan
-
-Save as `aidlc-docs/construction/plans/{unit-name}-infrastructure-design-plan.md`
-
-### Step 5: Collect and Analyze Answers
-
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-infra-design-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
-
-### Step 6: Generate Infrastructure Design Artifacts
+### Step 4: Generate Infrastructure Design Artifacts
 
 Create:
 - `aidlc-docs/construction/{unit-name}/infrastructure-design/infrastructure-design.md`
 - `aidlc-docs/construction/{unit-name}/infrastructure-design/deployment-architecture.md`
 - If shared infrastructure: `aidlc-docs/construction/shared-infrastructure.md`
 
-### Step 7: Present Completion Message
+### Step 5: Present Completion
 
-```markdown
-# 🏢 Infrastructure Design Complete - [unit-name]
+Load `aidlc-stage-common` completion message for: "🏢 Infrastructure Design", `aidlc-docs/construction/{unit-name}/infrastructure-design/`, "Code Generation"
 
-[AI Summary - bullet points of infrastructure services and deployment architecture]
+### Step 6: Approval Gate
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine infrastructure design at: `aidlc-docs/construction/[unit-name]/infrastructure-design/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Continue to Next Stage** - Approve and proceed to **Code Generation**
-```
-
-### Step 8: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### Step 9: Record Approval and Update Progress
-
-Log in `audit.md`. Mark Infrastructure Design complete in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Infrastructure Design `[x]` in `backlog/{unit-name}.md`.

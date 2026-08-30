@@ -26,65 +26,34 @@ description: >
 
 Read functional design artifacts from `aidlc-docs/construction/{unit-name}/functional-design/`
 
-### Step 2: Create NFR Requirements Plan
+### Step 2: Q&A
 
-Generate plan with checkboxes [] for NFR assessment. Focus on scalability, performance, availability, security.
+Load `aidlc-stage-common` for Question-Only with:
+- Questions path: `construction/plans/{unit-name}-nfr-requirements-questions.md`
+- Answers path: `construction/{unit-name}/nfr-requirements/answers.md`
+- Categories:
+  - **Scalability Requirements** — Expected load, growth patterns, scaling triggers
+  - **Performance Requirements** — Response times, throughput, latency, benchmarks
+  - **Availability Requirements** — Uptime, disaster recovery, failover
+  - **Security Requirements** — Data protection, compliance, auth/authz, threat models
+  - **Tech Stack Selection** — Technology preferences, constraints, existing systems
+  - **Reliability Requirements** — Error handling, fault tolerance, monitoring
+  - **Maintainability Requirements** — Code quality, documentation, testing
+  - **Usability Requirements** — User experience, accessibility, interfaces
 
-### Step 3: Generate Context-Appropriate Questions
-
-**DIRECTIVE**: Analyze functional design to identify ALL areas where NFR clarification improves system quality.
-
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Scalability Requirements** - Expected load, growth patterns, scaling triggers
-- **Performance Requirements** - Response times, throughput, latency, benchmarks
-- **Availability Requirements** - Uptime, disaster recovery, failover
-- **Security Requirements** - Data protection, compliance, auth/authz, threat models
-- **Tech Stack Selection** - Technology preferences, constraints, existing systems
-- **Reliability Requirements** - Error handling, fault tolerance, monitoring
-- **Maintainability Requirements** - Code quality, documentation, testing
-- **Usability Requirements** - User experience, accessibility, interfaces
-
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-nfr-requirements-questions.md`.
-
-### Step 4: Store Plan
-
-Save as `aidlc-docs/construction/plans/{unit-name}-nfr-requirements-plan.md`
-
-### Step 5: Collect and Analyze Answers
-
-STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. **MANDATORY**: Review ALL for vagueness. Add follow-up `[Answer]:` questions for ANY unclear responses.
-
-### Step 6: Generate NFR Requirements Artifacts
+### Step 3: Generate NFR Requirements Artifacts
 
 Create:
 - `aidlc-docs/construction/{unit-name}/nfr-requirements/nfr-requirements.md`
 - `aidlc-docs/construction/{unit-name}/nfr-requirements/tech-stack-decisions.md`
 
-### Step 7: Present Completion Message
+### Step 4: Present Completion
 
-```markdown
-# 📊 NFR Requirements Complete - [unit-name]
+Load `aidlc-stage-common` completion message for: "📊 NFR Requirements", `aidlc-docs/construction/{unit-name}/nfr-requirements/`, "NFR Design"
 
-[AI Summary - bullet points of NFR requirements and tech stack decisions]
+### Step 5: Approval Gate
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine NFR requirements at: `aidlc-docs/construction/[unit-name]/nfr-requirements/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Continue to Next Stage** - Approve and proceed to **NFR Design**
-```
-
-### Step 8: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### Step 9: Record Approval and Update Progress
-
-Log in `audit.md`. Mark NFR Requirements complete in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Requirements `[x]` in `backlog/{unit-name}.md`.
 
 ---
 
@@ -99,59 +68,28 @@ Log in `audit.md`. Mark NFR Requirements complete in `backlog/{unit-name}.md`.
 
 Read NFR requirements from `aidlc-docs/construction/{unit-name}/nfr-requirements/`
 
-### Step 2: Create NFR Design Plan
+### Step 2: Q&A
 
-Generate plan with checkboxes []. Focus on design patterns and logical components.
+Load `aidlc-stage-common` for Question-Only with:
+- Questions path: `construction/plans/{unit-name}-nfr-design-questions.md`
+- Answers path: `construction/{unit-name}/nfr-design/answers.md`
+- Categories:
+  - **Resilience Patterns** — Fault tolerance, retry strategies, failure recovery
+  - **Scalability Patterns** — Scaling mechanisms, load boundaries, growth projections
+  - **Performance Patterns** — Optimization strategy, latency targets, throughput
+  - **Security Patterns** — Security implementation, threat model, compliance
+  - **Logical Components** — Infrastructure components (queues, caches, circuit breakers)
 
-### Step 3: Generate Context-Appropriate Questions
-
-**DIRECTIVE**: Analyze NFR requirements to identify ALL areas where clarification improves NFR design quality.
-
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Resilience Patterns** - Fault tolerance, retry strategies, failure recovery
-- **Scalability Patterns** - Scaling mechanisms, load boundaries, growth projections
-- **Performance Patterns** - Optimization strategy, latency targets, throughput
-- **Security Patterns** - Security implementation, threat model, compliance
-- **Logical Components** - Infrastructure components (queues, caches, circuit breakers)
-
-Save questions with `[Answer]:` tags to `aidlc-docs/construction/plans/{unit-name}-nfr-design-questions.md`.
-
-### Step 4: Store Plan
-
-Save as `aidlc-docs/construction/plans/{unit-name}-nfr-design-plan.md`
-
-### Step 5: Collect and Analyze Answers
-
-STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Review for vagueness. Add follow-up `[Answer]:` questions if needed.
-
-### Step 6: Generate NFR Design Artifacts
+### Step 3: Generate NFR Design Artifacts
 
 Create:
 - `aidlc-docs/construction/{unit-name}/nfr-design/nfr-design-patterns.md`
 - `aidlc-docs/construction/{unit-name}/nfr-design/logical-components.md`
 
-### Step 7: Present Completion Message
+### Step 4: Present Completion
 
-```markdown
-# 🎨 NFR Design Complete - [unit-name]
+Load `aidlc-stage-common` completion message for: "🎨 NFR Design", `aidlc-docs/construction/{unit-name}/nfr-design/`, "[next-stage-name]"
 
-[AI Summary - bullet points of design patterns and logical components]
+### Step 5: Approval Gate
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine NFR design at: `aidlc-docs/construction/[unit-name]/nfr-design/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Continue to Next Stage** - Approve and proceed to [next-stage-name]
-```
-
-### Step 8: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### Step 9: Record Approval and Update Progress
-
-Log in `audit.md`. Mark NFR Design complete in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Design `[x]` in `backlog/{unit-name}.md`.

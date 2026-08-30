@@ -40,7 +40,7 @@ AIDLC repo (this project)
   │   copies core-workflow.md  ─────┤  (all agents: slim trigger)
   │                                 ▼
   │                         target project
-  │                           ├── .pi/skills/      # 19 skills (pi only)
+  │                           ├── .pi/skills/      # 20 skills (pi only)
   │                           ├── .pi/extensions/  # task panel, etc. (pi only)
   │                           ├── AGENTS.md        # pi + kiro ← core-workflow.md
   │                           ├── CLAUDE.md        # Claude Code ← core-workflow.md
@@ -69,6 +69,8 @@ AIDLC repo (this project)
     │   │   └── SKILL.md           # Stage router — entrypoint for all AIDLC tasks
     │   ├── aidlc-common/
     │   │   └── SKILL.md           # Slim shared rules (session continuity, state, audit)
+    │   ├── aidlc-stage-common/
+    │   │   └── SKILL.md           # Canonical stage protocol — loaded on demand by stage skills
     │   ├── aidlc-questions/
     │   │   └── SKILL.md           # Question format + answer validation (loaded on demand)
     │   ├── aidlc-construction-rules/
@@ -106,7 +108,9 @@ AIDLC repo (this project)
     │       ├── security-baseline.md
     │       ├── security-baseline.opt-in.md
     │       ├── property-based-testing.md
-    │       └── property-based-testing.opt-in.md
+    │       ├── property-based-testing.opt-in.md
+    │       ├── resiliency-baseline.md
+    │       └── resiliency-baseline.opt-in.md
     └── extensions/
         └── aidlc-task-panel.ts    # Persistent task panel TUI extension
 ```
@@ -126,12 +130,14 @@ Each skill lives in `.pi/skills/<name>/` and **must** contain `SKILL.md`.
 
 - Format: `aidlc-<stage>` — kebab-case, matches stage name in router
 - Examples: `aidlc-orchestrator`, `aidlc-code-gen`, `aidlc-build-test`
+- Support skills: `aidlc-common`, `aidlc-stage-common`, `aidlc-questions` — loaded on demand, NOT stages
 
 ### Cross-skill references
 
-- Load other skills via `/skill:<name>` — never inline content from another skill
+- Load other skills via `/skill:<name>` or `Follow [Protocol](aidlc-stage-common)` — never inline content from another skill
 - Relative paths in a skill resolve against the skill directory (parent of `SKILL.md`)
 - The orchestrator skill is the single router — do not add stage routing logic in other skills
+- The `aidlc-stage-common` skill defines canonical stage protocols — stage skills reference it instead of duplicating procedural flow
 
 ### Performance budget
 
@@ -207,7 +213,7 @@ Before committing changes:
 mkdir -p /tmp/test-aidlc && ./install.sh /tmp/test-aidlc
 
 # 2. Verify all pi resources copied
-ls /tmp/test-aidlc/.pi/skills/ | wc -l   # expect 19 skill dirs
+ls /tmp/test-aidlc/.pi/skills/ | wc -l   # expect 20 skill dirs
 ls /tmp/test-aidlc/.pi/extensions/ | wc -l  # expect >=1 extension
 
 # 3. Verify steering files created for all agents
@@ -216,7 +222,7 @@ test -f /tmp/test-aidlc/CLAUDE.md && echo "CLAUDE.md OK"
 test -f /tmp/test-aidlc/.github/copilot-instructions.md && echo "copilot-instructions.md OK"
 
 # 4. Verify every skill has SKILL.md
-find .pi/skills -mindepth 2 -maxdepth 2 -name "SKILL.md" | wc -l   # expect 19
+find .pi/skills -mindepth 2 -maxdepth 2 -name "SKILL.md" | wc -l   # expect 20
 
 # 5. Check for broken relative references in skills
 grep -rn "\](" .pi/skills/ | grep -v "http" | grep -v "SKILL.md" || echo "No local relative refs found"

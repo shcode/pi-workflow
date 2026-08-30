@@ -76,21 +76,21 @@ Create `aidlc-docs/inception/plans/user-stories-assessment.md`:
 - Generate comprehensive plan with checkbox [] for each step
 - Focus on methodology and approach
 
-### Step 3: Generate Context-Appropriate Questions
+### Step 3: Q&A
 
-**DIRECTIVE**: Analyze requirements and context to identify ALL areas where clarification improves story quality.
-
-**CRITICAL**: Default to asking questions when ANY ambiguity exists. Better to ask too many than create incomplete stories.
-
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **User Personas** - User types, roles, characteristics, motivations
-- **Story Granularity** - Detail level, story size, breakdown approach
-- **Story Format** - Format preferences, template usage, documentation standards
-- **Breakdown Approach** - Organization method, prioritization, grouping
-- **Acceptance Criteria** - Detail level, format, testing approach
-- **User Journeys** - Workflows, interaction patterns, experience flows
-- **Business Context** - Goals, success metrics, stakeholder needs
-- **Technical Constraints** - Limitations, integration requirements, boundaries
+Load `aidlc-stage-common` for Two-Part planning Q&A with:
+- Plan path: `inception/plans/story-generation-plan.md`
+- Questions path: `inception/plans/story-generation-questions.md`
+- Answers path: `inception/user-stories/answers.md`
+- Categories:
+  - **User Personas** — User types, roles, characteristics, motivations
+  - **Story Granularity** — Detail level, story size, breakdown approach
+  - **Story Format** — Format preferences, template usage, documentation standards
+  - **Breakdown Approach** — Organization method, prioritization, grouping
+  - **Acceptance Criteria** — Detail level, format, testing approach
+  - **User Journeys** — Workflows, interaction patterns, experience flows
+  - **Business Context** — Goals, success metrics, stakeholder needs
+  - **Technical Constraints** — Limitations, integration requirements, boundaries
 
 ### Step 4: Include Mandatory Artifacts in Plan
 
@@ -111,83 +111,28 @@ Include different approaches:
 
 Explain trade-offs and benefits of each.
 
-### Step 6: Store Story Plan
+### Step 6: Approval
 
-Save as `aidlc-docs/inception/plans/story-generation-plan.md`
-
-### Steps 7-8: Collect Answers
-
-STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself. Do not proceed until ALL submitted.
-
-### Step 9: ANALYZE ANSWERS (MANDATORY)
-
-Review for vague responses: "mix of", "somewhere between", "not sure", "depends"
-
-### Step 10: MANDATORY Follow-up Questions
-
-If ANY ambiguous answers, create clarification questions. DO NOT proceed until resolved.
-
-### Steps 11-14: Approval
-
-- Avoid implementation details in planning
-- Log approval prompt in `audit.md`
-- Wait for explicit approval of plan
-- Record approval response
+Save plan. Present to user, wait for explicit approval before generation. Log approval prompt + response in `audit.md`.
 
 ---
 
 ## PART 2: GENERATION
 
-### Step 15: Load Story Generation Plan
-
-Read `aidlc-docs/inception/plans/story-generation-plan.md`
-Identify next uncompleted step.
-
-### Step 16: Execute Current Step
-
-Perform exactly what the step describes. Generate story artifacts per plan.
-
-### Step 17: Update Progress
-
-Mark completed step as [x]. Update `aidlc-state.md`.
-
-### Step 18: Continue or Complete
-
-Return to Step 15 if more steps remain. Verify all mandatory artifacts generated.
-
-### Step 19-22: Approval of Generated Stories
-
-Log approval prompt. Present completion message:
-
-```markdown
-# 📚 User Stories Complete
-
-[AI Summary - bullet points of personas and stories]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine user stories and personas at:
-> `aidlc-docs/inception/user-stories/stories.md`
-> `aidlc-docs/inception/user-stories/personas.md`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Approve & Continue** - Approve and proceed to **Workflow Planning**
-```
-
-Wait for explicit approval. Record response.
+Load `aidlc-stage-common` for Two-Part generation flow:
+1. Load `aidlc-docs/inception/plans/story-generation-plan.md`, find next uncompleted step
+2. Execute steps sequentially, mark `[x]` after each, update `aidlc-state.md`
+3. Verify all mandatory artifacts generated (stories.md, personas.md)
+4. Load `aidlc-stage-common` completion message for: "📚 User Stories", `aidlc-docs/inception/user-stories/`, "Workflow Planning"
+5. Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark User Stories `[x]` in `aidlc-state.md`.
 
 ---
 
 ## Critical Rules
 
 ### Planning Phase
-- Generate ONLY context-relevant questions
-- Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format
-- Analyze ALL answers for ambiguities before proceeding
-- Resolve ALL ambiguities with follow-up questions
+- **Validate need first** — create assessment doc before planning
+- **Present story options** — offer 5 approaches with trade-offs
 - Get explicit user approval before generation
 
 ### Generation Phase

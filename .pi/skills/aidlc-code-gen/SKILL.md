@@ -86,21 +86,9 @@ description: >
 
 Provide summary to user highlighting generation approach, step sequence, story coverage, total steps, estimated scope.
 
-### Step 6: Log Approval Prompt
+### Step 6: Approval
 
-Log prompt with timestamp in `audit.md` BEFORE asking for approval.
-
-### Step 7: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves the unit code generation plan. If changes requested, update plan and repeat.
-
-### Step 8: Record Approval Response
-
-Log user's approval response with timestamp in `audit.md`.
-
-### Step 9: Update Progress
-
-Mark Code Generation Part 1 complete: append entry to `aidlc-progress.md`, update `## Current Step` in `backlog/{unit-name}.md` (Step = "Part 1 complete, awaiting Part 2").
+Log approval prompt in `audit.md`. Present plan summary to user, wait for explicit approval. If changes requested, update plan and repeat. On approval: log response in `audit.md`, mark Part 1 complete in `backlog/{unit-name}.md` (Current Step = "Part 1 complete, awaiting Part 2").
 
 ---
 
@@ -156,33 +144,15 @@ Before presenting completion to user, verify generated code against design:
 
 **If all checks pass**: proceed to Step 14.
 
-### Step 14: Present Completion Message
+### Step 14: Present Completion
 
-```markdown
-# 💻 Code Generation Complete - [unit-name]
+Load `aidlc-stage-common` completion message for: "💻 Code Generation", `aidlc-docs/construction/{unit-name}/code/`, "[next-unit/Build & Test]"
 
-[AI Summary - bullet points of modified/created files with paths]
+> Note: include actual application code path in the review message.
 
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine generated code at:
-> - **Application Code**: `[actual-workspace-path]`
-> - **Documentation**: `aidlc-docs/construction/[unit-name]/code/`
+### Step 15: Approval Gate
 
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications based on review
-> ✅ **Continue to Next Stage** - Approve and proceed to [next-unit/Build & Test]
-```
-
-### Step 15: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves generated code.
-
-### Step 16: Record Approval and Update Progress
-
-Log approval in `audit.md`. Mark Code Generation row `[x]` in `backlog/{unit-name}.md`. Update `## Current Step` in `backlog/{unit-name}.md`. Update `aidlc-state.md` `## Current Work` Step. Append unit completion details to `aidlc-progress.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Code Generation row `[x]` in `backlog/{unit-name}.md`, update `## Current Step`, update `aidlc-state.md` `## Current Work` Step, append unit completion to `aidlc-progress.md`.
 
 ---
 

@@ -46,99 +46,34 @@ description: >
 - [ ] Validate unit boundaries and dependencies
 - [ ] Ensure all stories assigned to units
 
-### Step 3: Generate Context-Appropriate Questions
+### Step 3: Q&A
 
-**DIRECTIVE**: Analyze requirements, stories, and application design to identify ALL areas where clarification improves decomposition.
+Load `aidlc-stage-common` for Two-Part planning Q&A with:
+- Plan path: `inception/plans/unit-of-work-plan.md`
+- Questions path: `inception/plans/unit-of-work-questions.md`
+- Answers path: `inception/application-design/answers.md`
+- Categories:
+  - **Story Grouping** — Grouping strategy, story affinity, logical clustering
+  - **Dependencies** — Integration approach, shared resources, inter-unit communication
+  - **Team Alignment** — Team structure, ownership boundaries, collaboration
+  - **Technical Considerations** — Scalability/deployment requirements per unit
+  - **Business Domain** — Domain boundaries, bounded contexts, capability alignment
+  - **Code Organization (Greenfield multi-unit only)** — Deployment model, directory structure
 
-**CRITICAL**: Default to asking questions when ANY ambiguity exists.
+### Step 4: Approval
 
-Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format. Evaluate ALL categories:
-- **Story Grouping** - Grouping strategy, story affinity, logical clustering
-- **Dependencies** - Integration approach, shared resources, inter-unit communication
-- **Team Alignment** - Team structure, ownership boundaries, collaboration
-- **Technical Considerations** - Scalability/deployment requirements per unit
-- **Business Domain** - Domain boundaries, bounded contexts, capability alignment
-- **Code Organization (Greenfield multi-unit only)** - Deployment model, directory structure
-
-### Step 4: Store UOW Plan
-
-Save as `aidlc-docs/inception/plans/unit-of-work-plan.md`
-
-### Steps 5-6: Collect Answers
-
-Save questions with `[Answer]:` tags to `aidlc-docs/units-questions.md`. STOP. Wait for user to fill all `[Answer]:` tags. Do NOT write answers yourself.
-
-### Step 7: ANALYZE ANSWERS (MANDATORY)
-
-Review for vague responses.
-
-### Step 8: MANDATORY Follow-up Questions
-
-If ANY ambiguous answers, add follow-ups. DO NOT proceed until resolved.
-
-### Step 9: Request Approval
-
-Ask: "**Unit of work plan complete. Review in aidlc-docs/inception/plans/unit-of-work-plan.md. Ready to proceed to generation?**"
-DO NOT PROCEED until user confirms.
-
-### Step 10: Log Approval
-
-Log prompt and response in `audit.md`.
-
-### Step 11: Update Progress
-
-Mark Units Generation Part 1 complete in `aidlc-state.md`.
+Save plan. Ask: "**Unit of work plan complete. Review in plan file. Ready to proceed to generation?**" Do NOT proceed until user confirms. Log prompt and response in `audit.md`. Mark Part 1 complete in `aidlc-state.md`.
 
 ---
 
 ## PART 2: GENERATION
 
-### Step 12: Load Unit of Work Plan
-
-Read `aidlc-docs/inception/plans/unit-of-work-plan.md`
-Identify next uncompleted step.
-
-### Step 13: Execute Current Step
-
-Perform exactly what step describes. Generate unit artifacts per plan.
-
-### Step 14: Update Progress
-
-Mark completed step as [x]. Update `aidlc-state.md`.
-
-### Step 15: Continue or Complete
-
-Return to Step 12 if more steps remain. Verify units ready for design stages.
-
-### Step 16: Present Completion Message
-
-```markdown
-# 🔧 Units Generation Complete
-
-[AI Summary - bullet points of units and decomposition]
-
-> **📋 <u>**REVIEW REQUIRED:**</u>**
-> Please examine units at: `aidlc-docs/inception/application-design/`
-
-> **🚀 <u>**WHAT'S NEXT?**</u>**
->
-> **You may:**
->
-> 🔧 **Request Changes** - Ask for modifications
-> ✅ **Approve & Continue** - Approve and proceed to **CONSTRUCTION PHASE**
-```
-
-### Step 17: Wait for Explicit Approval
-
-Do not proceed until user explicitly approves.
-
-### Step 18: Record Approval Response
-
-Log in `audit.md`.
-
-### Step 19: Update Progress
-
-Mark Units Generation complete in `aidlc-state.md`.
+Load `aidlc-stage-common` for Two-Part generation flow:
+1. Load `aidlc-docs/inception/plans/unit-of-work-plan.md`, find next uncompleted step
+2. Execute steps sequentially, mark `[x]` after each, update `aidlc-state.md`
+3. Verify all mandatory artifacts complete
+4. Load `aidlc-stage-common` completion message for: "🔧 Units Generation", `aidlc-docs/inception/application-design/`, "CONSTRUCTION PHASE"
+5. Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Units Generation `[x]` in `aidlc-state.md`.
 
 **MANDATORY**: Add all generated units to `aidlc-docs/backlog.md` under `## Units of Work`:
 ```markdown
@@ -168,15 +103,12 @@ This file signals to pmai that inception completed successfully and provides the
 ## Critical Rules
 
 ### Planning Phase
-- Generate ONLY context-relevant questions
-- Load `aidlc-questions` skill if not cached. Use `[Answer]:` tag format
-- Analyze ALL answers for ambiguities
-- Resolve ALL ambiguities with follow-ups
+- **Validate prerequisites**: Application Design must be complete
+- **Include all mandatory artifacts**: unit-of-work.md, unit-of-work-dependency.md, unit-of-work-story-map.md
 - Get explicit approval before generation
 
 ### Generation Phase
 - **NO HARDCODED LOGIC**: Only execute what's in the plan
 - **FOLLOW PLAN EXACTLY**: Do not deviate
 - **UPDATE CHECKBOXES**: Mark [x] immediately after each step
-- **USE APPROVED APPROACH**: Follow decomposition methodology
 - **VERIFY COMPLETION**: Ensure all artifacts complete
