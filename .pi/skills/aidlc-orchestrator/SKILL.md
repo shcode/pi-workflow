@@ -155,7 +155,7 @@ This avoids the overhead of Units Generation for simple projects.
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
 5. Execute stages per `backlog/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only.
-6. Unit complete → mark `[done]` in `backlog.md` → pick next unit.
+6. Unit complete → mark `[done]` in `backlog.md`. **STOP. HARD STOP.** Present to user: "web-purchasing (U10) is next. Work on it, or choose another item?" Do NOT auto-advance. Do NOT modify `aidlc-state.md`. Do NOT load any files. Wait for user response. Only after user confirms: mark next unit `[in progress]`, update `aidlc-state.md` `## Current Work`.
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project

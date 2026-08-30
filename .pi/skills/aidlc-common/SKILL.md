@@ -35,11 +35,17 @@ At the start of ANY construction session, read `backlog/{item}.md` first. Two br
 4. Per dependency in `## Dependencies`: same as unit of work step 3
 5. Load current stage's skill — its Step 1 adds stage-specific context
 
+**NEVER read into context:**
+- Any `[done]` unit's docs or source code unless that unit is in the current unit's `## Dependencies`
+- `audit.md` content (bash `head -n 5` only for date check — never load into context)
+- `aidlc-progress.md` (operational log, append-only)
+- Application source code before all design artifacts from steps 1-5 are loaded
+
 ### Audit Rotation (on resume)
 
-When resuming (`aidlc-state.md` exists):
+When resuming (`aidlc-state.md` exists) — use **bash only**, never load `audit.md` into agent context:
 1. `head -n 5 aidlc-docs/audit.md` — check first timestamp
-2. If entries from a **previous calendar day**: move to `aidlc-docs/audit/YYYY-MM-DD.md`
+2. If entries from a **previous calendar day**: `mv aidlc-docs/audit.md aidlc-docs/audit/YYYY-MM-DD.md; echo '# AI-DLC Audit Log\n\n<!-- WRITE-ONLY for agents. Archived daily to audit/YYYY-MM-DD.md -->\n' > aidlc-docs/audit.md`
 3. If all today: do nothing
 
 ### Welcome Back Prompt
@@ -51,13 +57,9 @@ When `aidlc-state.md` exists:
 
 Based on `aidlc-state.md`:
 - **Project**: [Project.Type]
-- **Stage**: [Current Work.Stage]
+- **Phase**: [Current Work.Phase]
 - **Unit**: [Current Work.Unit]
 - **Step**: [Current Work.Step]
-
-**Resume context** (from `## Resume`):
-- Skills to load: [list from Skills line]
-- Key decisions: see `audit.md`
 
 **What would you like to work on today?**
 - A) Continue — Pick up from current step
@@ -67,9 +69,13 @@ Based on `aidlc-state.md`:
 [Answer]: 
 ```
 
+**HARD STOP**: After presenting this prompt, do NOTHING else. Do NOT load skills. Do NOT read any files. Do NOT switch units. Wait for the user's reply (A/B/C) before taking any action.
+
 ### Mandatory: Load Resume Manifest
 
-On resume, read `aidlc-state.md` `## Resume` section. Activate the listed skills. Each skill's Step 1 declares which context files to load. Do NOT guess or load extra files.
+After the user selects A (Continue), read `aidlc-state.md` `## Resume` `### Skills` and activate the listed skills. Each skill's Step 1 declares which context files to load. Do NOT guess or load extra files.
+
+**Never load construction-rules, backlog.md, or any unit files before the user says Continue.**
 
 ### Mandatory: Load RULES.md
 
@@ -138,7 +144,7 @@ See `aidlc-orchestrator` for the canonical Stage Transition steps. Summary:
 - ALWAYS append — never overwrite
 - Log decisions and approvals, not raw transcripts
 - One entry per stage completion or significant decision
-- Never read audit.md except: `head -n 5` for rotation, `tail -n 50` when user asks history
+- **WRITE-ONLY**: never use `read` tool on `audit.md`. Rotation check: `head -n 5` via bash. User history: `tail -n 50` via bash. Never load into agent context.
 
 ---
 
