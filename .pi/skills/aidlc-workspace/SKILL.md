@@ -104,7 +104,7 @@ aidlc-orchestrator, aidlc-common, aidlc-extensions
 
 **Rules**:
 - `aidlc-state.md` tracks project-wide stages: Inception (1-7) + Build and Test (8) + Operations (9).
-- Per-unit construction stages are tracked in `backlog/{unit-name}.md`.
+- Per-unit construction stages are tracked in `backlog/unit/{unit-name}.md`.
 - During CONSTRUCTION, `## Current Work` Unit = active backlog item name.
 
 ### `aidlc-docs/aidlc-progress.md`
@@ -121,7 +121,7 @@ aidlc-orchestrator, aidlc-common, aidlc-extensions
 # Backlog
 
 <!-- Status: [todo] | [in progress] | [pending] | [done] -->
-<!-- Per-unit construction progress tracked in backlog/{unit-name}.md -->
+<!-- Per-unit construction progress tracked in backlog/unit/{unit-name}.md -->
 
 ## Units of Work
 
@@ -140,7 +140,7 @@ aidlc-orchestrator, aidlc-common, aidlc-extensions
 <!-- WRITE-ONLY for agents. Archived daily to audit/YYYY-MM-DD.md -->
 ```
 
-Create `aidlc-docs/backlog/` directory.
+Create `aidlc-docs/backlog/` directory and `aidlc-docs/backlog/unit/` directory.
 
 ## Step 5: Present Completion
 

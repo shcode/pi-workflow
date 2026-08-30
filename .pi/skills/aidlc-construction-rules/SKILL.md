@@ -14,7 +14,7 @@ Load this skill once when the first construction stage begins.
 
 ## Required Reading Rule
 
-See `aidlc-common` → Required Reading Rule (Construction) for the full context-loading sequence. Summary: read `backlog/{item}.md` first, load inception foundation + dependency artifacts by convention, then load the current stage's skill for stage-specific context.
+See `aidlc-common` → Required Reading Rule (Construction) for the full context-loading sequence. Summary: read the unit's backlog file (`backlog/unit/{unit}.md` or `backlog/{feature}.md`) first, load inception foundation + dependency artifacts by convention, then load the current stage's skill for stage-specific context.
 
 **Never start coding, never read application code, never run build commands** until context is loaded. No exceptions.
 
@@ -104,7 +104,7 @@ This applies to every construction stage. No exceptions.
 3. **Update** the design doc in `aidlc-docs/`
 4. **If a new dependency was discovered**:
    - Update `unit-of-work-dependency.md` — add the new dependency for this unit
-   - Update current unit's `backlog/{unit}.md` `## Dependencies` — add the new dep
+   - Update current unit's `backlog/unit/{unit}.md` `## Dependencies` — add the new dep
    - Read the newly added dependency artifacts before continuing
 5. **Append** to `aidlc-docs/construction/design-changes.md`:
    ```markdown
@@ -130,7 +130,9 @@ After a stage produces its output artifact, discard raw input content from conte
 - After fix → discard error output and raw code, retain root cause + fix summary
 - After audit/progress write → discard the written content
 
-Never discard: design docs referenced by current stage, `aidlc-state.md`, `backlog/{unit}.md`
+Never discard: design docs referenced by current stage, `aidlc-state.md`, `backlog/unit/{unit}.md` (if unit is active)
+
+Archive completed items: see `aidlc-common` → Backlog Management → Archiving Completed Items.
 
 ---
 
@@ -148,7 +150,7 @@ When running in **pmai construction mode** (task.md contains `AIDLC Mode: constr
 
 **NEVER write to the inception docs path** — it is shared across all units and read-only.
 
-**NEVER write to `aidlc-state.md`** during construction — it lives in `_base` and is owned by inception and project-wide phases only. Construction agents update only `aidlc-docs/backlog/{unit}.md` in their own worktree.
+**NEVER write to `aidlc-state.md`** during construction — it lives in `_base` and is owned by inception and project-wide phases only. Construction agents update only `aidlc-docs/backlog/unit/{unit}.md` in their own worktree.
 
 **`aidlc-progress.md` and `audit.md` are worktree-local** — each construction agent writes to its own copies. They are not shared with other parallel units.
 
@@ -158,7 +160,7 @@ The worktree is **removed by pmai immediately after pi exits** (before PR review
 
 **MANDATORY**: Before completing the construction run, commit all design artifacts:
 ```
-git add aidlc-docs/backlog/{unit}.md \
+git add aidlc-docs/backlog/unit/{unit}.md \
         aidlc-docs/construction/{unit}/functional-design/ \
         aidlc-docs/construction/{unit}/nfr-design/ \
         aidlc-docs/construction/{unit}/infrastructure-design/ \

@@ -38,7 +38,7 @@ description: >
   - `aidlc-docs/construction/{unit-name}/infrastructure-design/` (if exists)
 - [ ] **Check for UI Design artifacts**: if `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` exists, read it — it is the authoritative list of approved components and their story files
 - [ ] Read unit story map from `aidlc-docs/inception/application-design/unit-of-work-story-map.md`
-- [ ] Identify unit dependencies and interfaces from `backlog/{unit-name}.md` `## Dependencies`
+- [ ] Identify unit dependencies and interfaces from `backlog/unit/{unit-name}.md` `## Dependencies`
 - [ ] Validate unit is ready for code generation
 
 ### Step 2: Create Detailed Unit Code Generation Plan
@@ -88,7 +88,7 @@ Provide summary to user highlighting generation approach, step sequence, story c
 
 ### Step 6: Approval
 
-Log approval prompt in `audit.md`. Present plan summary to user, wait for explicit approval. If changes requested, update plan and repeat. On approval: log response in `audit.md`, mark Part 1 complete in `backlog/{unit-name}.md` (Current Step = "Part 1 complete, awaiting Part 2").
+Log approval prompt in `audit.md`. Present plan summary to user, wait for explicit approval. If changes requested, update plan and repeat. On approval: log response in `audit.md`, mark Part 1 complete in `backlog/unit/{unit-name}.md` (Current Step = "Part 1 complete, awaiting Part 2").
 
 ---
 
@@ -152,7 +152,7 @@ Load `aidlc-stage-common` completion message for: "💻 Code Generation", `aidlc
 
 ### Step 15: Approval Gate
 
-Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Code Generation row `[x]` in `backlog/{unit-name}.md`, update `## Current Step`, update `aidlc-state.md` `## Current Work` Step, append unit completion to `aidlc-progress.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Code Generation row `[x]` in `backlog/unit/{unit-name}.md`, update `## Current Step`, update `aidlc-state.md` `## Current Work` Step, append unit completion to `aidlc-progress.md`.
 
 ---
 

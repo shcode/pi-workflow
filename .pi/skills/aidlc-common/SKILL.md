@@ -20,19 +20,19 @@ description: >
 NEVER TOUCH CODE BEFORE READING DESIGN ARTIFACTS
 ```
 
-At the start of ANY construction session, read `backlog/{item}.md` first. Two branches:
+At the start of ANY construction session, read the appropriate backlog item first. Two branches:
 
 **Unit of work** (`# Unit:` heading):
-1. Read `backlog/{unit}.md` — `## Current Step`, `## Dependencies`
+1. Read `backlog/unit/{unit}.md` — `## Current Step`, `## Dependencies`
 2. Load inception foundation: `GOAL.md`, `RULES.md` (if exists), `inception/requirements/requirements.md`, `inception/application-design/components.md`, `inception/application-design/unit-of-work.md`, `inception/application-design/unit-of-work-dependency.md`, `inception/application-design/unit-of-work-story-map.md`
-3. Per dependency in `## Dependencies`: load everything under `construction/{dep}/` (all subdirs) + `backlog/{dep}.md` — skip non-existent paths
+3. Per dependency in `## Dependencies`: load everything under `construction/{dep}/` (all subdirs) + `backlog/unit/{dep}.md` — skip non-existent paths
 4. Load current stage's skill — its Step 1 adds stage-specific context
 
 **Backlog item / feature** (`# Feature:` heading):
 1. Read `backlog/{item}.md` — `## Current Step`, `## Unit` (parent unit), `## Dependencies`
-2. Load parent unit context: everything under `construction/{parent-unit}/` + `backlog/{parent-unit}.md` — skip non-existent
+2. Load parent unit context: everything under `construction/{parent-unit}/` + `backlog/unit/{parent-unit}.md` — skip non-existent
 3. Load inception orientation: `GOAL.md`, `RULES.md` (always), `inception/requirements/requirements.md`, `inception/application-design/components.md` (for context)
-4. Per dependency in `## Dependencies`: same as unit of work step 3
+4. Per dependency in `## Dependencies`: load everything under `construction/{dep}/` + `backlog/unit/{dep}.md` — skip non-existent
 5. Load current stage's skill — its Step 1 adds stage-specific context
 
 **NEVER read into context:**
@@ -90,7 +90,7 @@ If `RULES.md` exists at workspace root, read it at session start. Its contents a
 | Construction starts | execution-plan.md (state tracks what to execute) |
 | Questions answered | {stage}-questions.md (answers summary is the reference) |
 
-**NEVER discard**: `aidlc-state.md`, `GOAL.md`, `RULES.md`, `*-answers.md`, design docs during construction, `backlog.md`
+**NEVER discard**: `aidlc-state.md`, `GOAL.md`, `RULES.md`, `*-answers.md`, design docs during construction, `backlog.md` (active section only)
 
 ### Targeted Code Reads
 
@@ -201,11 +201,11 @@ All defined artifacts are created; depth controls detail level within them.
 - `(domain: {domain})` — omit for single-domain projects.
 - Units of work themselves omit the `(unit:)` tag — they ARE the unit.
 
-### Per-Item Tracking (`backlog/{item-name}.md`)
+### Per-Item Tracking
 
-Two types, defined once here — `aidlc-units`, `aidlc-orchestrator`, and `aidlc-construction-rules` reference this section.
+Two paths, one template format each:
 
-**Unit of work** (created at inception → construction):
+**Unit of work** — `backlog/unit/{unit-name}.md` (created at inception → construction, never moves):
 ```markdown
 # Unit: {unit-name}
 
@@ -229,7 +229,7 @@ Two types, defined once here — `aidlc-units`, `aidlc-orchestrator`, and `aidlc
 Not started
 ```
 
-**Backlog item / feature** (added mid-project → mini-inception + construction):
+**Backlog item / feature** — `backlog/{feature-name}.md` (added mid-project → mini-inception + construction, leaf items):
 ```markdown
 # Feature: {feature-name}
 
@@ -264,11 +264,11 @@ Not started
 - Build and Test (project-wide) runs after ALL units reach `[done]` — tracked in `aidlc-state.md` row 8
 
 ### Switching Items
-1. Update current item’s `backlog/{item}.md` (save current step)
+1. Update current item's backlog file (unit: `backlog/unit/{item}.md`, feature: `backlog/{item}.md`) — save current step
 2. Mark current item `[pending]` in `backlog.md`
 3. Mark new item `[in progress]` in `backlog.md`
 4. Update `aidlc-state.md` `## Current Work` Unit = new item name
-5. Read `backlog/{new-item}.md` for progress
+5. Read new item's backlog file for progress
 
 ### When to Read
 Read `backlog.md` on every fresh session. Pick first `[in progress]` or ask user to choose from `[todo]`.
@@ -281,9 +281,22 @@ When user requests work outside existing units:
 4. Create `backlog/{feature}.md` with appropriate stages (mini-inception if needed) — set `## Unit`, `## Domain`, `## Dependencies` (inherited from parent unit). Each stage's Step 1 declares its context.
 5. **Update `unit-of-work-dependency.md`** — add the new unit with its dependencies (empty list if none)
 6. **Update `unit-of-work.md`** — add the new unit definition and responsibilities
-7. For any existing unit that depends on the new unit: update its `backlog/{unit}.md` `## Dependencies`
+7. For any existing unit that depends on the new unit: update its `backlog/unit/{unit}.md` `## Dependencies`
 8. Switch `## Current Work` to the new feature
-9. When done → mark `[done]`, switch back to previous unit
+9. When done → move line to `## Completed`, archive `backlog/{feature}.md` → `archive/backlog/{feature}.md`, switch back to previous unit
+
+---
+
+### Archiving Completed Items
+
+When a backlog item completes:
+
+1. Move its line from its active section (`## Units of Work` or `## Features`) to `## Completed` in `backlog.md`. Keep the `[done]` marker and description intact.
+2. **Unit file** (`backlog/unit/{unit-name}.md`): stays in place — canonical, never moves, features reference it.
+3. **Feature file** (`backlog/{feature}.md`): move to `archive/backlog/{feature}.md` (leaf item, no dependents).
+4. If `archive/backlog/` doesn't exist, create it.
+
+**Why archive instead of delete**: Archived items preserve dependency history, design decisions, and completion context for traceability without cluttering the active backlog.
 
 ---
 

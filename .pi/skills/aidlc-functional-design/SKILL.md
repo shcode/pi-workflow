@@ -77,4 +77,4 @@ Load `aidlc-stage-common` completion message for: "🔧 Functional Design", `aid
 
 ### Step 6: Approval Gate
 
-Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Functional Design `[x]` in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Functional Design `[x]` in `backlog/unit/{unit-name}.md`.

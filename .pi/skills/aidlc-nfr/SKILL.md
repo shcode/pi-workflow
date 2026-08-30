@@ -53,7 +53,7 @@ Load `aidlc-stage-common` completion message for: "📊 NFR Requirements", `aidl
 
 ### Step 5: Approval Gate
 
-Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Requirements `[x]` in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Requirements `[x]` in `backlog/unit/{unit-name}.md`.
 
 ---
 
@@ -92,4 +92,4 @@ Load `aidlc-stage-common` completion message for: "🎨 NFR Design", `aidlc-docs
 
 ### Step 5: Approval Gate
 
-Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Design `[x]` in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark NFR Design `[x]` in `backlog/unit/{unit-name}.md`.

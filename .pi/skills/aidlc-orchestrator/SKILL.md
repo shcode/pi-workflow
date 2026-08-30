@@ -45,7 +45,7 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 - **Read `Unit backlog:` file first** — this is the single entry point for the unit. Find the current stage via `## Current Step`.
 - Read inception docs from the `Inception docs:` path (read-only — never write there)
 - Run CONSTRUCTION phase for the specified unit only: [Functional Design] → [NFR] → [Infra Design] → Code Generation → Build and Test
-- Track unit progress in `aidlc-docs/backlog/{unit-name}.md` (relative to working directory)
+- Track unit progress in `aidlc-docs/backlog/unit/{unit-name}.md` (relative to working directory)
 - On completion: append a short summary to the `progress.md` path specified in `task.md`
 
 **If `task.md` exists but has no `## AIDLC Mode` line**: treat as a plain task description — continue with normal startup sequence below.
@@ -97,7 +97,7 @@ Workflow adapts to the work. AI assesses stages needed based on: user intent, co
 | 6 | Application Design | New components/services | `aidlc-app-design` |
 | 7 | Units Generation | Multi-unit decomposition | `aidlc-units` |
 
-### Construction (per-unit, tracked in `backlog/{unit-name}.md`)
+### Construction (per-unit, tracked in `backlog/unit/{unit-name}.md`)
 | # | Stage | Condition | Skill |
 |---|---|---|---|
 | 1 | Functional Design | New business logic | `aidlc-functional-design` |
@@ -128,7 +128,7 @@ After completing any stage:
 1. **Log**: Append narrative to `aidlc-progress.md` (record line range START-END) + decision entry to `audit.md`
 2. **Update state**:
    - **Inception stages**: Mark row `[x]` in `aidlc-state.md`, update `## Current Work`, `## Resume`, `## Next`
-   - **Construction stages**: Mark row `[x]` in `backlog/{unit-name}.md`, update its Current Step. Update `aidlc-state.md` `## Current Work` Step.
+   - **Construction stages**: Mark row `[x]` in `backlog/unit/{unit-name}.md`, update its Current Step. Update `aidlc-state.md` `## Current Work` Step.
 3. **Load next skill**
 
 **Skill caching**: Once loaded, a skill stays in context. Do NOT re-load.
@@ -142,7 +142,7 @@ After completing any stage:
 **Condition**: Workflow Planning determines only 1 unit of work (no decomposition needed).
 
 **Skip**: Units Generation stage entirely. Instead:
-1. Create `backlog/main.md` directly with construction stages
+1. Create `backlog/unit/main.md` directly with construction stages
 2. Add `- [todo] main — [project description]` to `backlog.md`
 3. Proceed to construction immediately
 
@@ -151,11 +151,11 @@ This avoids the overhead of Units Generation for simple projects.
 ### Multi-Unit Flow
 
 1. Inception completes → all units added to `backlog.md` as `[todo]`.
-2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/{unit}.md` for dependencies and current step → marks `[in progress]`
+2. Agent picks first `[todo]` unit (or asks user) → reads `backlog/unit/{unit}.md` for dependencies and current step → marks `[in progress]`
 3. `aidlc-state.md` `## Current Work`: Phase = CONSTRUCTION, Unit = unit name
 4. Load `aidlc-construction-rules` skill (once, cached)
-5. Execute stages per `backlog/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only.
-6. Unit complete → mark `[done]` in `backlog.md`. **STOP. HARD STOP.** Present to user: "web-purchasing (U10) is next. Work on it, or choose another item?" Do NOT auto-advance. Do NOT modify `aidlc-state.md`. Do NOT load any files. Wait for user response. Only after user confirms: mark next unit `[in progress]`, update `aidlc-state.md` `## Current Work`.
+5. Execute stages per `backlog/unit/{unit}.md` checklist. Update `aidlc-state.md` `## Current Work` Step only.
+6. Unit complete → move its line from `backlog.md` to `## Completed`. File `backlog/unit/{unit}.md` stays in place (features reference it). **STOP. HARD STOP.** Present to user: "web-purchasing (U10) is next. Work on it, or choose another item?" Do NOT auto-advance. Do NOT modify `aidlc-state.md`. Do NOT load any files. Wait for user response. Only after user confirms: mark next unit `[in progress]`, update `aidlc-state.md` `## Current Work`.
 7. All units `[done]` → Build and Test (project-wide, `aidlc-state.md` row 8) → Operations (project-wide, row 9)
 
 ### New Feature Mid-Project
@@ -166,7 +166,7 @@ When user requests work outside existing units:
 3. Create `backlog/{feature}.md` with appropriate stages (mini-inception + construction)
 4. `aidlc-state.md` `## Current Work` Unit = new feature name
 5. Execute stages per `backlog/{feature}.md`
-6. When done → `[done]`, switch back to previous `[pending]` unit
+6. When done → move to `## Completed` in `backlog.md`, archive `backlog/{feature}.md` → `archive/backlog/{feature}.md`, switch back to previous `[pending]` unit
 
 `aidlc-state.md` is NEVER overwritten or reset. It's the project shell.
 
@@ -177,7 +177,7 @@ When user requests work outside existing units:
 | File | Access | Purpose |
 |---|---|---|
 | `aidlc-state.md` | READ + UPDATE | Project-wide stages + Current Work + Resume (~50 lines, bounded). |
-| `backlog/{unit}.md` | READ + UPDATE | Per-unit construction progress. Created at Units Generation. |
+| `backlog/unit/{unit}.md` | READ + UPDATE | Per-unit construction progress. Never moves. |
 | `backlog.md` | READ + UPDATE | Master tracker. Read at session start + planning. |
 | `aidlc-progress.md` | APPEND-ONLY | Narrative log. Never read except targeted offset+limit via audit.md pointers. |
 | `audit.md` | APPEND-ONLY | Decision log. Never read except: `head -n 5` for rotation, `tail -n 50` for history. |

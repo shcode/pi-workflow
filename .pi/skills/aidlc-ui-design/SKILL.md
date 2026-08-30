@@ -203,7 +203,7 @@ Flag missing variants as **⚠ Needs Fix** — resolve before continuing.
 
 ### Step 10: Record Approval
 
-Log in `audit.md`. Mark UI Design `[x]` in `backlog/{unit-name}.md`.
+Log in `audit.md`. Mark UI Design `[x]` in `backlog/unit/{unit-name}.md`.
 
 ---
 

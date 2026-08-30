@@ -62,4 +62,4 @@ Load `aidlc-stage-common` completion message for: "🏢 Infrastructure Design", 
 
 ### Step 6: Approval Gate
 
-Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Infrastructure Design `[x]` in `backlog/{unit-name}.md`.
+Load `aidlc-stage-common` approval gate. On approval: log in `audit.md`, mark Infrastructure Design `[x]` in `backlog/unit/{unit-name}.md`.

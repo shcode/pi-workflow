@@ -81,7 +81,7 @@ Load `aidlc-stage-common` for Two-Part generation flow:
 ```
 Omit `(domain: {domain})` if the project has only one domain.
 
-**MANDATORY**: Create `aidlc-docs/backlog/{unit-name}.md` for each unit per the Unit of work template in `aidlc-common` → Per-Item Tracking. Rules for populating `## Dependencies`:
+**MANDATORY**: Create `aidlc-docs/backlog/unit/{unit-name}.md` for each unit per the Unit of work template in `aidlc-common` → Per-Item Tracking. Rules for populating `## Dependencies`:
 - Read `unit-of-work-dependency.md` to find dependencies for this unit
 - List each dependency in `## Dependencies` (omit section or write `none` if no dependencies)
 
