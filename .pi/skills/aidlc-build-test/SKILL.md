@@ -21,6 +21,16 @@ description: >
 
 ---
 
+## Step 0: Load Context
+
+- [ ] Read `aidlc-docs/backlog.md` — all units should be `[done]`
+- [ ] For each `[done]` unit: read `backlog/{unit}.md` and all artifacts under `construction/{unit}/` (functional-design, nfr-design, ui-design, infra-design, code)
+- [ ] Read `aidlc-docs/inception/application-design/unit-of-work.md` (unit list and responsibilities)
+- [ ] Read `aidlc-docs/inception/application-design/unit-of-work-dependency.md` (integration points)
+- [ ] Read `GOAL.md` for project constraints
+
+---
+
 ## Step 1: Analyze Testing Requirements
 
 Determine appropriate testing strategy:

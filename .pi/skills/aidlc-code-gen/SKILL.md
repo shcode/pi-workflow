@@ -30,10 +30,15 @@ description: >
 
 ### Step 1: Analyze Unit Context
 
-- [ ] Read unit design artifacts from Unit Design Generation
-- [ ] Read unit story map to understand assigned stories
-- [ ] Identify unit dependencies and interfaces
-- [ ] **Check for UI Design artifacts**: if `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` exists, read it now — it is the authoritative list of approved components and their story files
+- [ ] Read design artifacts produced by earlier construction stages (skip if not executed):
+  - `aidlc-docs/construction/{unit-name}/functional-design/business-logic-model.md`
+  - `aidlc-docs/construction/{unit-name}/functional-design/domain-entities.md`
+  - `aidlc-docs/construction/{unit-name}/functional-design/business-rules.md`
+  - `aidlc-docs/construction/{unit-name}/nfr-design/` (if exists)
+  - `aidlc-docs/construction/{unit-name}/infrastructure-design/` (if exists)
+- [ ] **Check for UI Design artifacts**: if `aidlc-docs/construction/{unit-name}/ui-design/component-inventory.md` exists, read it — it is the authoritative list of approved components and their story files
+- [ ] Read unit story map from `aidlc-docs/inception/application-design/unit-of-work-story-map.md`
+- [ ] Identify unit dependencies and interfaces from `backlog/{unit-name}.md` `## Dependencies`
 - [ ] Validate unit is ready for code generation
 
 ### Step 2: Create Detailed Unit Code Generation Plan

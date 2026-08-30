@@ -14,20 +14,9 @@ Load this skill once when the first construction stage begins.
 
 ## Required Reading Rule
 
-```
-NEVER TOUCH CODE BEFORE READING DESIGN ARTIFACTS
-```
+See `aidlc-common` → Required Reading Rule (Construction) for the full context-loading sequence. Summary: read `backlog/{item}.md` first, load inception foundation + dependency artifacts by convention, then load the current stage's skill for stage-specific context.
 
-At the start of ANY construction session (fresh, resume, or pmai delegated):
-1. Read `aidlc-docs/backlog/{unit}.md` first — this is the single entry point. Find the current stage via `## Current Step`.
-2. Proceed to the current stage's skill. Its **Step 1 declares which context files to load** — the skill knows what it needs, not a frozen snapshot.
-3. Load exactly what the stage's Step 1 says, then proceed.
-
-This applies equally to:
-- Manual pi sessions (fresh or resume)
-- pmai construction mode (`task.md` contains `Unit backlog:` path — read that file first)
-
-**Never start coding, never read application code, never run build commands** until the stage's Step 1 context is loaded. No exceptions.
+**Never start coding, never read application code, never run build commands** until context is loaded. No exceptions.
 
 ---
 

@@ -2,8 +2,9 @@
 name: aidlc-common
 description: >
   Common rules shared across all AIDLC phases. Load at workflow start after orchestrator.
-  Contains session continuity, state rules, audit format, transition steps, welcome message,
-  and error handling. Slim version — question format in aidlc-questions, construction rules
+  Contains session continuity (including Required Reading Rule for construction), state rules,
+  audit format, transition steps, welcome message, and error handling.
+  Slim version — question format in aidlc-questions, design-first rules
   in aidlc-construction-rules (loaded on demand).
 ---
 
@@ -12,6 +13,27 @@ description: >
 ---
 
 ## Session Continuity
+
+### Required Reading Rule (Construction)
+
+```
+NEVER TOUCH CODE BEFORE READING DESIGN ARTIFACTS
+```
+
+At the start of ANY construction session, read `backlog/{item}.md` first. Two branches:
+
+**Unit of work** (`# Unit:` heading):
+1. Read `backlog/{unit}.md` — `## Current Step`, `## Dependencies`
+2. Load inception foundation: `GOAL.md`, `RULES.md` (if exists), `inception/requirements/requirements.md`, `inception/application-design/components.md`, `inception/application-design/unit-of-work.md`, `inception/application-design/unit-of-work-dependency.md`, `inception/application-design/unit-of-work-story-map.md`
+3. Per dependency in `## Dependencies`: load everything under `construction/{dep}/` (all subdirs) + `backlog/{dep}.md` — skip non-existent paths
+4. Load current stage's skill — its Step 1 adds stage-specific context
+
+**Backlog item / feature** (`# Feature:` heading):
+1. Read `backlog/{item}.md` — `## Current Step`, `## Unit` (parent unit), `## Dependencies`
+2. Load parent unit context: everything under `construction/{parent-unit}/` + `backlog/{parent-unit}.md` — skip non-existent
+3. Load inception orientation: `GOAL.md`, `RULES.md` (always), `inception/requirements/requirements.md`, `inception/application-design/components.md` (for context)
+4. Per dependency in `## Dependencies`: same as unit of work step 3
+5. Load current stage's skill — its Step 1 adds stage-specific context
 
 ### Audit Rotation (on resume)
 
@@ -175,9 +197,9 @@ All defined artifacts are created; depth controls detail level within them.
 
 ### Per-Item Tracking (`backlog/{item-name}.md`)
 
-Every backlog item gets its own tracking file with the stages IT needs:
+Two types, defined once here — `aidlc-units`, `aidlc-orchestrator`, and `aidlc-construction-rules` reference this section.
 
-**Unit of work** (from inception → only needs construction):
+**Unit of work** (created at inception → construction):
 ```markdown
 # Unit: {unit-name}
 
@@ -185,10 +207,10 @@ Every backlog item gets its own tracking file with the stages IT needs:
 {domain-name, or — if single-domain project}
 
 ## Dependencies
-<!-- Units this unit depends on. Empty if none. -->
+<!-- Units this unit depends on, from unit-of-work-dependency.md. Empty if none. -->
 - {dep-unit-name}
 
-## Stages
+## Construction Stages
 | # | Stage | Status |
 |---|-------|--------|
 | 1 | Functional Design | [ ] |
@@ -198,9 +220,10 @@ Every backlog item gets its own tracking file with the stages IT needs:
 | 5 | Code Generation | [ ] |
 
 ## Current Step
-[Current step within the active stage]
+Not started
+```
 
-**New feature** (added mid-project → needs mini-inception + construction):
+**Backlog item / feature** (added mid-project → mini-inception + construction):
 ```markdown
 # Feature: {feature-name}
 
@@ -224,8 +247,7 @@ Every backlog item gets its own tracking file with the stages IT needs:
 | 5 | Code Generation | [ ] |
 
 ## Current Step
-[Current step within the active stage]
-
+Not started
 ```
 
 **Rules**:

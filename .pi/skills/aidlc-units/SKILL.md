@@ -146,31 +146,7 @@ Mark Units Generation complete in `aidlc-state.md`.
 ```
 Omit `(domain: {domain})` if the project has only one domain.
 
-**MANDATORY**: Create `aidlc-docs/backlog/{unit-name}.md` for each unit:
-```markdown
-# Unit: {unit-name}
-
-## Domain
-{domain-name, or — if single-domain project}
-
-## Dependencies
-<!-- Units this unit depends on, from unit-of-work-dependency.md. Empty if none. -->
-- {dep-unit-name}
-
-## Construction Stages
-| # | Stage | Status |
-|---|-------|--------|
-| 1 | Functional Design | [ ] |
-| 2 | NFR Requirements & Design | [ ] |
-| 3 | UI Design | [ ] |
-| 4 | Infrastructure Design | [ ] |
-| 5 | Code Generation | [ ] |
-
-## Current Step
-Not started
-```
-
-Rules for populating `## Dependencies`:
+**MANDATORY**: Create `aidlc-docs/backlog/{unit-name}.md` for each unit per the Unit of work template in `aidlc-common` → Per-Item Tracking. Rules for populating `## Dependencies`:
 - Read `unit-of-work-dependency.md` to find dependencies for this unit
 - List each dependency in `## Dependencies` (omit section or write `none` if no dependencies)
 
